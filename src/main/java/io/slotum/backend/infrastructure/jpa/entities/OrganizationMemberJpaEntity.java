@@ -15,7 +15,7 @@ public class OrganizationMemberJpaEntity {
 
     @ManyToOne
     @JoinColumn(name = "specialist_id", referencedColumnName = "user_id", insertable = false, updatable = false)
-    private OrganizationJpaEntity specialist;
+    private SpecialistJpaEntity specialist;
 
     protected OrganizationMemberJpaEntity() {}
 
@@ -28,7 +28,7 @@ public class OrganizationMemberJpaEntity {
         return organization;
     }
 
-    public OrganizationJpaEntity getSpecialist() {
+    public SpecialistJpaEntity getSpecialist() {
         return specialist;
     }
 
