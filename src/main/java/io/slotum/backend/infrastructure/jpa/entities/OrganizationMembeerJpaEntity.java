@@ -8,7 +8,7 @@ public class OrganizationMembeerJpaEntity {
     @EmbeddedId
     private OrganizationMemberId id;
 
-    // Connections
+    // Communications
     @ManyToOne
     @JoinColumn(name = "organization_id", referencedColumnName = "id", insertable = false, updatable = false)
     private OrganizationJpaEntity organization;
