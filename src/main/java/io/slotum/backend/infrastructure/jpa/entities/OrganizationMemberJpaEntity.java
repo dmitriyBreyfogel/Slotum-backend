@@ -35,7 +35,10 @@ public class OrganizationMemberJpaEntity {
     // Composite key
     @Embeddable
     public static class OrganizationMemberId {
+        @Column(name = "organization_id")
         private Long organizationId;
+
+        @Column(name = "specialist_id")
         private Long specialistId;
 
         public Long getOrganizationId() {
