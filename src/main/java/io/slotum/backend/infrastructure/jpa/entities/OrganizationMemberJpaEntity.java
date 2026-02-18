@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "organization_members")
-public class OrganizationMembeerJpaEntity {
+public class OrganizationMemberJpaEntity {
     @EmbeddedId
     private OrganizationMemberId id;
 
@@ -17,7 +17,7 @@ public class OrganizationMembeerJpaEntity {
     @JoinColumn(name = "specialist_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     private OrganizationJpaEntity specialist;
 
-    protected OrganizationMembeerJpaEntity() {}
+    protected OrganizationMemberJpaEntity() {}
 
     // Getters
     public OrganizationMemberId getId() {
