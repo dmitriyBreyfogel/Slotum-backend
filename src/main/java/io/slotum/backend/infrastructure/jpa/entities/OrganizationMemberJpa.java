@@ -4,31 +4,31 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "organization_members")
-public class OrganizationMemberJpaEntity {
+public class OrganizationMemberJpa {
     @EmbeddedId
     private OrganizationMemberId id;
 
     // Communications
     @ManyToOne
     @JoinColumn(name = "organization_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private OrganizationJpaEntity organization;
+    private OrganizationJpa organization;
 
     @ManyToOne
     @JoinColumn(name = "specialist_id", referencedColumnName = "user_id", insertable = false, updatable = false)
-    private SpecialistJpaEntity specialist;
+    private SpecialistJpa specialist;
 
-    protected OrganizationMemberJpaEntity() {}
+    protected OrganizationMemberJpa() {}
 
     // Getters
     public OrganizationMemberId getId() {
         return id;
     }
 
-    public OrganizationJpaEntity getOrganization() {
+    public OrganizationJpa getOrganization() {
         return organization;
     }
 
-    public SpecialistJpaEntity getSpecialist() {
+    public SpecialistJpa getSpecialist() {
         return specialist;
     }
 

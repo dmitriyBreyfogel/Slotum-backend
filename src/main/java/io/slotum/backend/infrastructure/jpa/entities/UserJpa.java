@@ -9,7 +9,7 @@ import jakarta.persistence.*;
                 @UniqueConstraint(name = "uq_users_email", columnNames = "email")
         }
 )
-public class UserJpaEntity {
+public class UserJpa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +32,7 @@ public class UserJpaEntity {
     @Column
     private String phone;
 
-    protected UserJpaEntity() {}
+    protected UserJpa() {}
 
     // Getters
     public Long getId() {

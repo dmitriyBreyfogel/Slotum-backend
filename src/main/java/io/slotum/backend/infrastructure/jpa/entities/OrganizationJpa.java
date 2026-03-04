@@ -9,7 +9,7 @@ import jakarta.persistence.*;
              @UniqueConstraint(name = "uq_organizations_name", columnNames = "name")
      }
 )
-public class OrganizationJpaEntity {
+public class OrganizationJpa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,7 +23,7 @@ public class OrganizationJpaEntity {
     @Column
     private Double grade;
 
-    protected OrganizationJpaEntity() {}
+    protected OrganizationJpa() {}
 
     // Getters
     public Long getId() {

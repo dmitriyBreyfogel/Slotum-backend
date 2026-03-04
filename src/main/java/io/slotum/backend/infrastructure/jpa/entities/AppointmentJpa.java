@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "appointments")
-public class AppointmentJpaEntity {
+public class AppointmentJpa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,17 +23,17 @@ public class AppointmentJpaEntity {
     // Communications
     @ManyToOne
     @JoinColumn(name = "specialist_id", referencedColumnName = "user_id", nullable = false)
-    private SpecialistJpaEntity specialist;
+    private SpecialistJpa specialist;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
-    private UserJpaEntity customer;
+    private UserJpa customer;
 
     @ManyToOne
     @JoinColumn(name = "organization_id", referencedColumnName = "id", nullable = false)
-    private OrganizationJpaEntity organization;
+    private OrganizationJpa organization;
 
-    protected AppointmentJpaEntity() {}
+    protected AppointmentJpa() {}
 
     // Getters
     public Long getId() {
@@ -52,15 +52,15 @@ public class AppointmentJpaEntity {
         return status;
     }
 
-    public SpecialistJpaEntity getSpecialist() {
+    public SpecialistJpa getSpecialist() {
         return specialist;
     }
 
-    public UserJpaEntity getCustomer() {
+    public UserJpa getCustomer() {
         return customer;
     }
 
-    public OrganizationJpaEntity getOrganization() {
+    public OrganizationJpa getOrganization() {
         return organization;
     }
 }

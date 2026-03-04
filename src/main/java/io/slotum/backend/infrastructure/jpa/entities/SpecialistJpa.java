@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "specialists")
-public class SpecialistJpaEntity {
+public class SpecialistJpa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -18,9 +18,9 @@ public class SpecialistJpaEntity {
     // Communications
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private UserJpaEntity user;
+    private UserJpa user;
 
-    protected SpecialistJpaEntity() {}
+    protected SpecialistJpa() {}
 
     // Getters
     public Long getUserId() {
