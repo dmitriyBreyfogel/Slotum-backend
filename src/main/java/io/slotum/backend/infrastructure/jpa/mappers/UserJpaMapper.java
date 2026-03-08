@@ -22,4 +22,20 @@ public final class UserJpaMapper {
                 source.getPhone()
         );
     }
+
+    public static UserJpa toJpa(User source) {
+        if (source == null) {
+            throw new IllegalArgumentException("User source is null");
+        }
+
+        return new UserJpa(
+                source.getId(),
+                source.getSurname(),
+                source.getFirstName(),
+                source.getSecondName(),
+                source.getEmail().value(),
+                source.getPassword().value(),
+                source.getPhone().value()
+        );
+    }
 }

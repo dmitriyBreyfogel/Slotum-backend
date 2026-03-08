@@ -34,6 +34,16 @@ public class UserJpa {
 
     protected UserJpa() {}
 
+    public UserJpa(Long id, String surname, String firstName, String secondName, String email, String password, String phone) {
+        this.id = id;
+        this.surname = surname;
+        this.firstName = firstName;
+        this.secondName = secondName;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+    }
+
     // Getters
     public Long getId() {
         return id;
