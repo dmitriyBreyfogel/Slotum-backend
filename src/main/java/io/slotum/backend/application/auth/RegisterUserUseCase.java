@@ -53,6 +53,9 @@ public class RegisterUserUseCase {
     ) {
     }
 
-    public record Result(Long userId, String email) {
+    public record Result(
+            Long userId,
+            String email
+    ) {
     }
 }
