@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 public class SpecialistJpa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long userId;
 
     @Column
