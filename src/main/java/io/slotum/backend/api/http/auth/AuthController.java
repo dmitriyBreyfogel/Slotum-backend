@@ -45,6 +45,9 @@ public class AuthController {
     ) {
     }
 
-    public record RegisterUserResponse(Long userId, String email) {
+    public record RegisterUserResponse(
+            Long userId,
+            String email
+    ) {
     }
 }
