@@ -1,4 +1,4 @@
-package io.slotum.backend.infrastructure.jpa.repositories;
+package io.slotum.backend.infrastructure.jpa.repositories.user;
 
 import io.slotum.backend.domain.user.User;
 import io.slotum.backend.domain.user.UserRepository;
