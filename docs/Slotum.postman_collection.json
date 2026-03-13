@@ -22,14 +22,43 @@
           }
         },
         "url": {
-          "raw": "{{baseUrl}}/api/v1/users",
+          "raw": "{{baseUrl}}/api/v1/auth/register",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "api",
             "v1",
-            "users"
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create organization",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"ООО БНАЛ12\",\r\n    \"description\": \"ahuennaya companiya\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/organizations",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "organizations"
           ]
         }
       },
