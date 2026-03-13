@@ -32,7 +32,7 @@ public final class Organization {
                 grade
         );
     }
-    
+
     public static Organization create(Long id, String name, String description) {
         validateId(id);
         validateName(name);
@@ -44,6 +44,22 @@ public final class Organization {
                 description,
                 0.0
         );
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Double getGrade() {
+        return grade;
     }
 
     private static void validateId(Long id) {

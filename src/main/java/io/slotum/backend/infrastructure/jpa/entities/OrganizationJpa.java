@@ -25,6 +25,13 @@ public class OrganizationJpa {
 
     protected OrganizationJpa() {}
 
+    public OrganizationJpa(Long id, String name, String description, Double grade) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.grade = grade;
+    }
+
     // Getters
     public Long getId() {
         return id;
