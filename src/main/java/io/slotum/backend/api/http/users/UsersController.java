@@ -1,6 +1,6 @@
 package io.slotum.backend.api.http.users;
 
-import io.slotum.backend.application.auth.RegisterUserUseCase;
+import io.slotum.backend.application.users.RegisterUserUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
