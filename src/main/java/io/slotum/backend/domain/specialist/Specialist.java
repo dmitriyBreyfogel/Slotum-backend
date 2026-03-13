@@ -23,6 +23,18 @@ public final class Specialist {
         return new Specialist(userId, description, grade);
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Double getGrade() {
+        return grade;
+    }
+
     private static void validateUserId(Long id) {
         if (id != null && id <= 0) {
             throw AppException.build(
