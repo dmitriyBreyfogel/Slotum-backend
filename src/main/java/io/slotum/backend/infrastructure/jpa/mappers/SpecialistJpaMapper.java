@@ -6,7 +6,7 @@ import io.slotum.backend.infrastructure.jpa.entities.SpecialistJpa;
 public final class SpecialistJpaMapper {
     private SpecialistJpaMapper() {}
 
-    public Specialist toDomain(SpecialistJpa source) {
+    public static Specialist toDomain(SpecialistJpa source) {
         if (source == null) {
             throw new IllegalArgumentException("SpecialistJpa source is null");
         }
@@ -18,7 +18,7 @@ public final class SpecialistJpaMapper {
         );
     }
 
-    public SpecialistJpa toJpa(Specialist source) {
+    public static SpecialistJpa toJpa(Specialist source) {
         if (source == null) {
             throw new IllegalArgumentException("Specialist source is null");
         }
