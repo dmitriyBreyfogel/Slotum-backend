@@ -24,7 +24,7 @@ public final class OrganizationJpaMapper {
         if (source == null) {
             throw new IllegalArgumentException("OrganizationJpa source is null");
         }
-        
+
         return new OrganizationJpa(
                 source.getId(),
                 source.getName(),
