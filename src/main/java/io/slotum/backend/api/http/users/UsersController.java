@@ -1,4 +1,4 @@
-package io.slotum.backend.api.http.auth;
+package io.slotum.backend.api.http.users;
 
 import io.slotum.backend.application.auth.RegisterUserUseCase;
 import org.springframework.http.HttpStatus;
@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/auth")
-public class AuthController {
+@RequestMapping("/api/v1/users")
+public class UsersController {
     private final RegisterUserUseCase registerUserUseCase;
 
-    public AuthController(RegisterUserUseCase registerUserUseCase) {
+    public UsersController(RegisterUserUseCase registerUserUseCase) {
         this.registerUserUseCase = registerUserUseCase;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<RegisterUserResponse> register(@RequestBody RegisterUserRequest request) {
+    @PostMapping
+    public ResponseEntity<RegisterUserResponse> create(@RequestBody RegisterUserRequest request) {
         RegisterUserUseCase.Result result = registerUserUseCase.execute(
                 new RegisterUserUseCase.Command(
                         request.surname(),
