@@ -2,7 +2,6 @@ package io.slotum.backend.domain.organization;
 
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
-import org.aspectj.weaver.ast.Or;
 
 import java.util.Map;
 
