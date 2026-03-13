@@ -2,7 +2,11 @@ package io.slotum.backend.application.organizations;
 
 import io.slotum.backend.domain.organization.Organization;
 import io.slotum.backend.domain.organization.OrganizationRepository;
+import io.slotum.backend.error.AppException;
+import io.slotum.backend.error.ErrorCode;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public class RegisterOrganizationUseCase {
@@ -13,13 +17,21 @@ public class RegisterOrganizationUseCase {
     }
 
     public Result execute(Command command) {
-        Organization organization = Organization.create(
-                null,
-                command.name,
-                command.description
-        );
+        if (organizationRepository.findByName(command.name) != null) {
+            throw AppException.build(
+                    ErrorCode.ORGANIZATION_ALREADY_EXISTS,
+                    "Organization with name " + command.name + " already exists",
+                    Map.of("name", command.name)
+            );
+        }
 
-        organizationRepository.save(organization);
+        Organization organization = organizationRepository.save(
+                Organization.create(
+                    null,
+                    command.name,
+                    command.description
+                )
+        );
 
         return new Result(
                 organization.getId(),
