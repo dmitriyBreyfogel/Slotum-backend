@@ -23,6 +23,12 @@ public class SpecialistJpa {
 
     protected SpecialistJpa() {}
 
+    public SpecialistJpa(Long userId, String description, Double grade) {
+        this.userId = userId;
+        this.description = description;
+        this.grade = grade;
+    }
+
     // Getters
     public Long getUserId() {
         return userId;
