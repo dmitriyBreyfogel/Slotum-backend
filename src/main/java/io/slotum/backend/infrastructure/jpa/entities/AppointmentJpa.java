@@ -35,6 +35,24 @@ public class AppointmentJpa {
 
     protected AppointmentJpa() {}
 
+    public AppointmentJpa(
+            Long id,
+            LocalDateTime startsAt,
+            LocalDateTime endsAt,
+            String status,
+            SpecialistJpa specialist,
+            UserJpa customer,
+            OrganizationJpa organization
+    ) {
+        this.id = id;
+        this.startsAt = startsAt;
+        this.endsAt = endsAt;
+        this.status = status;
+        this.specialist = specialist;
+        this.customer = customer;
+        this.organization = organization;
+    }
+
     // Getters
     public Long getId() {
         return id;
