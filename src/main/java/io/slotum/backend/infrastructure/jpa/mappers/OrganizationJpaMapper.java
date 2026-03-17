@@ -13,7 +13,6 @@ public final class OrganizationJpaMapper {
         }
 
         return Organization.create(
-                source.getId(),
                 source.getName(),
                 source.getDescription(),
                 source.getGrade()
