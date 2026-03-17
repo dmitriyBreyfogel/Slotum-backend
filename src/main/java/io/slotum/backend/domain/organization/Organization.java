@@ -18,7 +18,15 @@ public final class Organization {
         this.grade = grade;
     }
 
-    public static Organization create(Long id, String name, String description, Double grade) {
+    public static Organization create(String name, String description, Double grade) {
+        return restore(null, name, description, grade);
+    }
+
+    public static Organization create(Long id, String name, String description) {
+        return restore(null, name, description);
+    }
+
+    public static Organization restore(Long id, String name, String description, Double grade) {
         validateId(id);
         validateName(name);
         validateDescription(description);
@@ -32,7 +40,7 @@ public final class Organization {
         );
     }
 
-    public static Organization create(Long id, String name, String description) {
+    public static Organization restore(Long id, String name, String description) {
         validateId(id);
         validateName(name);
         validateDescription(description);
