@@ -112,7 +112,7 @@ public class EmailTest {
     void test13() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum@gma.il.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
-        assertEquals("slotum@gmail.il.com", ex.getDetails().get("email"));
+        assertEquals("slotum@gma.il.com", ex.getDetails().get("email"));
     }
 
     @Test
@@ -168,7 +168,7 @@ public class EmailTest {
     void test20() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum@gmail/.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
-        assertEquals("slotum@gmail.com", ex.getDetails().get("email"));
+        assertEquals("slotum@gmail/.com", ex.getDetails().get("email"));
     }
 
     @Test
