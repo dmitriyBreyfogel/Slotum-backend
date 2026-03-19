@@ -2,7 +2,6 @@ package io.slotum.backend.domain.user.vo;
 
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
-import org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
