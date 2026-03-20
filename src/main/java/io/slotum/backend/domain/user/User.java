@@ -97,10 +97,13 @@ public final class User {
 
     private static String validateRequiredName(String value, ErrorCode code, String field) {
         if (value == null || value.isBlank()) {
+            Map<String, Object> details = (value == null)
+                    ? Map.of("field", field)
+                    : Map.of("field", field, "value", value);
             throw AppException.build(
                     code,
                     "Invalid " + field,
-                    Map.of("field", field, "value", value)
+                    details
             );
         }
         return value.trim();
