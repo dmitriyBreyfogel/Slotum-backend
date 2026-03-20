@@ -23,7 +23,7 @@ public final class Organization {
     }
 
     public static Organization create(Long id, String name, String description) {
-        return restore(null, name, description);
+        return restore(id, name, description);
     }
 
     public static Organization restore(Long id, String name, String description, Double grade) {
@@ -118,6 +118,12 @@ public final class Organization {
     }
 
     private static void validateGrade(Double grade) {
+        if (grade == null) {
+            throw AppException.build(
+                    ErrorCode.INVALID_ORGANIZATION_GRADE,
+                    "Invalid organization grade"
+            );
+        }
         if (grade < 0 || grade > 5) {
             throw AppException.build(
                     ErrorCode.INVALID_ORGANIZATION_GRADE,
