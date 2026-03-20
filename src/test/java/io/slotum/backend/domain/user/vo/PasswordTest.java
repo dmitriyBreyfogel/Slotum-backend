@@ -89,7 +89,7 @@ public class PasswordTest {
     }
 
     @Test
-    @DisplayName("НейASCII символы в raw пароле недопустимы")
+    @DisplayName("Русские символы в raw пароле недопустимы")
     void rejectsRawPasswordWithNonAscii() {
         AppException ex = assertThrows(AppException.class, () -> new Password("пароль"));
         assertEquals(ErrorCode.INVALID_USER_PASSWORD, ex.getCode());
