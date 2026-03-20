@@ -12,10 +12,11 @@ public final class AppointmentStatus {
     public AppointmentStatus(String status) {
         String normalized = normalize(status);
         if (!validate(normalized)) {
+            Map<String, Object> details = (status == null) ? Map.of() : Map.of("status", status);
             throw AppException.build(
                     ErrorCode.INVALID_APPOINTMENT_STATUS,
                     "Invalid appointment status",
-                    Map.of("status", status)
+                    details
             );
         }
         this.status = normalized;

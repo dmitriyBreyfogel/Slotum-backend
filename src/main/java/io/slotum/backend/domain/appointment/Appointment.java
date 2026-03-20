@@ -148,10 +148,13 @@ public final class Appointment {
 
     private static Long validateSpecialistUserId(Long specialistUserId) {
         if (specialistUserId == null || specialistUserId <= 0) {
+            Map<String, Object> details = (specialistUserId == null)
+                    ? Map.of()
+                    : Map.of("specialistUserId", specialistUserId);
             throw AppException.build(
                     ErrorCode.INVALID_APPOINTMENT_SPECIALIST_ID,
                     "Invalid appointment specialistUserId",
-                    Map.of("specialistUserId", specialistUserId)
+                    details
             );
         }
         return specialistUserId;
@@ -159,10 +162,13 @@ public final class Appointment {
 
     private static Long validateCustomerId(Long customerId) {
         if (customerId == null || customerId <= 0) {
+            Map<String, Object> details = (customerId == null)
+                    ? Map.of()
+                    : Map.of("customerId", customerId);
             throw AppException.build(
                     ErrorCode.INVALID_APPOINTMENT_CUSTOMER_ID,
                     "Invalid appointment customerId",
-                    Map.of("customerId", customerId)
+                    details
             );
         }
         return customerId;
@@ -170,10 +176,13 @@ public final class Appointment {
 
     private static Long validateOrganizationId(Long organizationId) {
         if (organizationId == null || organizationId <= 0) {
+            Map<String, Object> details = (organizationId == null)
+                    ? Map.of()
+                    : Map.of("organizationId", organizationId);
             throw AppException.build(
                     ErrorCode.INVALID_APPOINTMENT_ORGANIZATION_ID,
                     "Invalid appointment organizationId",
-                    Map.of("organizationId", organizationId)
+                    details
             );
         }
         return organizationId;
