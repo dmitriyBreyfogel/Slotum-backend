@@ -63,6 +63,12 @@ public final class Specialist {
     }
 
     private static void validateGrade(Double grade) {
+        if (grade == null) {
+            throw AppException.build(
+                    ErrorCode.INVALID_SPECIALIST_GRADE,
+                    "Invalid specialist grade"
+            );
+        }
         if (grade < 0 || grade > 5) {
             throw AppException.build(
                     ErrorCode.INVALID_SPECIALIST_GRADE,
