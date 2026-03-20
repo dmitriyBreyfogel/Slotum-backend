@@ -12,7 +12,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Корректное создание валидного email")
-    void test01() {
+    void createsValidEmail() {
         String expected = "slotum@gmail.com";
         String actual = new Email("slotum@gmail.com").value();
         assertEquals(expected, actual);
@@ -20,7 +20,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Отсутствует домен верхнего уровня, но точка присутствует")
-    void test02() {
+    void rejectsMissingTopLevelDomainAfterDot() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum@gmail."));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@gmail.", ex.getDetails().get("email"));
@@ -28,7 +28,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Отсутствует домен верхнего уровня и точки нет")
-    void test03() {
+    void rejectsMissingTopLevelDomainWithoutDot() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum@gmail"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@gmail", ex.getDetails().get("email"));
@@ -36,7 +36,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Отсутствует название почтового сервиса, но присутствует домен с точкой")
-    void test04() {
+    void rejectsMissingServiceNameButHasDomain() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum@.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@.com", ex.getDetails().get("email"));
@@ -44,7 +44,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Отсутствует название почтового сервися и домен верхнего уровня")
-    void test05() {
+    void rejectsMissingDomain() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum@"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@", ex.getDetails().get("email"));
@@ -52,7 +52,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Символ @ находится в конце почты")
-    void test06() {
+    void rejectsAtAtEnd() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotumgmail.com@"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotumgmail.com@", ex.getDetails().get("email"));
@@ -60,7 +60,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Символ @ находится по соседству с точкой домена (справа от неё)")
-    void test07() {
+    void rejectsAtImmediatelyAfterDot() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotumgmail.@com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotumgmail.@com", ex.getDetails().get("email"));
@@ -68,7 +68,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Символ @ находится по соседству с точкой домена (слева от неё)")
-    void test08() {
+    void rejectsAtImmediatelyBeforeDot() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotumgmail@.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotumgmail@.com", ex.getDetails().get("email"));
@@ -76,7 +76,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Символ @ находится в начале почты")
-    void test09() {
+    void rejectsAtAtStart() {
         AppException ex = assertThrows(AppException.class, () -> new Email("@slotumgmail.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("@slotumgmail.com", ex.getDetails().get("email"));
@@ -84,7 +84,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Есть точка в имени почты (точка внутри имени)")
-    void test10() {
+    void rejectsDotInLocalPart() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slo.tum@gmail.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slo.tum@gmail.com", ex.getDetails().get("email"));
@@ -92,7 +92,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Есть точка в имени почты (точка слева от имени)")
-    void test11() {
+    void rejectsLeadingDotInLocalPart() {
         AppException ex = assertThrows(AppException.class, () -> new Email(".slotum@gmail.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals(".slotum@gmail.com", ex.getDetails().get("email"));
@@ -100,7 +100,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Есть точка в имени почты (точка справа от имени)")
-    void test12() {
+    void rejectsTrailingDotInLocalPart() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum.@gmail.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum.@gmail.com", ex.getDetails().get("email"));
@@ -108,7 +108,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Есть точка в имени почтового сервиса (внутри имени)")
-    void test13() {
+    void rejectsDotInServiceName() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum@gma.il.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@gma.il.com", ex.getDetails().get("email"));
@@ -116,7 +116,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Есть точка в имени почтового сервиса (точка слева от имени)")
-    void test14() {
+    void rejectsLeadingDotInServiceName() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum@.gmail.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@.gmail.com", ex.getDetails().get("email"));
@@ -124,7 +124,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Есть точка в имени почтового сервиса (точка справа от имени)")
-    void test15() {
+    void rejectsDoubleDotInDomain() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum@gmail..com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@gmail..com", ex.getDetails().get("email"));
@@ -132,7 +132,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Точка справа от почты")
-    void test16() {
+    void rejectsTrailingDotInEmail() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum@gmail.com."));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@gmail.com.", ex.getDetails().get("email"));
@@ -140,7 +140,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Присутствуют цифры в имени почты")
-    void test17() {
+    void allowsDigitsInLocalPart() {
         String expected = "slotum123@gmail.com";
         String actual = new Email("slotum123@gmail.com").value();
         assertEquals(expected, actual);
@@ -148,15 +148,23 @@ public class EmailTest {
 
     @Test
     @DisplayName("Присутствуют недопустимые символы в имени почты")
-    void test18() {
+    void rejectsInvalidCharsInLocalPart() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum/@gmail.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum/@gmail.com", ex.getDetails().get("email"));
     }
 
     @Test
+    @DisplayName("Присутствует нижнее подчёркивание в имени почты")
+    void allowsUnderscoreInLocalPart() {
+        String expected = "slo_tum@gmail.com";
+        String actual = new Email("slo_tum@gmail.com").value();
+        assertEquals(expected, actual);
+    }
+
+    @Test
     @DisplayName("Присутствуют цифры в имени почтового сервиса")
-    void test19() {
+    void rejectsDigitsInServiceName() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum@gmail123.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@gmail123.com", ex.getDetails().get("email"));
@@ -164,7 +172,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Присутствуют недопустимые символы в имени почтового сервиса")
-    void test20() {
+    void rejectsInvalidCharsInServiceName() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum@gmail/.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@gmail/.com", ex.getDetails().get("email"));
@@ -172,7 +180,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Присутствуют цифры в домене верхнего уровня")
-    void test21() {
+    void rejectsDigitsInTopLevelDomain() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum@gmail.com123"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@gmail.com123", ex.getDetails().get("email"));
@@ -180,7 +188,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Присутствуют недопустимые символы в домене верхнего уровня")
-    void test22() {
+    void rejectsInvalidCharsInTopLevelDomain() {
         AppException ex = assertThrows(AppException.class, () -> new Email("slotum@gmail.com/"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@gmail.com/", ex.getDetails().get("email"));
@@ -188,7 +196,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Буквы верхнего регистра в имени почты приведутся к нижнему")
-    void test23() {
+    void normalizesLocalPartToLowercase() {
         String expected = "slotum@gmail.com";
         String actual = new Email("SLOTum@gmail.com").value();
         assertEquals(expected, actual);
@@ -196,7 +204,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Буквы верхнего регистра в имени почтового сервиса приведутся к нижнему")
-    void test24() {
+    void normalizesServiceNameToLowercase() {
         String expected = "slotum@gmail.com";
         String actual = new Email("slotum@gMAIL.com").value();
         assertEquals(expected, actual);
@@ -204,7 +212,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Буквы верхнего регистра в домене верхнего уровня приведутся к нижнему")
-    void test25() {
+    void normalizesTopLevelDomainToLowercase() {
         String expected = "slotum@gmail.com";
         String actual = new Email("slotum@gmail.cOm").value();
         assertEquals(expected, actual);
@@ -212,7 +220,7 @@ public class EmailTest {
 
     @Test
     @DisplayName("Комплексный тест на регистры букв в почте")
-    void test26() {
+    void normalizesEmailToLowercase() {
         String expected = "slotum@gmail.com";
         String actual = new Email("SLOTUM@GMAIL.COM").value();
         assertEquals(expected, actual);
