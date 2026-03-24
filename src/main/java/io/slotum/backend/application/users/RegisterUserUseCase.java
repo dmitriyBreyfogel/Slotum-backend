@@ -2,7 +2,6 @@ package io.slotum.backend.application.users;
 
 import io.slotum.backend.domain.user.User;
 import io.slotum.backend.domain.user.UserRepository;
-import io.slotum.backend.domain.user.vo.Email;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,17 @@ public class RegisterUserUseCase {
     }
 
     public Result execute(Command command) {
-        String normalizedEmail = new Email(command.email()).value();
+        User userToSave = User.create(
+                null,
+                command.surname(),
+                command.firstName(),
+                command.secondName(),
+                command.email(),
+                command.password(),
+                command.phone()
+        );
+
+        String normalizedEmail = userToSave.getEmail().value();
 
         if (userRepository.existsByEmail(normalizedEmail)) {
             throw AppException.build(
@@ -28,17 +37,7 @@ public class RegisterUserUseCase {
             );
         }
 
-        User savedUser = userRepository.save(
-                User.create(
-                        null,
-                        command.surname(),
-                        command.firstName(),
-                        command.secondName(),
-                        normalizedEmail,
-                        command.password(),
-                        command.phone()
-                )
-        );
+        User savedUser = userRepository.save(userToSave);
 
         return new Result(savedUser.getId(), savedUser.getEmail().value());
     }
