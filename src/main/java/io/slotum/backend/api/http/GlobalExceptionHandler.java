@@ -1,43 +1,57 @@
 package io.slotum.backend.api.http;
 
 import io.slotum.backend.error.AppException;
-import io.slotum.backend.error.ErrorCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(AppException.class)
     public ResponseEntity<ErrorResponse> handleAppException(AppException ex) {
-        HttpStatus status = mapStatus(ex.getCode());
+        HttpStatus status = ex.getCode().httpStatus();
         return ResponseEntity.status(status).body(
                 new ErrorResponse(
                         ex.getCode().name(),
                         status.value(),
-                        ex.getMessage(),
+                        defaultMessage(ex),
                         ex.getDetails(),
                         Instant.now().toString()
                 )
         );
     }
 
-    private HttpStatus mapStatus(ErrorCode code) {
-        return switch (code) {
-            case USER_EMAIL_ALREADY_EXISTS -> HttpStatus.CONFLICT;
-            case INVALID_USER_ID,
-                 INVALID_USER_SURNAME,
-                 INVALID_USER_FIRSTNAME,
-                 INVALID_USER_EMAIL,
-                 INVALID_USER_PASSWORD,
-                 INVALID_USER_PHONE -> HttpStatus.BAD_REQUEST;
-            default -> HttpStatus.BAD_REQUEST;
-        };
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleUnexpected(Exception ex) {
+        log.error("Unhandled exception", ex);
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        return ResponseEntity.status(status).body(
+                new ErrorResponse(
+                        "INTERNAL_ERROR",
+                        status.value(),
+                        "Unexpected error",
+                        Collections.emptyMap(),
+                        Instant.now().toString()
+                )
+        );
+    }
+
+    private static String defaultMessage(AppException ex) {
+        String message = ex.getMessage();
+        if (message == null || message.isBlank()) {
+            return ex.getCode().name();
+        }
+        return message;
     }
 
     public record ErrorResponse(
