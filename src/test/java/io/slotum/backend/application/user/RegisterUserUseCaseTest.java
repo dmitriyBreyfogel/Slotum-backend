@@ -1,6 +1,5 @@
 package io.slotum.backend.application.user;
 
-import io.slotum.backend.application.users.RegisterUserUseCase;
 import io.slotum.backend.domain.user.User;
 import io.slotum.backend.domain.user.UserRepository;
 import io.slotum.backend.error.AppException;

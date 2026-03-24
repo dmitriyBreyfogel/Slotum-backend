@@ -1,4 +1,4 @@
-package io.slotum.backend.application.organizations;
+package io.slotum.backend.application.organization;
 
 import io.slotum.backend.domain.organization.Organization;
 import io.slotum.backend.domain.organization.OrganizationRepository;

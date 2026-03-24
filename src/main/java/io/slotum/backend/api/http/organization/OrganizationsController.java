@@ -1,6 +1,6 @@
-package io.slotum.backend.api.http.organizations;
+package io.slotum.backend.api.http.organization;
 
-import io.slotum.backend.application.organizations.RegisterOrganizationUseCase;
+import io.slotum.backend.application.organization.RegisterOrganizationUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
