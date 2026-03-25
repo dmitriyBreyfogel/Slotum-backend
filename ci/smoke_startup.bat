@@ -22,7 +22,7 @@ ping 127.0.0.1 -n 16 >nul
 
 netstat -ano | findstr ":8081" >nul 2>&1
 if errorlevel 1 (
-  echo [SMOKE] Port 18081 is not listening. Startup failed.
+  echo [SMOKE] Port 8081 is not listening. Startup failed.
   taskkill /FI "WINDOWTITLE eq slotum-smoke" /T /F >nul 2>&1
   exit /b 1
 )
