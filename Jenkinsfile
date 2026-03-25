@@ -8,6 +8,12 @@ pipeline {
       }
     }
 
+    stage('Test Backend') {
+      steps {
+        bat 'ci\\test_backend.bat'
+      }
+    }
+
     stage('Smoke Startup') {
       steps {
         bat 'ci\\smoke_startup.bat'
