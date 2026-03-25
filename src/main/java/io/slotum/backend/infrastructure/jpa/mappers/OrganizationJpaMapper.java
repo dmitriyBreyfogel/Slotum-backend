@@ -12,7 +12,8 @@ public final class OrganizationJpaMapper {
             throw new IllegalArgumentException("OrganizationJpa source is null");
         }
 
-        return Organization.create(
+        return Organization.restore(
+                source.getId(),
                 source.getName(),
                 source.getDescription(),
                 source.getGrade()

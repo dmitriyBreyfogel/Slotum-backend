@@ -109,4 +109,3 @@ public class UserJpaMapperTest {
         assertTrue(mapped.matchesPassword(rawPassword));
     }
 }
-
