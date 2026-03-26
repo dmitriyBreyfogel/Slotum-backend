@@ -1,12 +1,12 @@
 package io.slotum.backend.infrastructure.jpa.entities;
 
 import jakarta.persistence.*;
+import org.springframework.data.domain.Persistable;
 
 @Entity
 @Table(name = "specialists")
-public class SpecialistJpa {
+public class SpecialistJpa  {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long userId;
 
