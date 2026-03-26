@@ -3,9 +3,11 @@ package io.slotum.backend.infrastructure.jpa.repositories.specialist;
 import io.slotum.backend.domain.specialist.Specialist;
 import io.slotum.backend.domain.specialist.SpecialistRepository;
 import io.slotum.backend.infrastructure.jpa.mappers.SpecialistJpaMapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+@Repository
 public class SpecialistRepositoryJpaAdapter implements SpecialistRepository {
     private final SpecialistJpaRepository specialistJpaRepository;
 
