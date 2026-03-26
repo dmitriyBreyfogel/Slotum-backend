@@ -3,9 +3,11 @@ package io.slotum.backend.application.appointment;
 import io.slotum.backend.domain.appointment.Appointment;
 import io.slotum.backend.domain.appointment.AppointmentRepository;
 import io.slotum.backend.domain.appointment.AppointmentStatus;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+@Service
 public class CreateAppointmentUseCase {
     private final AppointmentRepository appointmentRepository;
 

@@ -4,10 +4,12 @@ import io.slotum.backend.domain.specialist.Specialist;
 import io.slotum.backend.domain.specialist.SpecialistRepository;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
 
+@Service
 public class CreateSpecialistUseCase {
     private final SpecialistRepository specialistRepository;
 
