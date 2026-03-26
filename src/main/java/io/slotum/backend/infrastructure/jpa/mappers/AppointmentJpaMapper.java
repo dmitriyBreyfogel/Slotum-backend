@@ -40,7 +40,7 @@ public final class AppointmentJpaMapper {
                 source.getId(),
                 source.getStartsAt(),
                 source.getEndsAt(),
-                source.getStatus().value(),
+                source.getStatus(),
                 specialist,
                 customer,
                 organization

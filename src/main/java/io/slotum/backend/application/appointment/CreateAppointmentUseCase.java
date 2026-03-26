@@ -2,6 +2,7 @@ package io.slotum.backend.application.appointment;
 
 import io.slotum.backend.domain.appointment.Appointment;
 import io.slotum.backend.domain.appointment.AppointmentRepository;
+import io.slotum.backend.domain.appointment.AppointmentStatus;
 
 import java.time.LocalDateTime;
 
@@ -27,7 +28,7 @@ public class CreateAppointmentUseCase {
         return new Result(
                 savedAppointment.getStartsAt(),
                 savedAppointment.getEndsAt(),
-                savedAppointment.getStatus().value(),
+                savedAppointment.getStatus(),
                 savedAppointment.getSpecialistUserId(),
                 savedAppointment.getCustomerId(),
                 savedAppointment.getOrganizationId()
@@ -37,7 +38,7 @@ public class CreateAppointmentUseCase {
     public record Command(
             LocalDateTime startsAt,
             LocalDateTime endsAt,
-            String status,
+            AppointmentStatus status,
             Long specialistUserId,
             Long customerId,
             Long organizationId
@@ -46,7 +47,7 @@ public class CreateAppointmentUseCase {
     public record Result(
             LocalDateTime startsAt,
             LocalDateTime endsAt,
-            String status,
+            AppointmentStatus status,
             Long specialistUserId,
             Long customerId,
             Long organizationId

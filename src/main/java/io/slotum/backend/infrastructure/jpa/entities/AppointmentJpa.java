@@ -1,5 +1,6 @@
 package io.slotum.backend.infrastructure.jpa.entities;
 
+import io.slotum.backend.domain.appointment.AppointmentStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -17,8 +18,9 @@ public class AppointmentJpa {
     @Column(name = "ends_at", nullable = false)
     private LocalDateTime endsAt;
 
-    @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 32)
+    private AppointmentStatus status;
 
     // Communications
     @ManyToOne
@@ -39,7 +41,7 @@ public class AppointmentJpa {
             Long id,
             LocalDateTime startsAt,
             LocalDateTime endsAt,
-            String status,
+            AppointmentStatus status,
             SpecialistJpa specialist,
             UserJpa customer,
             OrganizationJpa organization
@@ -66,7 +68,7 @@ public class AppointmentJpa {
         return endsAt;
     }
 
-    public String getStatus() {
+    public AppointmentStatus getStatus() {
         return status;
     }
 

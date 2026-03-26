@@ -1,6 +1,5 @@
 package io.slotum.backend.domain.appointment;
 
-import io.slotum.backend.domain.appointment.vo.AppointmentStatus;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 
@@ -37,7 +36,7 @@ public final class Appointment {
     public static Appointment create(
             LocalDateTime startsAt,
             LocalDateTime endsAt,
-            String status,
+            AppointmentStatus status,
             Long specialistUserId,
             Long customerId,
             Long organizationId
@@ -57,7 +56,7 @@ public final class Appointment {
             Long id,
             LocalDateTime startsAt,
             LocalDateTime endsAt,
-            String status,
+            AppointmentStatus status,
             Long specialistUserId,
             Long customerId,
             Long organizationId
@@ -65,13 +64,14 @@ public final class Appointment {
         validateId(id);
         LocalDateTime normalizedStartsAt = validateStartsAt(startsAt);
         LocalDateTime normalizedEndsAt = validateEndsAt(endsAt);
+        AppointmentStatus normalizedStatus = validateStatus(status);
         validateTimeRange(normalizedStartsAt, normalizedEndsAt);
 
         return new Appointment(
                 id,
                 normalizedStartsAt,
                 normalizedEndsAt,
-                new AppointmentStatus(status),
+                normalizedStatus,
                 validateSpecialistUserId(specialistUserId),
                 validateCustomerId(customerId),
                 validateOrganizationId(organizationId)
@@ -144,6 +144,16 @@ public final class Appointment {
                     Map.of("startsAt", startsAt, "endsAt", endsAt)
             );
         }
+    }
+
+    private static AppointmentStatus validateStatus(AppointmentStatus status) {
+        if (status == null) {
+            throw AppException.build(
+                    ErrorCode.INVALID_APPOINTMENT_STATUS,
+                    "Appointment status is null"
+            );
+        }
+        return status;
     }
 
     private static Long validateSpecialistUserId(Long specialistUserId) {
