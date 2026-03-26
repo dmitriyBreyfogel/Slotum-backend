@@ -13,6 +13,7 @@ public enum ErrorCode {
     USER_EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT),
     INVALID_USER_PASSWORD(HttpStatus.BAD_REQUEST),
     INVALID_USER_PHONE(HttpStatus.BAD_REQUEST),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND),
 
     // Organization
     INVALID_ORGANIZATION_ID(HttpStatus.BAD_REQUEST),

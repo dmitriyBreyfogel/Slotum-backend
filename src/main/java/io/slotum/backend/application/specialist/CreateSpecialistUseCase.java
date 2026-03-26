@@ -2,6 +2,8 @@ package io.slotum.backend.application.specialist;
 
 import io.slotum.backend.domain.specialist.Specialist;
 import io.slotum.backend.domain.specialist.SpecialistRepository;
+import io.slotum.backend.domain.user.User;
+import io.slotum.backend.domain.user.UserRepository;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 import org.springframework.stereotype.Service;
@@ -12,9 +14,11 @@ import java.util.Optional;
 @Service
 public class CreateSpecialistUseCase {
     private final SpecialistRepository specialistRepository;
+    private final UserRepository userRepository;
 
-    public CreateSpecialistUseCase(SpecialistRepository specialistRepository) {
+    public CreateSpecialistUseCase(SpecialistRepository specialistRepository, UserRepository userRepository) {
         this.specialistRepository = specialistRepository;
+        this.userRepository = userRepository;
     }
 
     public Result execute(Command command) {
@@ -23,6 +27,15 @@ public class CreateSpecialistUseCase {
                 command.description,
                 command.grade
         );
+
+        Optional<User> existingUser = userRepository.findById(command.userId);
+        if (existingUser.isEmpty()) {
+            throw AppException.build(
+                    ErrorCode.USER_NOT_FOUND,
+                    "User not found",
+                    Map.of("userId", command.userId)
+            );
+        }
 
         Optional<Specialist> existingSpecialist = specialistRepository.findSpecialistByUserId(command.userId);
         if (existingSpecialist != null && existingSpecialist.isPresent()) {
@@ -34,7 +47,11 @@ public class CreateSpecialistUseCase {
         }
 
         Specialist savedSpecialist = specialistRepository.save(specialistToSave);
-        return new Result(savedSpecialist.getUserId());
+        return new Result(
+                savedSpecialist.getUserId(),
+                savedSpecialist.getDescription(),
+                savedSpecialist.getGrade()
+        );
     }
 
     public record Command(
@@ -44,6 +61,8 @@ public class CreateSpecialistUseCase {
     ) {}
 
     public record Result(
-            Long userId
+            Long userId,
+            String description,
+            Double grade
     ) {}
 }
