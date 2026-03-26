@@ -1,6 +1,7 @@
 package io.slotum.backend.infrastructure.jpa.mappers;
 
 import io.slotum.backend.domain.appointment.Appointment;
+import io.slotum.backend.domain.appointment.AppointmentStatus;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 import io.slotum.backend.infrastructure.jpa.entities.AppointmentJpa;
@@ -46,7 +47,7 @@ public class AppointmentJpaMapperTest {
                 1L,
                 startsAt,
                 endsAt,
-                "  CONFIRMED  ",
+                AppointmentStatus.BOOKED,
                 specialist,
                 customer,
                 organization
@@ -57,7 +58,7 @@ public class AppointmentJpaMapperTest {
         assertEquals(1L, appointment.getId());
         assertEquals(startsAt, appointment.getStartsAt());
         assertEquals(endsAt, appointment.getEndsAt());
-        assertEquals("CONFIRMED", appointment.getStatus().value());
+        assertEquals(AppointmentStatus.BOOKED, appointment.getStatus());
         assertEquals(10L, appointment.getSpecialistUserId());
         assertEquals(20L, appointment.getCustomerId());
         assertEquals(30L, appointment.getOrganizationId());
@@ -73,7 +74,7 @@ public class AppointmentJpaMapperTest {
                 1L,
                 startsAt,
                 endsAt,
-                "  NEW  ",
+                AppointmentStatus.FREE,
                 10L,
                 20L,
                 30L
@@ -88,7 +89,7 @@ public class AppointmentJpaMapperTest {
         assertEquals(1L, jpa.getId());
         assertEquals(startsAt, jpa.getStartsAt());
         assertEquals(endsAt, jpa.getEndsAt());
-        assertEquals("NEW", jpa.getStatus());
+        assertEquals(AppointmentStatus.FREE, jpa.getStatus());
         assertSame(specialist, jpa.getSpecialist());
         assertSame(customer, jpa.getCustomer());
         assertSame(organization, jpa.getOrganization());
@@ -104,7 +105,7 @@ public class AppointmentJpaMapperTest {
                 5L,
                 startsAt,
                 endsAt,
-                "CONFIRMED",
+                AppointmentStatus.BOOKED,
                 10L,
                 20L,
                 30L
@@ -119,7 +120,7 @@ public class AppointmentJpaMapperTest {
         assertEquals(5L, mapped.getId());
         assertEquals(startsAt, mapped.getStartsAt());
         assertEquals(endsAt, mapped.getEndsAt());
-        assertEquals("CONFIRMED", mapped.getStatus().value());
+        assertEquals(AppointmentStatus.BOOKED, mapped.getStatus());
         assertEquals(10L, mapped.getSpecialistUserId());
         assertEquals(20L, mapped.getCustomerId());
         assertEquals(30L, mapped.getOrganizationId());
@@ -156,7 +157,7 @@ public class AppointmentJpaMapperTest {
                 1L,
                 startsAt,
                 endsAt,
-                "NEW",
+                AppointmentStatus.BOOKED,
                 new SpecialistJpa(0L, "Some", 4.5),
                 new UserJpa(20L, "Doe", "John", null, "john@test.com", "HASH", "+79991234567"),
                 new OrganizationJpa(30L, "Org", "Desc", 0.0)

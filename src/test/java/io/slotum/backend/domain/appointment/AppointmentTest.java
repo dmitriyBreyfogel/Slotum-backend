@@ -12,15 +12,15 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AppointmentTest {
 
     @Test
-    @DisplayName("Корректное создание записи через create (id = null, статус нормализуется)")
-    void createsAppointmentWithNormalizedStatus() {
+    @DisplayName("create: creates appointment with null id")
+    void createCreatesAppointmentWithNullId() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
         Appointment appointment = Appointment.create(
                 startsAt,
                 endsAt,
-                "  CONFIRMED  ",
+                AppointmentStatus.BOOKED,
                 10L,
                 20L,
                 30L
@@ -29,15 +29,15 @@ public class AppointmentTest {
         assertNull(appointment.getId());
         assertEquals(startsAt, appointment.getStartsAt());
         assertEquals(endsAt, appointment.getEndsAt());
-        assertEquals("CONFIRMED", appointment.getStatus().value());
+        assertEquals(AppointmentStatus.BOOKED, appointment.getStatus());
         assertEquals(10L, appointment.getSpecialistUserId());
         assertEquals(20L, appointment.getCustomerId());
         assertEquals(30L, appointment.getOrganizationId());
     }
 
     @Test
-    @DisplayName("Корректное восстановление записи через restore с id")
-    void restoresAppointmentWithId() {
+    @DisplayName("restore: restores appointment with id")
+    void restoreRestoresAppointmentWithId() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
@@ -45,7 +45,7 @@ public class AppointmentTest {
                 1L,
                 startsAt,
                 endsAt,
-                "NEW",
+                AppointmentStatus.BOOKED,
                 10L,
                 20L,
                 30L
@@ -55,7 +55,7 @@ public class AppointmentTest {
     }
 
     @Test
-    @DisplayName("id равный 0 недопустим")
+    @DisplayName("restore: id = 0 is invalid")
     void rejectsZeroId() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
@@ -64,7 +64,7 @@ public class AppointmentTest {
                 0L,
                 startsAt,
                 endsAt,
-                "NEW",
+                AppointmentStatus.BOOKED,
                 10L,
                 20L,
                 30L
@@ -75,7 +75,7 @@ public class AppointmentTest {
     }
 
     @Test
-    @DisplayName("Отрицательный id недопустим")
+    @DisplayName("restore: id < 0 is invalid")
     void rejectsNegativeId() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
@@ -84,7 +84,7 @@ public class AppointmentTest {
                 -1L,
                 startsAt,
                 endsAt,
-                "NEW",
+                AppointmentStatus.BOOKED,
                 10L,
                 20L,
                 30L
@@ -95,14 +95,14 @@ public class AppointmentTest {
     }
 
     @Test
-    @DisplayName("startsAt null недопустим")
+    @DisplayName("create: startsAt = null is invalid")
     void rejectsNullStartsAt() {
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
         AppException ex = assertThrows(AppException.class, () -> Appointment.create(
                 null,
                 endsAt,
-                "NEW",
+                AppointmentStatus.BOOKED,
                 10L,
                 20L,
                 30L
@@ -112,14 +112,14 @@ public class AppointmentTest {
     }
 
     @Test
-    @DisplayName("endsAt null недопустим")
+    @DisplayName("create: endsAt = null is invalid")
     void rejectsNullEndsAt() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
 
         AppException ex = assertThrows(AppException.class, () -> Appointment.create(
                 startsAt,
                 null,
-                "NEW",
+                AppointmentStatus.BOOKED,
                 10L,
                 20L,
                 30L
@@ -129,7 +129,7 @@ public class AppointmentTest {
     }
 
     @Test
-    @DisplayName("endsAt должен быть строго позже startsAt (равные даты недопустимы)")
+    @DisplayName("create: endsAt must be after startsAt (equal is invalid)")
     void rejectsEqualStartsAtAndEndsAt() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
@@ -137,7 +137,7 @@ public class AppointmentTest {
         AppException ex = assertThrows(AppException.class, () -> Appointment.create(
                 startsAt,
                 endsAt,
-                "NEW",
+                AppointmentStatus.BOOKED,
                 10L,
                 20L,
                 30L
@@ -149,7 +149,7 @@ public class AppointmentTest {
     }
 
     @Test
-    @DisplayName("endsAt должен быть строго позже startsAt (конец раньше начала недопустим)")
+    @DisplayName("create: endsAt must be after startsAt (end before start is invalid)")
     void rejectsEndsBeforeStarts() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
@@ -157,7 +157,7 @@ public class AppointmentTest {
         AppException ex = assertThrows(AppException.class, () -> Appointment.create(
                 startsAt,
                 endsAt,
-                "NEW",
+                AppointmentStatus.BOOKED,
                 10L,
                 20L,
                 30L
@@ -169,26 +169,7 @@ public class AppointmentTest {
     }
 
     @Test
-    @DisplayName("Пустой статус недопустим")
-    void rejectsBlankStatus() {
-        LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
-        LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
-
-        AppException ex = assertThrows(AppException.class, () -> Appointment.create(
-                startsAt,
-                endsAt,
-                "   ",
-                10L,
-                20L,
-                30L
-        ));
-
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_STATUS, ex.getCode());
-        assertEquals("   ", ex.getDetails().get("status"));
-    }
-
-    @Test
-    @DisplayName("Статус null недопустим")
+    @DisplayName("create: status = null is invalid")
     void rejectsNullStatus() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
@@ -207,46 +188,7 @@ public class AppointmentTest {
     }
 
     @Test
-    @DisplayName("Статус длиной 32 символа допустим")
-    void allowsStatusLength32() {
-        LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
-        LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
-
-        String status = "a".repeat(32);
-        Appointment appointment = Appointment.create(
-                startsAt,
-                endsAt,
-                status,
-                10L,
-                20L,
-                30L
-        );
-
-        assertEquals(status, appointment.getStatus().value());
-    }
-
-    @Test
-    @DisplayName("Статус длиной 33 символа недопустим")
-    void rejectsStatusLength33() {
-        LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
-        LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
-
-        String status = "a".repeat(33);
-        AppException ex = assertThrows(AppException.class, () -> Appointment.create(
-                startsAt,
-                endsAt,
-                status,
-                10L,
-                20L,
-                30L
-        ));
-
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_STATUS, ex.getCode());
-        assertEquals(status, ex.getDetails().get("status"));
-    }
-
-    @Test
-    @DisplayName("specialistUserId null недопустим")
+    @DisplayName("create: specialistUserId = null is invalid")
     void rejectsNullSpecialistUserId() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
@@ -254,7 +196,7 @@ public class AppointmentTest {
         AppException ex = assertThrows(AppException.class, () -> Appointment.create(
                 startsAt,
                 endsAt,
-                "NEW",
+                AppointmentStatus.BOOKED,
                 null,
                 20L,
                 30L
@@ -265,7 +207,7 @@ public class AppointmentTest {
     }
 
     @Test
-    @DisplayName("specialistUserId <= 0 недопустим")
+    @DisplayName("create: specialistUserId <= 0 is invalid")
     void rejectsNonPositiveSpecialistUserId() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
@@ -273,7 +215,7 @@ public class AppointmentTest {
         AppException ex = assertThrows(AppException.class, () -> Appointment.create(
                 startsAt,
                 endsAt,
-                "NEW",
+                AppointmentStatus.BOOKED,
                 0L,
                 20L,
                 30L
@@ -284,7 +226,7 @@ public class AppointmentTest {
     }
 
     @Test
-    @DisplayName("customerId null недопустим")
+    @DisplayName("create: customerId = null is invalid")
     void rejectsNullCustomerId() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
@@ -292,7 +234,7 @@ public class AppointmentTest {
         AppException ex = assertThrows(AppException.class, () -> Appointment.create(
                 startsAt,
                 endsAt,
-                "NEW",
+                AppointmentStatus.BOOKED,
                 10L,
                 null,
                 30L
@@ -303,7 +245,7 @@ public class AppointmentTest {
     }
 
     @Test
-    @DisplayName("customerId <= 0 недопустим")
+    @DisplayName("create: customerId <= 0 is invalid")
     void rejectsNonPositiveCustomerId() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
@@ -311,7 +253,7 @@ public class AppointmentTest {
         AppException ex = assertThrows(AppException.class, () -> Appointment.create(
                 startsAt,
                 endsAt,
-                "NEW",
+                AppointmentStatus.BOOKED,
                 10L,
                 0L,
                 30L
@@ -322,7 +264,7 @@ public class AppointmentTest {
     }
 
     @Test
-    @DisplayName("organizationId null недопустим")
+    @DisplayName("create: organizationId = null is invalid")
     void rejectsNullOrganizationId() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
@@ -330,7 +272,7 @@ public class AppointmentTest {
         AppException ex = assertThrows(AppException.class, () -> Appointment.create(
                 startsAt,
                 endsAt,
-                "NEW",
+                AppointmentStatus.BOOKED,
                 10L,
                 20L,
                 null
@@ -341,7 +283,7 @@ public class AppointmentTest {
     }
 
     @Test
-    @DisplayName("organizationId <= 0 недопустим")
+    @DisplayName("create: organizationId <= 0 is invalid")
     void rejectsNonPositiveOrganizationId() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
@@ -349,7 +291,7 @@ public class AppointmentTest {
         AppException ex = assertThrows(AppException.class, () -> Appointment.create(
                 startsAt,
                 endsAt,
-                "NEW",
+                AppointmentStatus.BOOKED,
                 10L,
                 20L,
                 -1L
@@ -359,4 +301,3 @@ public class AppointmentTest {
         assertEquals(-1L, ex.getDetails().get("organizationId"));
     }
 }
-
