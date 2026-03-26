@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
-public class RegisterUserUseCase {
+public class CreateUserUseCase {
     private final UserRepository userRepository;
 
-    public RegisterUserUseCase(UserRepository userRepository) {
+    public CreateUserUseCase(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

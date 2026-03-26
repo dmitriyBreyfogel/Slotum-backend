@@ -10,10 +10,10 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class RegisterOrganizationUseCase {
+public class CreateOrganizationUseCase {
     private final OrganizationRepository organizationRepository;
 
-    public RegisterOrganizationUseCase(OrganizationRepository organizationRepository) {
+    public CreateOrganizationUseCase(OrganizationRepository organizationRepository) {
         this.organizationRepository = organizationRepository;
     }
 

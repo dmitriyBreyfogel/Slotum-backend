@@ -1,6 +1,6 @@
 package io.slotum.backend.api.http.organization;
 
-import io.slotum.backend.application.organization.RegisterOrganizationUseCase;
+import io.slotum.backend.application.organization.CreateOrganizationUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/organizations")
 public class OrganizationsController {
-    private final RegisterOrganizationUseCase registerOrganizationUseCase;
+    private final CreateOrganizationUseCase createOrganizationUseCase;
 
-    public OrganizationsController(RegisterOrganizationUseCase registerOrganizationUseCase) {
-        this.registerOrganizationUseCase = registerOrganizationUseCase;
+    public OrganizationsController(CreateOrganizationUseCase createOrganizationUseCase) {
+        this.createOrganizationUseCase = createOrganizationUseCase;
     }
 
     @PostMapping
     public ResponseEntity<RegisterOrganizationResponse> create(@RequestBody RegisterOrganizationRequest request) {
-        RegisterOrganizationUseCase.Result result = registerOrganizationUseCase.execute(
-                new RegisterOrganizationUseCase.Command(
+        CreateOrganizationUseCase.Result result = createOrganizationUseCase.execute(
+                new CreateOrganizationUseCase.Command(
                         request.name,
                         request.description
                 )

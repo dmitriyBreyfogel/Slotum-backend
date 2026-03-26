@@ -1,7 +1,7 @@
 package io.slotum.backend.api.http.organization;
 
 import io.slotum.backend.api.http.GlobalExceptionHandler;
-import io.slotum.backend.application.organization.RegisterOrganizationUseCase;
+import io.slotum.backend.application.organization.CreateOrganizationUseCase;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
@@ -35,13 +35,13 @@ public class OrganizationControllerTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    RegisterOrganizationUseCase registerOrganizationUseCase;
+    CreateOrganizationUseCase createOrganizationUseCase;
 
     @Test
     @DisplayName("Валидное создание организации и возврат CREATED 201")
     void testCreateOrganization() throws Exception {
-        when(registerOrganizationUseCase.execute(any()))
-                .thenReturn(new RegisterOrganizationUseCase.Result(1L, "Acme"));
+        when(createOrganizationUseCase.execute(any()))
+                .thenReturn(new CreateOrganizationUseCase.Result(1L, "Acme"));
 
         var req = Map.of(
                 "name", "Acme",
@@ -56,10 +56,10 @@ public class OrganizationControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("Acme"));
 
-        ArgumentCaptor<RegisterOrganizationUseCase.Command> commandCaptor =
-                ArgumentCaptor.forClass(RegisterOrganizationUseCase.Command.class);
-        verify(registerOrganizationUseCase).execute(commandCaptor.capture());
-        RegisterOrganizationUseCase.Command command = commandCaptor.getValue();
+        ArgumentCaptor<CreateOrganizationUseCase.Command> commandCaptor =
+                ArgumentCaptor.forClass(CreateOrganizationUseCase.Command.class);
+        verify(createOrganizationUseCase).execute(commandCaptor.capture());
+        CreateOrganizationUseCase.Command command = commandCaptor.getValue();
         assertEquals("Acme", command.name());
         assertEquals("Some description", command.description());
     }
@@ -67,7 +67,7 @@ public class OrganizationControllerTest {
     @Test
     @DisplayName("Создание организации, уже имеющейся в бд. Возврат CONFLICT 409")
     void testCreateOrganizationConflict() throws Exception {
-        when(registerOrganizationUseCase.execute(any())).thenThrow(AppException.build(
+        when(createOrganizationUseCase.execute(any())).thenThrow(AppException.build(
                 ErrorCode.ORGANIZATION_ALREADY_EXISTS,
                 "exist",
                 Map.of("name", "Acme")));
@@ -88,7 +88,7 @@ public class OrganizationControllerTest {
     @Test
     @DisplayName("Создание невалидной организации. Возврат BAD_REQUEST 400")
     void testCreateOrganizationBadRequest() throws Exception {
-        when(registerOrganizationUseCase.execute(any())).thenThrow(AppException.build(
+        when(createOrganizationUseCase.execute(any())).thenThrow(AppException.build(
                 ErrorCode.EMPTY_ORGANIZATION_NAME,
                 "empty name",
                 Map.of("name", "")
@@ -110,7 +110,7 @@ public class OrganizationControllerTest {
     @Test
     @DisplayName("Неожиданная ошибка в use case. Возврат INTERNAL_SERVER_ERROR 500")
     void testCreateOrganizationInternalServerError() throws Exception {
-        when(registerOrganizationUseCase.execute(any())).thenThrow(new RuntimeException("boom"));
+        when(createOrganizationUseCase.execute(any())).thenThrow(new RuntimeException("boom"));
 
         var req = Map.of(
                 "name", "Acme",

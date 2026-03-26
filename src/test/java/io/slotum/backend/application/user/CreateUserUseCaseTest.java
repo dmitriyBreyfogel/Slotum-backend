@@ -21,15 +21,15 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-public class RegisterUserUseCaseTest {
+public class CreateUserUseCaseTest {
 
     @Test
     @DisplayName("Не обращается к репозиторию, если surname = null")
     void rejectsNullSurnameBeforeRepository() {
         UserRepository userRepository = mock(UserRepository.class);
-        RegisterUserUseCase useCase = new RegisterUserUseCase(userRepository);
+        CreateUserUseCase useCase = new CreateUserUseCase(userRepository);
 
-        RegisterUserUseCase.Command command = new RegisterUserUseCase.Command(
+        CreateUserUseCase.Command command = new CreateUserUseCase.Command(
                 null,
                 "John",
                 null,
@@ -48,9 +48,9 @@ public class RegisterUserUseCaseTest {
     @DisplayName("Не обращается к репозиторию, если firstName = blank")
     void rejectsBlankFirstNameBeforeRepository() {
         UserRepository userRepository = mock(UserRepository.class);
-        RegisterUserUseCase useCase = new RegisterUserUseCase(userRepository);
+        CreateUserUseCase useCase = new CreateUserUseCase(userRepository);
 
-        RegisterUserUseCase.Command command = new RegisterUserUseCase.Command(
+        CreateUserUseCase.Command command = new CreateUserUseCase.Command(
                 "Doe",
                 "   ",
                 null,
@@ -69,9 +69,9 @@ public class RegisterUserUseCaseTest {
     @DisplayName("Не обращается к репозиторию, если email невалиден")
     void rejectsInvalidEmailBeforeRepository() {
         UserRepository userRepository = mock(UserRepository.class);
-        RegisterUserUseCase useCase = new RegisterUserUseCase(userRepository);
+        CreateUserUseCase useCase = new CreateUserUseCase(userRepository);
 
-        RegisterUserUseCase.Command command = new RegisterUserUseCase.Command(
+        CreateUserUseCase.Command command = new CreateUserUseCase.Command(
                 "Doe",
                 "John",
                 null,
@@ -90,9 +90,9 @@ public class RegisterUserUseCaseTest {
     @DisplayName("Не обращается к репозиторию, если password невалиден")
     void rejectsInvalidPasswordBeforeRepository() {
         UserRepository userRepository = mock(UserRepository.class);
-        RegisterUserUseCase useCase = new RegisterUserUseCase(userRepository);
+        CreateUserUseCase useCase = new CreateUserUseCase(userRepository);
 
-        RegisterUserUseCase.Command command = new RegisterUserUseCase.Command(
+        CreateUserUseCase.Command command = new CreateUserUseCase.Command(
                 "Doe",
                 "John",
                 null,
@@ -111,9 +111,9 @@ public class RegisterUserUseCaseTest {
     @DisplayName("Не обращается к репозиторию, если phone невалиден")
     void rejectsInvalidPhoneBeforeRepository() {
         UserRepository userRepository = mock(UserRepository.class);
-        RegisterUserUseCase useCase = new RegisterUserUseCase(userRepository);
+        CreateUserUseCase useCase = new CreateUserUseCase(userRepository);
 
-        RegisterUserUseCase.Command command = new RegisterUserUseCase.Command(
+        CreateUserUseCase.Command command = new CreateUserUseCase.Command(
                 "Doe",
                 "John",
                 null,
@@ -132,11 +132,11 @@ public class RegisterUserUseCaseTest {
     @DisplayName("Бросает исключение, если email уже существует (проверка по нормализованному email)")
     void throwsIfEmailAlreadyExists() {
         UserRepository userRepository = mock(UserRepository.class);
-        RegisterUserUseCase useCase = new RegisterUserUseCase(userRepository);
+        CreateUserUseCase useCase = new CreateUserUseCase(userRepository);
 
         when(userRepository.existsByEmail("test@test.com")).thenReturn(true);
 
-        RegisterUserUseCase.Command command = new RegisterUserUseCase.Command(
+        CreateUserUseCase.Command command = new CreateUserUseCase.Command(
                 "Doe",
                 "John",
                 null,
@@ -159,7 +159,7 @@ public class RegisterUserUseCaseTest {
     @DisplayName("Сохраняет нового пользователя и возвращает id и нормализованный email")
     void savesNewUserAndReturnsIdAndNormalizedEmail() {
         UserRepository userRepository = mock(UserRepository.class);
-        RegisterUserUseCase useCase = new RegisterUserUseCase(userRepository);
+        CreateUserUseCase useCase = new CreateUserUseCase(userRepository);
 
         when(userRepository.existsByEmail("test@test.com")).thenReturn(false);
         when(userRepository.save(any())).thenReturn(
@@ -174,7 +174,7 @@ public class RegisterUserUseCaseTest {
                 )
         );
 
-        RegisterUserUseCase.Command command = new RegisterUserUseCase.Command(
+        CreateUserUseCase.Command command = new CreateUserUseCase.Command(
                 "  Doe  ",
                 "  John  ",
                 "   ",
@@ -183,7 +183,7 @@ public class RegisterUserUseCaseTest {
                 "+7 999-123-45-67"
         );
 
-        RegisterUserUseCase.Result result = useCase.execute(command);
+        CreateUserUseCase.Result result = useCase.execute(command);
 
         assertEquals(10L, result.userId());
         assertEquals("test@test.com", result.email());

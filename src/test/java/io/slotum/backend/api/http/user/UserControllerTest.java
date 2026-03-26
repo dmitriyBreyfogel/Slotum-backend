@@ -1,7 +1,7 @@
 package io.slotum.backend.api.http.user;
 
 import io.slotum.backend.api.http.GlobalExceptionHandler;
-import io.slotum.backend.application.user.RegisterUserUseCase;
+import io.slotum.backend.application.user.CreateUserUseCase;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
@@ -35,12 +35,12 @@ public class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    RegisterUserUseCase registerUserUseCase;
+    CreateUserUseCase createUserUseCase;
 
     @Test
     @DisplayName("Валидное создание через ручку и возврат CREATED 201")
     void testCreateUser() throws Exception {
-        when(registerUserUseCase.execute(any())).thenReturn(new RegisterUserUseCase.Result(1L, "slotum@io.com"));
+        when(createUserUseCase.execute(any())).thenReturn(new CreateUserUseCase.Result(1L, "slotum@io.com"));
 
         var req = Map.of(
                 "surname", "Ivanov",
@@ -59,10 +59,10 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.userId").value(1L))
                 .andExpect(jsonPath("$.email").value("slotum@io.com"));
 
-        ArgumentCaptor<RegisterUserUseCase.Command> commandCaptor =
-                ArgumentCaptor.forClass(RegisterUserUseCase.Command.class);
-        verify(registerUserUseCase).execute(commandCaptor.capture());
-        RegisterUserUseCase.Command command = commandCaptor.getValue();
+        ArgumentCaptor<CreateUserUseCase.Command> commandCaptor =
+                ArgumentCaptor.forClass(CreateUserUseCase.Command.class);
+        verify(createUserUseCase).execute(commandCaptor.capture());
+        CreateUserUseCase.Command command = commandCaptor.getValue();
         assertEquals("Ivanov", command.surname());
         assertEquals("Ivan", command.firstName());
         assertEquals("Ivanovich", command.secondName());
@@ -74,7 +74,7 @@ public class UserControllerTest {
     @Test
     @DisplayName("Создание пользователя, уже имеющегося в бд. Возврат CONFLICT 409")
     void testCreateUserConflict() throws Exception {
-        when(registerUserUseCase.execute(any())).thenThrow(AppException.build(
+        when(createUserUseCase.execute(any())).thenThrow(AppException.build(
                 ErrorCode.USER_EMAIL_ALREADY_EXISTS,
                 "exist",
                 Map.of("email", "slotum@io.com")));
@@ -99,7 +99,7 @@ public class UserControllerTest {
     @Test
     @DisplayName("Создание невалидного пользователя. Возврат BAD_REQUEST 400")
     void testCreateUserBadRequest() throws Exception {
-        when(registerUserUseCase.execute(any())).thenThrow(AppException.build(
+        when(createUserUseCase.execute(any())).thenThrow(AppException.build(
                 ErrorCode.INVALID_USER_EMAIL,
                 "invalid email",
                 Map.of("email", "slotumio.com")
@@ -125,7 +125,7 @@ public class UserControllerTest {
     @Test
     @DisplayName("Неожиданная ошибка в use case. Возврат INTERNAL_SERVER_ERROR 500")
     void testCreateUserInternalServerError() throws Exception {
-        when(registerUserUseCase.execute(any())).thenThrow(new RuntimeException("boom"));
+        when(createUserUseCase.execute(any())).thenThrow(new RuntimeException("boom"));
 
         var req = Map.of(
                 "surname", "Ivanov",

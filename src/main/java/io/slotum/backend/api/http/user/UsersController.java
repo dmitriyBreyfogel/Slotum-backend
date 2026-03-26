@@ -1,6 +1,6 @@
 package io.slotum.backend.api.http.user;
 
-import io.slotum.backend.application.user.RegisterUserUseCase;
+import io.slotum.backend.application.user.CreateUserUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/users")
 public class UsersController {
-    private final RegisterUserUseCase registerUserUseCase;
+    private final CreateUserUseCase createUserUseCase;
 
-    public UsersController(RegisterUserUseCase registerUserUseCase) {
-        this.registerUserUseCase = registerUserUseCase;
+    public UsersController(CreateUserUseCase createUserUseCase) {
+        this.createUserUseCase = createUserUseCase;
     }
 
     @PostMapping
     public ResponseEntity<RegisterUserResponse> create(@RequestBody RegisterUserRequest request) {
-        RegisterUserUseCase.Result result = registerUserUseCase.execute(
-                new RegisterUserUseCase.Command(
+        CreateUserUseCase.Result result = createUserUseCase.execute(
+                new CreateUserUseCase.Command(
                         request.surname(),
                         request.firstName(),
                         request.secondName(),

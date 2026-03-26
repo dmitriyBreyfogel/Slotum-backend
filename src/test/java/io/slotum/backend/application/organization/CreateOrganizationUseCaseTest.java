@@ -15,19 +15,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class RegisterOrganizationUseCaseTest {
+public class CreateOrganizationUseCaseTest {
 
     @Test
     @DisplayName("Бросает исключение, если организация с таким именем уже существует (проверка по trim-имени)")
     void throwsIfOrganizationWithSameNameAlreadyExists() {
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        RegisterOrganizationUseCase useCase = new RegisterOrganizationUseCase(organizationRepository);
+        CreateOrganizationUseCase useCase = new CreateOrganizationUseCase(organizationRepository);
 
         when(organizationRepository.findByName("Org"))
                 .thenReturn(Optional.of(Organization.create(1L, "Org", "Existing")));
 
         AppException ex = assertThrows(AppException.class, () ->
-                useCase.execute(new RegisterOrganizationUseCase.Command("  Org  ", "New"))
+                useCase.execute(new CreateOrganizationUseCase.Command("  Org  ", "New"))
         );
 
         assertEquals(ErrorCode.ORGANIZATION_ALREADY_EXISTS, ex.getCode());
@@ -42,15 +42,15 @@ public class RegisterOrganizationUseCaseTest {
     @DisplayName("Сохраняет новую организацию и возвращает id и нормализованное имя")
     void savesNewOrganizationAndReturnsIdAndName() {
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        RegisterOrganizationUseCase useCase = new RegisterOrganizationUseCase(organizationRepository);
+        CreateOrganizationUseCase useCase = new CreateOrganizationUseCase(organizationRepository);
 
         when(organizationRepository.findByName("Org"))
                 .thenReturn(Optional.empty());
         when(organizationRepository.save(any()))
                 .thenReturn(Organization.create(10L, "Org", "Desc"));
 
-        RegisterOrganizationUseCase.Result result = useCase.execute(
-                new RegisterOrganizationUseCase.Command("  Org  ", "Desc")
+        CreateOrganizationUseCase.Result result = useCase.execute(
+                new CreateOrganizationUseCase.Command("  Org  ", "Desc")
         );
 
         assertEquals(10L, result.id());
@@ -71,10 +71,10 @@ public class RegisterOrganizationUseCaseTest {
     @DisplayName("Валидирует имя: null недопустим (до обращения к репозиторию)")
     void rejectsNullName() {
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        RegisterOrganizationUseCase useCase = new RegisterOrganizationUseCase(organizationRepository);
+        CreateOrganizationUseCase useCase = new CreateOrganizationUseCase(organizationRepository);
 
         AppException ex = assertThrows(AppException.class, () ->
-                useCase.execute(new RegisterOrganizationUseCase.Command(null, "Desc"))
+                useCase.execute(new CreateOrganizationUseCase.Command(null, "Desc"))
         );
 
         assertEquals(ErrorCode.EMPTY_ORGANIZATION_NAME, ex.getCode());
@@ -85,10 +85,10 @@ public class RegisterOrganizationUseCaseTest {
     @DisplayName("Валидирует имя: пустая строка недопустима (до обращения к репозиторию)")
     void rejectsEmptyName() {
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        RegisterOrganizationUseCase useCase = new RegisterOrganizationUseCase(organizationRepository);
+        CreateOrganizationUseCase useCase = new CreateOrganizationUseCase(organizationRepository);
 
         AppException ex = assertThrows(AppException.class, () ->
-                useCase.execute(new RegisterOrganizationUseCase.Command("", "Desc"))
+                useCase.execute(new CreateOrganizationUseCase.Command("", "Desc"))
         );
 
         assertEquals(ErrorCode.EMPTY_ORGANIZATION_NAME, ex.getCode());
@@ -99,11 +99,11 @@ public class RegisterOrganizationUseCaseTest {
     @DisplayName("Валидирует имя: длина > 255 недопустима (до обращения к репозиторию)")
     void rejectsTooLongName() {
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        RegisterOrganizationUseCase useCase = new RegisterOrganizationUseCase(organizationRepository);
+        CreateOrganizationUseCase useCase = new CreateOrganizationUseCase(organizationRepository);
 
         String name = "a".repeat(256);
         AppException ex = assertThrows(AppException.class, () ->
-                useCase.execute(new RegisterOrganizationUseCase.Command(name, "Desc"))
+                useCase.execute(new CreateOrganizationUseCase.Command(name, "Desc"))
         );
 
         assertEquals(ErrorCode.TOO_LONG_ORGANIZATION_NAME, ex.getCode());
@@ -115,10 +115,10 @@ public class RegisterOrganizationUseCaseTest {
     @DisplayName("Валидирует описание: null недопустимо (до обращения к репозиторию)")
     void rejectsNullDescription() {
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        RegisterOrganizationUseCase useCase = new RegisterOrganizationUseCase(organizationRepository);
+        CreateOrganizationUseCase useCase = new CreateOrganizationUseCase(organizationRepository);
 
         AppException ex = assertThrows(AppException.class, () ->
-                useCase.execute(new RegisterOrganizationUseCase.Command("Org", null))
+                useCase.execute(new CreateOrganizationUseCase.Command("Org", null))
         );
 
         assertEquals(ErrorCode.EMPTY_ORGANIZATION_DESCRIPTION, ex.getCode());
@@ -129,10 +129,10 @@ public class RegisterOrganizationUseCaseTest {
     @DisplayName("Валидирует описание: пустая строка недопустима (до обращения к репозиторию)")
     void rejectsEmptyDescription() {
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        RegisterOrganizationUseCase useCase = new RegisterOrganizationUseCase(organizationRepository);
+        CreateOrganizationUseCase useCase = new CreateOrganizationUseCase(organizationRepository);
 
         AppException ex = assertThrows(AppException.class, () ->
-                useCase.execute(new RegisterOrganizationUseCase.Command("Org", ""))
+                useCase.execute(new CreateOrganizationUseCase.Command("Org", ""))
         );
 
         assertEquals(ErrorCode.EMPTY_ORGANIZATION_DESCRIPTION, ex.getCode());
@@ -143,11 +143,11 @@ public class RegisterOrganizationUseCaseTest {
     @DisplayName("Валидирует описание: длина > 1024 недопустима (до обращения к репозиторию)")
     void rejectsTooLongDescription() {
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        RegisterOrganizationUseCase useCase = new RegisterOrganizationUseCase(organizationRepository);
+        CreateOrganizationUseCase useCase = new CreateOrganizationUseCase(organizationRepository);
 
         String description = "a".repeat(1025);
         AppException ex = assertThrows(AppException.class, () ->
-                useCase.execute(new RegisterOrganizationUseCase.Command("Org", description))
+                useCase.execute(new CreateOrganizationUseCase.Command("Org", description))
         );
 
         assertEquals(ErrorCode.TOO_LONG_ORGANIZATION_DESCRIPTION, ex.getCode());
@@ -159,7 +159,7 @@ public class RegisterOrganizationUseCaseTest {
     @DisplayName("Граничные значения: name(255) и description(1024) допустимы")
     void allowsMaxLengths() {
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        RegisterOrganizationUseCase useCase = new RegisterOrganizationUseCase(organizationRepository);
+        CreateOrganizationUseCase useCase = new CreateOrganizationUseCase(organizationRepository);
 
         String name = "a".repeat(255);
         String description = "b".repeat(1024);
@@ -169,8 +169,8 @@ public class RegisterOrganizationUseCaseTest {
         when(organizationRepository.save(any()))
                 .thenReturn(Organization.create(1L, name, description));
 
-        RegisterOrganizationUseCase.Result result = useCase.execute(
-                new RegisterOrganizationUseCase.Command(name, description)
+        CreateOrganizationUseCase.Result result = useCase.execute(
+                new CreateOrganizationUseCase.Command(name, description)
         );
 
         assertEquals(1L, result.id());

@@ -8,10 +8,10 @@ import io.slotum.backend.error.ErrorCode;
 import java.util.Map;
 import java.util.Optional;
 
-public class RegisterSpecialistUseCase {
+public class CreateSpecialistUseCase {
     SpecialistRepository specialistRepository;
 
-    public RegisterSpecialistUseCase(SpecialistRepository specialistRepository) {
+    public CreateSpecialistUseCase(SpecialistRepository specialistRepository) {
         this.specialistRepository = specialistRepository;
     }
 
