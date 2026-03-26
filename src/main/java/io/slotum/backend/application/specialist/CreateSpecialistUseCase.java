@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class CreateSpecialistUseCase {
-    SpecialistRepository specialistRepository;
+    private final SpecialistRepository specialistRepository;
 
     public CreateSpecialistUseCase(SpecialistRepository specialistRepository) {
         this.specialistRepository = specialistRepository;
