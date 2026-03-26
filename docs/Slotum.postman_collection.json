@@ -91,6 +91,34 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "Create appointment",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"startsAt\": \"2026-03-21T10:00:00\",\r\n    \"endsAt\": \"2026-03-21T11:00:00\",\r\n    \"status\": \"BOOKED\",\r\n    \"specialistUserId\": 1,\r\n    \"customerId\": 1,\r\n    \"organizationId\": 1\r\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/appointments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "appointments"
+          ]
+        }
+      },
+      "response": []
     }
   ]
 }
