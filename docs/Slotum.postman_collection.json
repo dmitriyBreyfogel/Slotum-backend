@@ -63,6 +63,34 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "Create specialist",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"userId\": 3,\r\n    \"description\": \"/.<>OOO\",\r\n    \"grade\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/specialists",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "specialists"
+          ]
+        }
+      },
+      "response": []
     }
   ]
 }
