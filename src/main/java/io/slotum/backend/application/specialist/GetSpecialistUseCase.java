@@ -18,7 +18,7 @@ public class GetSpecialistUseCase {
         this.specialistRepository = specialistRepository;
     }
 
-    public SpecialistController.SpecialistDto execute(Long specialistId) {
+    public Specialist execute(Long specialistId) {
         Optional<Specialist> specialist = specialistRepository.findSpecialistByUserId(specialistId);
 
         if (specialist.isEmpty()) {
@@ -29,10 +29,6 @@ public class GetSpecialistUseCase {
             );
         }
 
-        return new SpecialistController.SpecialistDto(
-                specialist.get().getUserId(),
-                specialist.get().getDescription(),
-                specialist.get().getGrade()
-        );
+        return specialist.get();
     }
 }
