@@ -119,6 +119,38 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "Get specialist",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/specialists/3",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "specialists",
+            "3"
+          ]
+        }
+      },
+      "response": []
     }
   ]
 }
