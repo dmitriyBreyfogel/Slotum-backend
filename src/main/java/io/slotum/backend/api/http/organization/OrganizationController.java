@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/organizations")
-public class OrganizationsController {
+public class OrganizationController {
     private final CreateOrganizationUseCase createOrganizationUseCase;
     private final GetOrganizationUseCase getOrganizationUseCase;
 
-    public OrganizationsController(
+    public OrganizationController(
             CreateOrganizationUseCase createOrganizationUseCase,
             GetOrganizationUseCase getOrganizationUseCase
     ) {

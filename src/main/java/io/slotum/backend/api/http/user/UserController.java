@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/users")
-public class UsersController {
+public class UserController {
     private final CreateUserUseCase createUserUseCase;
     private final GetUserUseCase getUserUseCase;
 
-    public UsersController(
+    public UserController(
             CreateUserUseCase createUserUseCase,
             GetUserUseCase getUserUseCase
     ) {
