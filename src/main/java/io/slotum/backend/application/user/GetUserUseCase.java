@@ -17,7 +17,7 @@ public class GetUserUseCase {
         this.userRepository = userRepository;
     }
 
-    public User getUser(Long id) {
+    public User execute(Long id) {
         Optional<User> user = userRepository.findById(id);
 
         if (user.isEmpty()) {
