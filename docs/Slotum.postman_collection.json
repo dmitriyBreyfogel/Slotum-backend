@@ -183,6 +183,38 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "Get organization",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/organizations/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "organizations",
+            "1"
+          ]
+        }
+      },
+      "response": []
     }
   ]
 }
