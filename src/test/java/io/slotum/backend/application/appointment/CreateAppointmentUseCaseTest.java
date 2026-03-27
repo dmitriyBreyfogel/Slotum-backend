@@ -3,6 +3,12 @@ package io.slotum.backend.application.appointment;
 import io.slotum.backend.domain.appointment.Appointment;
 import io.slotum.backend.domain.appointment.AppointmentRepository;
 import io.slotum.backend.domain.appointment.AppointmentStatus;
+import io.slotum.backend.domain.organization.Organization;
+import io.slotum.backend.domain.organization.OrganizationRepository;
+import io.slotum.backend.domain.specialist.Specialist;
+import io.slotum.backend.domain.specialist.SpecialistRepository;
+import io.slotum.backend.domain.user.User;
+import io.slotum.backend.domain.user.UserRepository;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +17,7 @@ import org.mockito.ArgumentCaptor;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -28,7 +35,15 @@ public class CreateAppointmentUseCaseTest {
     @DisplayName("Не обращается к репозиторию, если startsAt = null")
     void rejectsNullStartsAtBeforeRepository() {
         AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(appointmentRepository);
+        SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
+        UserRepository userRepository = mock(UserRepository.class);
+        OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
+        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
+                appointmentRepository,
+                specialistRepository,
+                userRepository,
+                organizationRepository
+        );
 
         CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
                 null,
@@ -49,7 +64,15 @@ public class CreateAppointmentUseCaseTest {
     @DisplayName("Не обращается к репозиторию, если endsAt = null")
     void rejectsNullEndsAtBeforeRepository() {
         AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(appointmentRepository);
+        SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
+        UserRepository userRepository = mock(UserRepository.class);
+        OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
+        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
+                appointmentRepository,
+                specialistRepository,
+                userRepository,
+                organizationRepository
+        );
 
         CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
@@ -70,7 +93,15 @@ public class CreateAppointmentUseCaseTest {
     @DisplayName("Не обращается к репозиторию, если endsAt не позже startsAt (валидация диапазона времени)")
     void rejectsInvalidTimeRangeBeforeRepository() {
         AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(appointmentRepository);
+        SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
+        UserRepository userRepository = mock(UserRepository.class);
+        OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
+        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
+                appointmentRepository,
+                specialistRepository,
+                userRepository,
+                organizationRepository
+        );
 
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
@@ -95,7 +126,15 @@ public class CreateAppointmentUseCaseTest {
     @DisplayName("Не обращается к репозиторию, если status = null")
     void rejectsNullStatusBeforeRepository() {
         AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(appointmentRepository);
+        SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
+        UserRepository userRepository = mock(UserRepository.class);
+        OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
+        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
+                appointmentRepository,
+                specialistRepository,
+                userRepository,
+                organizationRepository
+        );
 
         CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
@@ -116,7 +155,15 @@ public class CreateAppointmentUseCaseTest {
     @DisplayName("Не обращается к репозиторию, если specialistUserId = null")
     void rejectsNullSpecialistUserIdBeforeRepository() {
         AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(appointmentRepository);
+        SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
+        UserRepository userRepository = mock(UserRepository.class);
+        OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
+        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
+                appointmentRepository,
+                specialistRepository,
+                userRepository,
+                organizationRepository
+        );
 
         CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
@@ -137,7 +184,15 @@ public class CreateAppointmentUseCaseTest {
     @DisplayName("Не обращается к репозиторию, если specialistUserId <= 0")
     void rejectsNonPositiveSpecialistUserIdBeforeRepository() {
         AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(appointmentRepository);
+        SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
+        UserRepository userRepository = mock(UserRepository.class);
+        OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
+        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
+                appointmentRepository,
+                specialistRepository,
+                userRepository,
+                organizationRepository
+        );
 
         CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
@@ -159,7 +214,15 @@ public class CreateAppointmentUseCaseTest {
     @DisplayName("Не обращается к репозиторию, если customerId = null")
     void rejectsNullCustomerIdBeforeRepository() {
         AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(appointmentRepository);
+        SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
+        UserRepository userRepository = mock(UserRepository.class);
+        OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
+        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
+                appointmentRepository,
+                specialistRepository,
+                userRepository,
+                organizationRepository
+        );
 
         CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
@@ -180,7 +243,15 @@ public class CreateAppointmentUseCaseTest {
     @DisplayName("Не обращается к репозиторию, если customerId <= 0")
     void rejectsNonPositiveCustomerIdBeforeRepository() {
         AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(appointmentRepository);
+        SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
+        UserRepository userRepository = mock(UserRepository.class);
+        OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
+        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
+                appointmentRepository,
+                specialistRepository,
+                userRepository,
+                organizationRepository
+        );
 
         CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
@@ -202,7 +273,15 @@ public class CreateAppointmentUseCaseTest {
     @DisplayName("Не обращается к репозиторию, если organizationId = null")
     void rejectsNullOrganizationIdBeforeRepository() {
         AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(appointmentRepository);
+        SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
+        UserRepository userRepository = mock(UserRepository.class);
+        OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
+        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
+                appointmentRepository,
+                specialistRepository,
+                userRepository,
+                organizationRepository
+        );
 
         CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
@@ -223,7 +302,15 @@ public class CreateAppointmentUseCaseTest {
     @DisplayName("Не обращается к репозиторию, если organizationId <= 0")
     void rejectsNonPositiveOrganizationIdBeforeRepository() {
         AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(appointmentRepository);
+        SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
+        UserRepository userRepository = mock(UserRepository.class);
+        OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
+        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
+                appointmentRepository,
+                specialistRepository,
+                userRepository,
+                organizationRepository
+        );
 
         CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
@@ -245,7 +332,15 @@ public class CreateAppointmentUseCaseTest {
     @DisplayName("Сохраняет новый appointment и возвращает данные из сохранённой сущности")
     void savesNewAppointmentAndReturnsData() {
         AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(appointmentRepository);
+        SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
+        UserRepository userRepository = mock(UserRepository.class);
+        OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
+        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
+                appointmentRepository,
+                specialistRepository,
+                userRepository,
+                organizationRepository
+        );
 
         LocalDateTime commandStartsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime commandEndsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
@@ -264,6 +359,9 @@ public class CreateAppointmentUseCaseTest {
                         31L
                 )
         );
+        when(specialistRepository.findSpecialistByUserId(10L)).thenReturn(Optional.of(mock(Specialist.class)));
+        when(userRepository.findById(20L)).thenReturn(Optional.of(mock(User.class)));
+        when(organizationRepository.findById(30L)).thenReturn(Optional.of(mock(Organization.class)));
 
         CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
                 commandStartsAt,
@@ -297,4 +395,3 @@ public class CreateAppointmentUseCaseTest {
         verifyNoMoreInteractions(appointmentRepository);
     }
 }
-
