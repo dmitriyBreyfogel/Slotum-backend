@@ -49,16 +49,16 @@ public class UsersController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable("id") long id) {
-        User user =  getUserUseCase.execute(id);
+        User result =  getUserUseCase.execute(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new UserDto(
-                        user.getId(),
-                        user.getSurname(),
-                        user.getFirstName(),
-                        user.getSecondName(),
-                        user.getEmail().value(),
-                        user.getPhone().value()
+                        result.getId(),
+                        result.getSurname(),
+                        result.getFirstName(),
+                        result.getSecondName(),
+                        result.getEmail().value(),
+                        result.getPhone().value()
                 )
         );
     }
