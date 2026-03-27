@@ -1,24 +1,28 @@
 package io.slotum.backend.api.http.organization;
 
 import io.slotum.backend.application.organization.CreateOrganizationUseCase;
+import io.slotum.backend.application.organization.GetOrganizationUseCase;
+import io.slotum.backend.domain.organization.Organization;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/organizations")
 public class OrganizationsController {
     private final CreateOrganizationUseCase createOrganizationUseCase;
+    private final GetOrganizationUseCase getOrganizationUseCase;
 
-    public OrganizationsController(CreateOrganizationUseCase createOrganizationUseCase) {
+    public OrganizationsController(
+            CreateOrganizationUseCase createOrganizationUseCase,
+            GetOrganizationUseCase getOrganizationUseCase
+    ) {
         this.createOrganizationUseCase = createOrganizationUseCase;
+        this.getOrganizationUseCase = getOrganizationUseCase;
     }
 
     @PostMapping
-    public ResponseEntity<RegisterOrganizationResponse> create(@RequestBody RegisterOrganizationRequest request) {
+    public ResponseEntity<OrganizationDto> create(@RequestBody CreateOrganizationRequest request) {
         CreateOrganizationUseCase.Result result = createOrganizationUseCase.execute(
                 new CreateOrganizationUseCase.Command(
                         request.name,
@@ -27,14 +31,38 @@ public class OrganizationsController {
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                new RegisterOrganizationResponse(
+                new OrganizationDto(
                         result.id(),
-                        result.name()
+                        result.name(),
+                        result.description(),
+                        result.grade()
                 )
         );
     }
 
-    public record RegisterOrganizationRequest(String name, String description) {}
+    @GetMapping("/{id}")
+    public ResponseEntity<OrganizationDto> getOrganization(@PathVariable("id") Long id) {
+        Organization result = getOrganizationUseCase.execute(id);
 
-    public record RegisterOrganizationResponse(Long id, String name) {}
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new OrganizationDto(
+                        result.getId(),
+                        result.getName(),
+                        result.getDescription(),
+                        result.getGrade()
+                )
+        );
+    }
+
+    public record CreateOrganizationRequest(
+            String name,
+            String description
+    ) {}
+
+    public record OrganizationDto(
+            Long id,
+            String name,
+            String description,
+            Double grade
+    ) {}
 }
