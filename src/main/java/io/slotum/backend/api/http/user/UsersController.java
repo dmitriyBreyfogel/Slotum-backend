@@ -3,13 +3,10 @@ package io.slotum.backend.api.http.user;
 import io.slotum.backend.application.user.CreateUserUseCase;
 import io.slotum.backend.application.user.GetUserUseCase;
 import io.slotum.backend.domain.user.User;
-import io.slotum.backend.error.AppException;
-import io.slotum.backend.error.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/users")
