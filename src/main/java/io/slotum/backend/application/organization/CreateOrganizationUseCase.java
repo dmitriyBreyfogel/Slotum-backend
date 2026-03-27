@@ -38,11 +38,21 @@ public class CreateOrganizationUseCase {
 
         return new Result(
                 organization.getId(),
-                organization.getName()
+                organization.getName(),
+                organization.getDescription(),
+                organization.getGrade()
         );
     }
 
-    public record Command(String name, String description) {}
+    public record Command(
+            String name,
+            String description
+    ) {}
 
-    public record Result(Long id, String name) {}
+    public record Result(
+            Long id,
+            String name,
+            String description,
+            Double grade
+    ) {}
 }
