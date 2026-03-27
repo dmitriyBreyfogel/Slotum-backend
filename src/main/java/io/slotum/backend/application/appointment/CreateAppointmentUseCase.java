@@ -76,6 +76,7 @@ public class CreateAppointmentUseCase {
         Appointment savedAppointment = appointmentRepository.save(appointmentToSave);
 
         return new Result(
+                savedAppointment.getId(),
                 savedAppointment.getStartsAt(),
                 savedAppointment.getEndsAt(),
                 savedAppointment.getStatus(),
@@ -95,6 +96,7 @@ public class CreateAppointmentUseCase {
     ) {}
 
     public record Result(
+            Long id,
             LocalDateTime startsAt,
             LocalDateTime endsAt,
             AppointmentStatus status,
