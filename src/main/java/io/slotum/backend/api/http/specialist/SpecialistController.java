@@ -42,13 +42,13 @@ public class SpecialistController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SpecialistDto> getSpecialist(@PathVariable("id") long id) {
-        SpecialistDto result = getSpecialistUseCase.execute(id);
+        Specialist result = getSpecialistUseCase.execute(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new SpecialistDto(
-                        result.userId,
-                        result.description,
-                        result.grade
+                        result.getUserId(),
+                        result.getDescription(),
+                        result.getGrade()
                 )
         );
     }
