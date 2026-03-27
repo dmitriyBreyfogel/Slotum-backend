@@ -39,7 +39,14 @@ public class CreateUserUseCase {
 
         User savedUser = userRepository.save(userToSave);
 
-        return new Result(savedUser.getId(), savedUser.getEmail().value());
+        return new Result(
+                savedUser.getId(),
+                savedUser.getSurname(),
+                savedUser.getFirstName(),
+                savedUser.getSecondName(),
+                savedUser.getEmail().value(),
+                savedUser.getPhone().value()
+        );
     }
 
     public record Command(
@@ -54,7 +61,11 @@ public class CreateUserUseCase {
 
     public record Result(
             Long userId,
-            String email
+            String surname,
+            String firstName,
+            String secondName,
+            String email,
+            String phone
     ) {
     }
 }
