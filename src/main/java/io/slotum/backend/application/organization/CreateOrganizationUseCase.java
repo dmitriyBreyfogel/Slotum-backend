@@ -29,7 +29,7 @@ public class CreateOrganizationUseCase {
         if (existingOrganization != null && existingOrganization.isPresent()) {
             throw AppException.build(
                     ErrorCode.ORGANIZATION_ALREADY_EXISTS,
-                    "Organization with name " + normalizedName + " already exists",
+                    "Organization already exists",
                     Map.of("name", normalizedName)
             );
         }
