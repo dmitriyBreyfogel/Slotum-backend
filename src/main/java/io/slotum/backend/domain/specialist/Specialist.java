@@ -56,8 +56,11 @@ public final class Specialist {
         if (description.length() > 1024) {
             throw AppException.build(
                     ErrorCode.TOO_LONG_SPECIALIST_DESCRIPTION,
-                    "Too long specialist description: " + description.length() + " symbols",
-                    Map.of("description", description)
+                    "Too long specialist description",
+                    Map.of(
+                            "description", description,
+                            "length", description.length()
+                    )
             );
         }
     }
