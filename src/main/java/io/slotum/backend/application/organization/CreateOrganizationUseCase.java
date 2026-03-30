@@ -24,13 +24,13 @@ public class CreateOrganizationUseCase {
                 command.description
         );
 
-        String normalizedName = organizationToSave.getName();
-        Optional<Organization> existingOrganization = organizationRepository.findByName(normalizedName);
+        String normalizedOrganizationName = organizationToSave.getName();
+        Optional<Organization> existingOrganization = organizationRepository.findByName(normalizedOrganizationName);
         if (existingOrganization != null && existingOrganization.isPresent()) {
             throw AppException.build(
                     ErrorCode.ORGANIZATION_ALREADY_EXISTS,
                     "Organization already exists",
-                    Map.of("name", normalizedName)
+                    Map.of("name", normalizedOrganizationName)
             );
         }
 
