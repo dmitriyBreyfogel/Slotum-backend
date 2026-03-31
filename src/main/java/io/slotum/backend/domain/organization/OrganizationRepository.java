@@ -1,5 +1,6 @@
 package io.slotum.backend.domain.organization;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface OrganizationRepository {
@@ -8,4 +9,6 @@ public interface OrganizationRepository {
     Optional<Organization> findByName(String name);
 
     Organization save(Organization organization);
+
+    List<Organization> findAll();
 }

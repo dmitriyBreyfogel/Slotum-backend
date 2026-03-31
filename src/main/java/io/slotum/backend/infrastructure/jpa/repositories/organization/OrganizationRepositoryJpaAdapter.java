@@ -5,7 +5,9 @@ import io.slotum.backend.domain.organization.OrganizationRepository;
 import io.slotum.backend.infrastructure.jpa.mappers.OrganizationJpaMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class OrganizationRepositoryJpaAdapter implements OrganizationRepository {
@@ -23,6 +25,12 @@ public class OrganizationRepositoryJpaAdapter implements OrganizationRepository 
     @Override
     public Optional<Organization> findByName(String name) {
         return organizationJpaRepository.findByName(name).map(OrganizationJpaMapper::toDomain);
+    }
+
+    @Override
+    public List<Organization> findAll() {
+        return organizationJpaRepository.findAll().stream().map(OrganizationJpaMapper::toDomain)
+                .collect(Collectors.toList());
     }
 
     @Override
