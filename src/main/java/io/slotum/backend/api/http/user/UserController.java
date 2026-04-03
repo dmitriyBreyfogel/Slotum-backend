@@ -1,11 +1,14 @@
 package io.slotum.backend.api.http.user;
 
 import io.slotum.backend.application.user.CreateUserUseCase;
+import io.slotum.backend.application.user.GetAllUsersUseCase;
 import io.slotum.backend.application.user.GetUserUseCase;
 import io.slotum.backend.domain.user.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -13,13 +16,16 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final CreateUserUseCase createUserUseCase;
     private final GetUserUseCase getUserUseCase;
+    private final GetAllUsersUseCase getAllUsersUseCase;
 
     public UserController(
             CreateUserUseCase createUserUseCase,
-            GetUserUseCase getUserUseCase
+            GetUserUseCase getUserUseCase,
+            GetAllUsersUseCase getAllUsersUseCase
     ) {
         this.createUserUseCase = createUserUseCase;
         this.getUserUseCase = getUserUseCase;
+        this.getAllUsersUseCase = getAllUsersUseCase;
     }
 
     @PostMapping
@@ -60,6 +66,22 @@ public class UserController {
                         result.getEmail().value(),
                         result.getPhone().value()
                 )
+        );
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        List<User> result = getAllUsersUseCase.execute();
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                result.stream().map(user -> new UserDto(
+                        user.getId(),
+                        user.getSurname(),
+                        user.getFirstName(),
+                        user.getSecondName(),
+                        user.getEmail().value(),
+                        user.getPhone().value()
+                )).toList()
         );
     }
 
