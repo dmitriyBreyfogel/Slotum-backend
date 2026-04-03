@@ -1,5 +1,6 @@
 package io.slotum.backend.domain.user;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
@@ -10,4 +11,6 @@ public interface UserRepository {
     boolean existsByEmail(String email);
 
     User save(User user);
+
+    List<User> findAll();
 }
