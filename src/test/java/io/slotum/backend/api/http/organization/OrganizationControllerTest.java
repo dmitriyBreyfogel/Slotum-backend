@@ -41,7 +41,7 @@ public class OrganizationControllerTest {
     @DisplayName("Валидное создание организации и возврат CREATED 201")
     void testCreateOrganization() throws Exception {
         when(createOrganizationUseCase.execute(any()))
-                .thenReturn(new CreateOrganizationUseCase.Result(1L, "Acme"));
+                .thenReturn(new CreateOrganizationUseCase.Result(1L, "Acme", "Some description", 0.0));
 
         var req = Map.of(
                 "name", "Acme",
