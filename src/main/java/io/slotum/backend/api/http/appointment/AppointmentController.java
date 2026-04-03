@@ -1,6 +1,7 @@
 package io.slotum.backend.api.http.appointment;
 
 import io.slotum.backend.application.appointment.CreateAppointmentUseCase;
+import io.slotum.backend.application.appointment.GetAllAppointmentsUseCase;
 import io.slotum.backend.application.appointment.GetAppointmentUseCase;
 import io.slotum.backend.domain.appointment.Appointment;
 import io.slotum.backend.domain.appointment.AppointmentStatus;
@@ -9,19 +10,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/appointments")
 public class AppointmentController {
     private final CreateAppointmentUseCase createAppointmentUseCase;
     private final GetAppointmentUseCase getAppointmentUseCase;
+    private final GetAllAppointmentsUseCase getAllAppointmentsUseCase;
 
     public AppointmentController(
             CreateAppointmentUseCase createAppointmentUseCase,
-            GetAppointmentUseCase getAppointmentUseCase
+            GetAppointmentUseCase getAppointmentUseCase,
+            GetAllAppointmentsUseCase getAllAppointmentsUseCase
     ) {
         this.createAppointmentUseCase = createAppointmentUseCase;
         this.getAppointmentUseCase = getAppointmentUseCase;
+        this.getAllAppointmentsUseCase = getAllAppointmentsUseCase;
     }
 
     @PostMapping
@@ -64,6 +69,23 @@ public class AppointmentController {
                         result.getCustomerId(),
                         result.getOrganizationId()
                 )
+        );
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<AppointmentDto>> getAllAppointments() {
+        List<Appointment> result = getAllAppointmentsUseCase.execute();
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                result.stream().map(appointment -> new AppointmentDto(
+                        appointment.getId(),
+                        appointment.getStartsAt(),
+                        appointment.getEndsAt(),
+                        appointment.getStatus(),
+                        appointment.getSpecialistUserId(),
+                        appointment.getCustomerId(),
+                        appointment.getOrganizationId()
+                )).toList()
         );
     }
 
