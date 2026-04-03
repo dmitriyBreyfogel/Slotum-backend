@@ -2,6 +2,8 @@ package io.slotum.backend.api.http.organization;
 
 import io.slotum.backend.api.http.GlobalExceptionHandler;
 import io.slotum.backend.application.organization.CreateOrganizationUseCase;
+import io.slotum.backend.application.organization.GetAllOrganizationsUseCase;
+import io.slotum.backend.application.organization.GetOrganizationUseCase;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
@@ -36,6 +38,12 @@ public class OrganizationControllerTest {
 
     @MockitoBean
     CreateOrganizationUseCase createOrganizationUseCase;
+
+    @MockitoBean
+    GetOrganizationUseCase getOrganizationUseCase;
+
+    @MockitoBean
+    GetAllOrganizationsUseCase getAllOrganizationsUseCase;
 
     @Test
     @DisplayName("Валидное создание организации и возврат CREATED 201")

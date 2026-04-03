@@ -2,6 +2,8 @@ package io.slotum.backend.api.http.user;
 
 import io.slotum.backend.api.http.GlobalExceptionHandler;
 import io.slotum.backend.application.user.CreateUserUseCase;
+import io.slotum.backend.application.user.GetAllUsersUseCase;
+import io.slotum.backend.application.user.GetUserUseCase;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
@@ -37,10 +39,23 @@ public class UserControllerTest {
     @MockitoBean
     CreateUserUseCase createUserUseCase;
 
+    @MockitoBean
+    GetUserUseCase getUserUseCase;
+
+    @MockitoBean
+    GetAllUsersUseCase getAllUsersUseCase;
+
     @Test
     @DisplayName("Валидное создание через ручку и возврат CREATED 201")
     void testCreateUser() throws Exception {
-        when(createUserUseCase.execute(any())).thenReturn(new CreateUserUseCase.Result(1L, "slotum@io.com"));
+        when(createUserUseCase.execute(any())).thenReturn(new CreateUserUseCase.Result(
+                1L,
+                "Ivanov",
+                "Ivan",
+                "Ivanovich",
+                "slotum@io.com",
+                "88005553535"
+        ));
 
         var req = Map.of(
                 "surname", "Ivanov",
