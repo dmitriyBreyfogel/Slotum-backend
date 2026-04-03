@@ -1,24 +1,30 @@
 package io.slotum.backend.api.http.organization;
 
 import io.slotum.backend.application.organization.CreateOrganizationUseCase;
+import io.slotum.backend.application.organization.GetAllOrganizationsUseCase;
 import io.slotum.backend.application.organization.GetOrganizationUseCase;
 import io.slotum.backend.domain.organization.Organization;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/organizations")
 public class OrganizationController {
     private final CreateOrganizationUseCase createOrganizationUseCase;
     private final GetOrganizationUseCase getOrganizationUseCase;
+    private final GetAllOrganizationsUseCase getAllOrganizationsUseCase;
 
     public OrganizationController(
             CreateOrganizationUseCase createOrganizationUseCase,
-            GetOrganizationUseCase getOrganizationUseCase
+            GetOrganizationUseCase getOrganizationUseCase,
+            GetAllOrganizationsUseCase getAllOrganizationsUseCase
     ) {
         this.createOrganizationUseCase = createOrganizationUseCase;
         this.getOrganizationUseCase = getOrganizationUseCase;
+        this.getAllOrganizationsUseCase = getAllOrganizationsUseCase;
     }
 
     @PostMapping
@@ -51,6 +57,20 @@ public class OrganizationController {
                         result.getDescription(),
                         result.getGrade()
                 )
+        );
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<OrganizationDto>> getAllOrganizations() {
+        List<Organization> result = getAllOrganizationsUseCase.execute();
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                result.stream().map(organization -> new OrganizationDto(
+                        organization.getId(),
+                        organization.getName(),
+                        organization.getDescription(),
+                        organization.getGrade()
+                )).toList()
         );
     }
 
