@@ -6,10 +6,13 @@ import io.slotum.backend.infrastructure.jpa.entities.OrganizationJpa;
 import io.slotum.backend.infrastructure.jpa.entities.SpecialistJpa;
 import io.slotum.backend.infrastructure.jpa.entities.UserJpa;
 import io.slotum.backend.infrastructure.jpa.mappers.AppointmentJpaMapper;
+import io.slotum.backend.infrastructure.jpa.mappers.OrganizationJpaMapper;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class AppointmentRepositoryJpaAdapter implements AppointmentRepository {
@@ -24,6 +27,12 @@ public class AppointmentRepositoryJpaAdapter implements AppointmentRepository {
     @Override
     public Optional<Appointment> findById(Long id) {
         return appointmentJpaRepository.findById(id).map(AppointmentJpaMapper::toDomain);
+    }
+
+    @Override
+    public List<Appointment> findAll() {
+        return appointmentJpaRepository.findAll().stream().map(AppointmentJpaMapper::toDomain)
+                .collect(Collectors.toList());
     }
 
     @Override
