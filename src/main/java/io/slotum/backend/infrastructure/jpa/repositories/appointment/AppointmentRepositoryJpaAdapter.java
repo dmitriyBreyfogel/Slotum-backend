@@ -2,6 +2,8 @@ package io.slotum.backend.infrastructure.jpa.repositories.appointment;
 
 import io.slotum.backend.domain.appointment.Appointment;
 import io.slotum.backend.domain.appointment.AppointmentRepository;
+import io.slotum.backend.error.AppException;
+import io.slotum.backend.infrastructure.jpa.entities.AppointmentJpa;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationJpa;
 import io.slotum.backend.infrastructure.jpa.entities.SpecialistJpa;
 import io.slotum.backend.infrastructure.jpa.entities.UserJpa;
@@ -33,6 +35,16 @@ public class AppointmentRepositoryJpaAdapter implements AppointmentRepository {
     public List<Appointment> findAll() {
         return appointmentJpaRepository.findAll().stream().map(AppointmentJpaMapper::toDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Appointment deleteById(Long id) {
+        Optional<AppointmentJpa> deleted = appointmentJpaRepository.findById(id);
+        if (deleted.isPresent()) {
+            appointmentJpaRepository.deleteById(id);
+            return AppointmentJpaMapper.toDomain(deleted.get());
+        }
+        return null;
     }
 
     @Override

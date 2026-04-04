@@ -9,4 +9,6 @@ public interface AppointmentRepository {
     Appointment save(Appointment appointment);
 
     List<Appointment> findAll();
+
+    Appointment deleteById(Long id);
 }
