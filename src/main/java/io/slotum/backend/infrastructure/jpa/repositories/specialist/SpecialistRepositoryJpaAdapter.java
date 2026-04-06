@@ -2,9 +2,7 @@ package io.slotum.backend.infrastructure.jpa.repositories.specialist;
 
 import io.slotum.backend.domain.specialist.Specialist;
 import io.slotum.backend.domain.specialist.SpecialistRepository;
-import io.slotum.backend.infrastructure.jpa.entities.OrganizationJpa;
 import io.slotum.backend.infrastructure.jpa.entities.SpecialistJpa;
-import io.slotum.backend.infrastructure.jpa.mappers.OrganizationJpaMapper;
 import io.slotum.backend.infrastructure.jpa.mappers.SpecialistJpaMapper;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +17,12 @@ public class SpecialistRepositoryJpaAdapter implements SpecialistRepository {
     public SpecialistRepositoryJpaAdapter(SpecialistJpaRepository specialistJpaRepository) {
         this.specialistJpaRepository = specialistJpaRepository;
     }
-    
+
+    @Override
+    public Optional<Specialist> findById(Long id) {
+        return specialistJpaRepository.findById(id).map(SpecialistJpaMapper::toDomain);
+    }
+
     @Override
     public Optional<Specialist> findSpecialistByUserId(Long userId) {
         return specialistJpaRepository.findByUserId(userId).map(SpecialistJpaMapper::toDomain);

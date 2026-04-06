@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SpecialistRepository {
+    Optional<Specialist> findById(Long id);
+
     Optional<Specialist> findSpecialistByUserId(Long userId);
 
     Specialist save(Specialist specialist);
