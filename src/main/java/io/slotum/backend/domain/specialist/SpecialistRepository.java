@@ -9,4 +9,6 @@ public interface SpecialistRepository {
     Specialist save(Specialist specialist);
 
     List<Specialist> findAll();
+
+    Specialist deleteById(Long id);
 }
