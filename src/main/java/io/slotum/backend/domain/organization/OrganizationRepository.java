@@ -11,4 +11,6 @@ public interface OrganizationRepository {
     Organization save(Organization organization);
 
     List<Organization> findAll();
+
+    Organization deleteById(Long id);
 }
