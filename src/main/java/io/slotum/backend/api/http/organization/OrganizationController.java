@@ -1,6 +1,7 @@
 package io.slotum.backend.api.http.organization;
 
 import io.slotum.backend.application.organization.CreateOrganizationUseCase;
+import io.slotum.backend.application.organization.DeleteByIdOrganizationUseCase;
 import io.slotum.backend.application.organization.GetAllOrganizationsUseCase;
 import io.slotum.backend.application.organization.GetOrganizationUseCase;
 import io.slotum.backend.domain.organization.Organization;
@@ -16,15 +17,18 @@ public class OrganizationController {
     private final CreateOrganizationUseCase createOrganizationUseCase;
     private final GetOrganizationUseCase getOrganizationUseCase;
     private final GetAllOrganizationsUseCase getAllOrganizationsUseCase;
+    private final DeleteByIdOrganizationUseCase deleteByIdOrganizationUseCase;
 
     public OrganizationController(
             CreateOrganizationUseCase createOrganizationUseCase,
             GetOrganizationUseCase getOrganizationUseCase,
-            GetAllOrganizationsUseCase getAllOrganizationsUseCase
+            GetAllOrganizationsUseCase getAllOrganizationsUseCase,
+            DeleteByIdOrganizationUseCase deleteByIdOrganizationUseCase
     ) {
         this.createOrganizationUseCase = createOrganizationUseCase;
         this.getOrganizationUseCase = getOrganizationUseCase;
         this.getAllOrganizationsUseCase = getAllOrganizationsUseCase;
+        this.deleteByIdOrganizationUseCase = deleteByIdOrganizationUseCase;
     }
 
     @PostMapping
@@ -71,6 +75,20 @@ public class OrganizationController {
                         organization.getDescription(),
                         organization.getGrade()
                 )).toList()
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<OrganizationDto> deleteOrganization(@PathVariable("id") Long id) {
+        Organization result = deleteByIdOrganizationUseCase.execute(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new OrganizationDto(
+                        result.getId(),
+                        result.getName(),
+                        result.getDescription(),
+                        result.getGrade()
+                )
         );
     }
 
