@@ -1,9 +1,6 @@
 package io.slotum.backend.api.http.organization;
 
-import io.slotum.backend.application.organization.CreateOrganizationUseCase;
-import io.slotum.backend.application.organization.DeleteByIdOrganizationUseCase;
-import io.slotum.backend.application.organization.GetAllOrganizationsUseCase;
-import io.slotum.backend.application.organization.GetOrganizationUseCase;
+import io.slotum.backend.application.organization.*;
 import io.slotum.backend.domain.organization.Organization;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +15,20 @@ public class OrganizationController {
     private final GetOrganizationUseCase getOrganizationUseCase;
     private final GetAllOrganizationsUseCase getAllOrganizationsUseCase;
     private final DeleteByIdOrganizationUseCase deleteByIdOrganizationUseCase;
+    private final DeleteAllOrganizationUseCase deleteAllOrganizationUseCase;
 
     public OrganizationController(
             CreateOrganizationUseCase createOrganizationUseCase,
             GetOrganizationUseCase getOrganizationUseCase,
             GetAllOrganizationsUseCase getAllOrganizationsUseCase,
-            DeleteByIdOrganizationUseCase deleteByIdOrganizationUseCase
+            DeleteByIdOrganizationUseCase deleteByIdOrganizationUseCase,
+            DeleteAllOrganizationUseCase deleteAllOrganizationUseCase
     ) {
         this.createOrganizationUseCase = createOrganizationUseCase;
         this.getOrganizationUseCase = getOrganizationUseCase;
         this.getAllOrganizationsUseCase = getAllOrganizationsUseCase;
         this.deleteByIdOrganizationUseCase = deleteByIdOrganizationUseCase;
+        this.deleteAllOrganizationUseCase = deleteAllOrganizationUseCase;
     }
 
     @PostMapping
@@ -90,6 +90,12 @@ public class OrganizationController {
                         result.getGrade()
                 )
         );
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<Void> deleteAllOrganizations() {
+        deleteAllOrganizationUseCase.execute();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     public record CreateOrganizationRequest(
