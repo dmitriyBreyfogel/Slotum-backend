@@ -1,6 +1,7 @@
 package io.slotum.backend.api.http.user;
 
 import io.slotum.backend.application.user.CreateUserUseCase;
+import io.slotum.backend.application.user.DeleteByIdUserUseCase;
 import io.slotum.backend.application.user.GetAllUsersUseCase;
 import io.slotum.backend.application.user.GetUserUseCase;
 import io.slotum.backend.domain.user.User;
@@ -17,15 +18,18 @@ public class UserController {
     private final CreateUserUseCase createUserUseCase;
     private final GetUserUseCase getUserUseCase;
     private final GetAllUsersUseCase getAllUsersUseCase;
+    private final DeleteByIdUserUseCase deleteByIdUserUseCase;
 
     public UserController(
             CreateUserUseCase createUserUseCase,
             GetUserUseCase getUserUseCase,
-            GetAllUsersUseCase getAllUsersUseCase
+            GetAllUsersUseCase getAllUsersUseCase,
+            DeleteByIdUserUseCase deleteByIdUserUseCase
     ) {
         this.createUserUseCase = createUserUseCase;
         this.getUserUseCase = getUserUseCase;
         this.getAllUsersUseCase = getAllUsersUseCase;
+        this.deleteByIdUserUseCase = deleteByIdUserUseCase;
     }
 
     @PostMapping
@@ -82,6 +86,22 @@ public class UserController {
                         user.getEmail().value(),
                         user.getPhone().value()
                 )).toList()
+        );
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<UserDto> deleteUser(@PathVariable("id") Long id) {
+        User result = deleteByIdUserUseCase.execute(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new UserDto(
+                        result.getId(),
+                        result.getSurname(),
+                        result.getFirstName(),
+                        result.getSecondName(),
+                        result.getEmail().value(),
+                        result.getPhone().value()
+                )
         );
     }
 
