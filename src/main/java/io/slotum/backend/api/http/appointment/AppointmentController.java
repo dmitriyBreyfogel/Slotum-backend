@@ -1,6 +1,7 @@
 package io.slotum.backend.api.http.appointment;
 
 import io.slotum.backend.application.appointment.CreateAppointmentUseCase;
+import io.slotum.backend.application.appointment.DeleteByIdAppointmentUseCase;
 import io.slotum.backend.application.appointment.GetAllAppointmentsUseCase;
 import io.slotum.backend.application.appointment.GetAppointmentUseCase;
 import io.slotum.backend.domain.appointment.Appointment;
@@ -18,15 +19,18 @@ public class AppointmentController {
     private final CreateAppointmentUseCase createAppointmentUseCase;
     private final GetAppointmentUseCase getAppointmentUseCase;
     private final GetAllAppointmentsUseCase getAllAppointmentsUseCase;
+    private final DeleteByIdAppointmentUseCase deleteByIdAppointmentUseCase;
 
     public AppointmentController(
             CreateAppointmentUseCase createAppointmentUseCase,
             GetAppointmentUseCase getAppointmentUseCase,
-            GetAllAppointmentsUseCase getAllAppointmentsUseCase
+            GetAllAppointmentsUseCase getAllAppointmentsUseCase,
+            DeleteByIdAppointmentUseCase deleteByIdAppointmentUseCase
     ) {
         this.createAppointmentUseCase = createAppointmentUseCase;
         this.getAppointmentUseCase = getAppointmentUseCase;
         this.getAllAppointmentsUseCase = getAllAppointmentsUseCase;
+        this.deleteByIdAppointmentUseCase = deleteByIdAppointmentUseCase;
     }
 
     @PostMapping
@@ -86,6 +90,23 @@ public class AppointmentController {
                         appointment.getCustomerId(),
                         appointment.getOrganizationId()
                 )).toList()
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<AppointmentDto> deleteAppointment(@PathVariable("id") Long id) {
+        Appointment result = deleteByIdAppointmentUseCase.execute(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new AppointmentDto(
+                        result.getId(),
+                        result.getStartsAt(),
+                        result.getEndsAt(),
+                        result.getStatus(),
+                        result.getSpecialistUserId(),
+                        result.getCustomerId(),
+                        result.getOrganizationId()
+                )
         );
     }
 
