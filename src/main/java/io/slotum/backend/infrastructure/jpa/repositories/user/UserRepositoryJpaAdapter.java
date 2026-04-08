@@ -57,4 +57,9 @@ public class UserRepositoryJpaAdapter implements UserRepository {
         }
         return null;
     }
+
+    @Override
+    public void deleteAll() {
+        userJpaRepository.deleteAll();
+    }
 }
