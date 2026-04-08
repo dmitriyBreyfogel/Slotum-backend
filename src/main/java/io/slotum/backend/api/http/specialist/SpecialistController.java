@@ -1,9 +1,6 @@
 package io.slotum.backend.api.http.specialist;
 
-import io.slotum.backend.application.specialist.CreateSpecialistUseCase;
-import io.slotum.backend.application.specialist.DeleteByIdSpecialistUseCase;
-import io.slotum.backend.application.specialist.GetAllSpecialistsUseCase;
-import io.slotum.backend.application.specialist.GetSpecialistUseCase;
+import io.slotum.backend.application.specialist.*;
 import io.slotum.backend.domain.specialist.Specialist;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +15,20 @@ public class SpecialistController {
     private final GetSpecialistUseCase getSpecialistUseCase;
     private final GetAllSpecialistsUseCase getAllSpecialistsUseCase;
     private final DeleteByIdSpecialistUseCase deleteByIdSpecialistUseCase;
+    private final DeleteAllSpecialistUseCase deleteAllSpecialistUseCase;
 
     public SpecialistController(
             CreateSpecialistUseCase createSpecialistUseCase,
             GetSpecialistUseCase getSpecialistUseCase,
             GetAllSpecialistsUseCase getAllSpecialistsUseCase,
-            DeleteByIdSpecialistUseCase deleteByIdSpecialistUseCase
+            DeleteByIdSpecialistUseCase deleteByIdSpecialistUseCase,
+            DeleteAllSpecialistUseCase deleteAllSpecialistUseCase
     ) {
         this.createSpecialistUseCase = createSpecialistUseCase;
         this.getSpecialistUseCase = getSpecialistUseCase;
         this.getAllSpecialistsUseCase = getAllSpecialistsUseCase;
         this.deleteByIdSpecialistUseCase = deleteByIdSpecialistUseCase;
+        this.deleteAllSpecialistUseCase = deleteAllSpecialistUseCase;
     }
 
     @PostMapping
@@ -87,6 +87,12 @@ public class SpecialistController {
                         result.getGrade()
                 )
         );
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<Void> deleteAllSpecialists() {
+        deleteAllSpecialistUseCase.execute();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     public record RequestCreateSpecialist(
