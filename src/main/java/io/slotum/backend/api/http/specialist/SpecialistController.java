@@ -1,6 +1,7 @@
 package io.slotum.backend.api.http.specialist;
 
 import io.slotum.backend.application.specialist.CreateSpecialistUseCase;
+import io.slotum.backend.application.specialist.DeleteByIdSpecialistUseCase;
 import io.slotum.backend.application.specialist.GetAllSpecialistsUseCase;
 import io.slotum.backend.application.specialist.GetSpecialistUseCase;
 import io.slotum.backend.domain.specialist.Specialist;
@@ -16,15 +17,18 @@ public class SpecialistController {
     private final CreateSpecialistUseCase createSpecialistUseCase;
     private final GetSpecialistUseCase getSpecialistUseCase;
     private final GetAllSpecialistsUseCase getAllSpecialistsUseCase;
+    private final DeleteByIdSpecialistUseCase deleteByIdSpecialistUseCase;
 
     public SpecialistController(
             CreateSpecialistUseCase createSpecialistUseCase,
             GetSpecialistUseCase getSpecialistUseCase,
-            GetAllSpecialistsUseCase getAllSpecialistsUseCase
+            GetAllSpecialistsUseCase getAllSpecialistsUseCase,
+            DeleteByIdSpecialistUseCase deleteByIdSpecialistUseCase
     ) {
         this.createSpecialistUseCase = createSpecialistUseCase;
         this.getSpecialistUseCase = getSpecialistUseCase;
         this.getAllSpecialistsUseCase = getAllSpecialistsUseCase;
+        this.deleteByIdSpecialistUseCase = deleteByIdSpecialistUseCase;
     }
 
     @PostMapping
@@ -69,6 +73,19 @@ public class SpecialistController {
                         specialist.getDescription(),
                         specialist.getGrade()
                 )).toList()
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SpecialistDto> deleteSpecialist(@PathVariable("id") Long id) {
+        Specialist result = deleteByIdSpecialistUseCase.execute(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new SpecialistDto(
+                        result.getUserId(),
+                        result.getDescription(),
+                        result.getGrade()
+                )
         );
     }
 
