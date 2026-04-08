@@ -1,9 +1,6 @@
 package io.slotum.backend.api.http.user;
 
-import io.slotum.backend.application.user.CreateUserUseCase;
-import io.slotum.backend.application.user.DeleteByIdUserUseCase;
-import io.slotum.backend.application.user.GetAllUsersUseCase;
-import io.slotum.backend.application.user.GetUserUseCase;
+import io.slotum.backend.application.user.*;
 import io.slotum.backend.domain.user.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,17 +16,20 @@ public class UserController {
     private final GetUserUseCase getUserUseCase;
     private final GetAllUsersUseCase getAllUsersUseCase;
     private final DeleteByIdUserUseCase deleteByIdUserUseCase;
+    private final DeleteAllUserUseCase deleteAllUserUseCase;
 
     public UserController(
             CreateUserUseCase createUserUseCase,
             GetUserUseCase getUserUseCase,
             GetAllUsersUseCase getAllUsersUseCase,
-            DeleteByIdUserUseCase deleteByIdUserUseCase
+            DeleteByIdUserUseCase deleteByIdUserUseCase,
+            DeleteAllUserUseCase deleteAllUserUseCase
     ) {
         this.createUserUseCase = createUserUseCase;
         this.getUserUseCase = getUserUseCase;
         this.getAllUsersUseCase = getAllUsersUseCase;
         this.deleteByIdUserUseCase = deleteByIdUserUseCase;
+        this.deleteAllUserUseCase = deleteAllUserUseCase;
     }
 
     @PostMapping
@@ -103,6 +103,12 @@ public class UserController {
                         result.getPhone().value()
                 )
         );
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<Void> deleteAllUsers() {
+        deleteAllUserUseCase.execute();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     public record CreateUserRequest(
