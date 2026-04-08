@@ -52,4 +52,9 @@ public class OrganizationRepositoryJpaAdapter implements OrganizationRepository 
         }
         return null;
     }
+
+    @Override
+    public void deleteAll() {
+        organizationJpaRepository.deleteAll();
+    }
 }

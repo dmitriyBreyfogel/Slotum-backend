@@ -13,4 +13,6 @@ public interface OrganizationRepository {
     List<Organization> findAll();
 
     Organization deleteById(Long id);
+
+    void deleteAll();
 }
