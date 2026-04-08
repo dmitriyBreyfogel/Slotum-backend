@@ -1,9 +1,6 @@
 package io.slotum.backend.api.http.appointment;
 
-import io.slotum.backend.application.appointment.CreateAppointmentUseCase;
-import io.slotum.backend.application.appointment.DeleteByIdAppointmentUseCase;
-import io.slotum.backend.application.appointment.GetAllAppointmentsUseCase;
-import io.slotum.backend.application.appointment.GetAppointmentUseCase;
+import io.slotum.backend.application.appointment.*;
 import io.slotum.backend.domain.appointment.Appointment;
 import io.slotum.backend.domain.appointment.AppointmentStatus;
 import org.springframework.http.HttpStatus;
@@ -20,17 +17,20 @@ public class AppointmentController {
     private final GetAppointmentUseCase getAppointmentUseCase;
     private final GetAllAppointmentsUseCase getAllAppointmentsUseCase;
     private final DeleteByIdAppointmentUseCase deleteByIdAppointmentUseCase;
+    private final DeleteAllAppointmentUseCase deleteAllAppointmentUseCase;
 
     public AppointmentController(
             CreateAppointmentUseCase createAppointmentUseCase,
             GetAppointmentUseCase getAppointmentUseCase,
             GetAllAppointmentsUseCase getAllAppointmentsUseCase,
-            DeleteByIdAppointmentUseCase deleteByIdAppointmentUseCase
+            DeleteByIdAppointmentUseCase deleteByIdAppointmentUseCase,
+            DeleteAllAppointmentUseCase deleteAllAppointmentUseCase
     ) {
         this.createAppointmentUseCase = createAppointmentUseCase;
         this.getAppointmentUseCase = getAppointmentUseCase;
         this.getAllAppointmentsUseCase = getAllAppointmentsUseCase;
         this.deleteByIdAppointmentUseCase = deleteByIdAppointmentUseCase;
+        this.deleteAllAppointmentUseCase = deleteAllAppointmentUseCase;
     }
 
     @PostMapping
@@ -108,6 +108,12 @@ public class AppointmentController {
                         result.getOrganizationId()
                 )
         );
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<Void> deleteAllAppointments() {
+        deleteAllAppointmentUseCase.execute();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     public record CreateAppointmentRequest(
