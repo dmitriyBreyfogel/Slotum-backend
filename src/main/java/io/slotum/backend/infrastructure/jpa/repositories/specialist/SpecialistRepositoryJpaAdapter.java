@@ -48,4 +48,9 @@ public class SpecialistRepositoryJpaAdapter implements SpecialistRepository {
         }
         return null;
     }
+
+    @Override
+    public void deleteAll() {
+        specialistJpaRepository.deleteAll();
+    }
 }

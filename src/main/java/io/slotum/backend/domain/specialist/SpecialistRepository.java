@@ -13,4 +13,6 @@ public interface SpecialistRepository {
     List<Specialist> findAll();
 
     Specialist deleteById(Long id);
+
+    void deleteAll();
 }
