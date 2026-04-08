@@ -11,4 +11,6 @@ public interface AppointmentRepository {
     List<Appointment> findAll();
 
     Appointment deleteById(Long id);
+
+    void deleteAll();
 }

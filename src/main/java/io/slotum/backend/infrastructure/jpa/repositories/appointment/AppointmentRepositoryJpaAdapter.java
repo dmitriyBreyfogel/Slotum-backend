@@ -48,6 +48,11 @@ public class AppointmentRepositoryJpaAdapter implements AppointmentRepository {
     }
 
     @Override
+    public void deleteAll() {
+        appointmentJpaRepository.deleteAll();
+    }
+
+    @Override
     public Appointment save(Appointment appointment) {
         SpecialistJpa specialistRef = entityManager.getReference(SpecialistJpa.class, appointment.getSpecialistUserId());
         UserJpa customerRef = entityManager.getReference(UserJpa.class, appointment.getCustomerId());
