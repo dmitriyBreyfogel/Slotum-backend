@@ -17,19 +17,22 @@ public class UserController {
     private final GetAllUsersUseCase getAllUsersUseCase;
     private final DeleteByIdUserUseCase deleteByIdUserUseCase;
     private final DeleteAllUserUseCase deleteAllUserUseCase;
+    private final GetByEmailUserUseCase getByEmailUserUseCase;
 
     public UserController(
             CreateUserUseCase createUserUseCase,
             GetUserUseCase getUserUseCase,
             GetAllUsersUseCase getAllUsersUseCase,
             DeleteByIdUserUseCase deleteByIdUserUseCase,
-            DeleteAllUserUseCase deleteAllUserUseCase
+            DeleteAllUserUseCase deleteAllUserUseCase,
+            GetByEmailUserUseCase getByEmailUserUseCase
     ) {
         this.createUserUseCase = createUserUseCase;
         this.getUserUseCase = getUserUseCase;
         this.getAllUsersUseCase = getAllUsersUseCase;
         this.deleteByIdUserUseCase = deleteByIdUserUseCase;
         this.deleteAllUserUseCase = deleteAllUserUseCase;
+        this.getByEmailUserUseCase = getByEmailUserUseCase;
     }
 
     @PostMapping
@@ -86,6 +89,22 @@ public class UserController {
                         user.getEmail().value(),
                         user.getPhone().value()
                 )).toList()
+        );
+    }
+
+    @GetMapping("/by-email")
+    public ResponseEntity<UserDto> getByEmail(@RequestParam String email) {
+        User result = getByEmailUserUseCase.execute(email);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new UserDto(
+                        result.getId(),
+                        result.getSurname(),
+                        result.getFirstName(),
+                        result.getSecondName(),
+                        result.getEmail().value(),
+                        result.getPhone().value()
+                )
         );
     }
     
