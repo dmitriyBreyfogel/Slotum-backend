@@ -3,8 +3,10 @@ package io.slotum.backend.api.http.appointment;
 import io.slotum.backend.application.appointment.*;
 import io.slotum.backend.domain.appointment.Appointment;
 import io.slotum.backend.domain.appointment.AppointmentStatus;
+import io.slotum.backend.error.AppException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -49,12 +51,140 @@ public class AppointmentController {
                             responseCode = "200",
                             description = "Успешное создание слота",
                             content = @Content(
+                                    mediaType = "application/json",
                                     schema = @Schema(implementation = AppointmentDto.class)
                             )
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "Не найден один из объектов, необходимых для создания слота"
+                            description = "Не найден один из объектов, необходимых для создания слота",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = AppException.class),
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Специалист не найден",
+                                                    value = """
+                                                        {
+                                                            "code": "SPECIALIST_NOT_FOUND",
+                                                            "message": "Specialist not found",
+                                                            "details": {"specialistUserId": 1}
+                                                        }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Клиент не найден",
+                                                    value = """
+                                                        {
+                                                            "code": "USER_NOT_FOUND",
+                                                            "message": "User not found",
+                                                            "details": {"customerId": 2}
+                                                        }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Организация не найдена",
+                                                    value = """
+                                                        {
+                                                            "code": "ORGANIZATION_NOT_FOUND",
+                                                            "message": "Organization not found",
+                                                            "details": {"organizationId": 3}
+                                                        }
+                                                    """
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Невалидные входные данные для создания слота",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = AppException.class),
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Невалидный id слота",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_ID",
+                                                                "message": "Invalid appointment id",
+                                                                "details": {"id": -1}
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидное время начала слота записи",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_STARTS_AT",
+                                                                "message": "Appointment startsAt is null"
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидное время конца слота записи",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_ENDS_AT",
+                                                                "message": "Appointment endsAt is null"
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидное время начала и конца слота записи",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_TIME_RANGE",
+                                                                "message": "Appointment endsAt must be after startsAt",
+                                                                "details": {
+                                                                    "startsAt": "2024-01-01T10:00:00",
+                                                                    "endsAt": "2024-01-01T09:00:00"
+                                                                }
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный статус слота",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_STATUS",
+                                                                "message": "Invalid appointment status",
+                                                                "details": {"status": "INVALID"}
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный id специалиста",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_SPECIALIST_ID",
+                                                                "message": "Invalid appointment specialistUserId",
+                                                                "details": {"id": -1}
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный id пользователя",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_CUSTOMER_ID",
+                                                                "message": "Invalid appointment customerId",
+                                                                "details": {"id": -1}
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный id организации",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_ORGANIZATION_ID",
+                                                                "message": "Invalid appointment organizationId",
+                                                                "details": {"id": -1}
+                                                            }
+                                                    """
+                                            )
+                                    }
+                            )
                     )
             }
 
