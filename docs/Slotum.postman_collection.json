@@ -388,6 +388,32 @@
               "response": []
             }
           ]
+        },
+        {
+          "name": "Get user by email",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/by-email?email=ivan@example.com",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "by-email"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "ivan@example.com"
+                }
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
