@@ -5,6 +5,9 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     // Codes
 
+    // Auth
+    AUTH_INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED),
+
     // User
     INVALID_USER_ID(HttpStatus.BAD_REQUEST),
     INVALID_USER_SURNAME(HttpStatus.BAD_REQUEST),

@@ -1,0 +1,55 @@
+package io.slotum.backend.application.auth;
+
+import io.slotum.backend.domain.user.User;
+import io.slotum.backend.domain.user.UserRepository;
+import io.slotum.backend.error.AppException;
+import io.slotum.backend.error.ErrorCode;
+import io.slotum.backend.infrastructure.security.jwt.JwtService;
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
+
+@Service
+public class LoginUseCase {
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
+
+    public LoginUseCase(UserRepository userRepository, JwtService jwtService) {
+        this.userRepository = userRepository;
+        this.jwtService = jwtService;
+    }
+
+    public Result execute(Command command) {
+        if (command.email() == null || command.email().isBlank()) {
+            throw AppException.build(
+                    ErrorCode.AUTH_INVALID_CREDENTIALS,
+                    "Invalid credentials"
+            );
+        }
+
+        User user = userRepository.findByEmail(command.email().trim().toLowerCase())
+                .orElseThrow(() -> AppException.build(
+                        ErrorCode.AUTH_INVALID_CREDENTIALS,
+                        "Invalid credentials",
+                        Map.of("email", command.email())
+                ));
+
+        if (!user.matchesPassword(command.password())) {
+            throw AppException.build(
+                    ErrorCode.AUTH_INVALID_CREDENTIALS,
+                    "Invalid credentials",
+                    Map.of("email", command.email())
+            );
+        }
+
+        String accessToken = jwtService.issueAccessToken(user.getId(), user.getEmail().value());
+        return new Result(accessToken, "Bearer");
+    }
+
+    public record Command(String email, String password) {
+    }
+
+    public record Result(String accessToken, String tokenType) {
+    }
+}
+
