@@ -5,6 +5,7 @@ import io.slotum.backend.domain.appointment.Appointment;
 import io.slotum.backend.domain.appointment.AppointmentStatus;
 import io.slotum.backend.error.AppException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -48,7 +49,7 @@ public class AppointmentController {
     @ApiResponses(
             value = {
                     @ApiResponse(
-                            responseCode = "200",
+                            responseCode = "201",
                             description = "Успешное создание слота",
                             content = @Content(
                                     mediaType = "application/json",
@@ -77,7 +78,7 @@ public class AppointmentController {
                                                     value = """
                                                         {
                                                             "code": "USER_NOT_FOUND",
-                                                            "message": "User not found",
+                                                            "message": "User customer not found",
                                                             "details": {"customerId": 2}
                                                         }
                                                     """
@@ -137,8 +138,8 @@ public class AppointmentController {
                                                                 "code": "INVALID_APPOINTMENT_TIME_RANGE",
                                                                 "message": "Appointment endsAt must be after startsAt",
                                                                 "details": {
-                                                                    "startsAt": "2024-01-01T10:00:00",
-                                                                    "endsAt": "2024-01-01T09:00:00"
+                                                                    "startsAt": "2026-03-21T10:00:00",
+                                                                    "endsAt": "2026-03-21T09:00:00"
                                                                 }
                                                             }
                                                     """
@@ -148,8 +149,7 @@ public class AppointmentController {
                                                     value = """
                                                             {
                                                                 "code": "INVALID_APPOINTMENT_STATUS",
-                                                                "message": "Invalid appointment status",
-                                                                "details": {"status": "INVALID"}
+                                                                "message": "Appointment status is null"
                                                             }
                                                     """
                                             ),
@@ -159,7 +159,7 @@ public class AppointmentController {
                                                             {
                                                                 "code": "INVALID_APPOINTMENT_SPECIALIST_ID",
                                                                 "message": "Invalid appointment specialistUserId",
-                                                                "details": {"id": -1}
+                                                                "details": {"specialistUserId": -1}
                                                             }
                                                     """
                                             ),
@@ -169,7 +169,7 @@ public class AppointmentController {
                                                             {
                                                                 "code": "INVALID_APPOINTMENT_CUSTOMER_ID",
                                                                 "message": "Invalid appointment customerId",
-                                                                "details": {"id": -1}
+                                                                "details": {"customerId": -1}
                                                             }
                                                     """
                                             ),
@@ -179,7 +179,7 @@ public class AppointmentController {
                                                             {
                                                                 "code": "INVALID_APPOINTMENT_ORGANIZATION_ID",
                                                                 "message": "Invalid appointment organizationId",
-                                                                "details": {"id": -1}
+                                                                "details": {"organizationId": -1}
                                                             }
                                                     """
                                             )
@@ -187,7 +187,6 @@ public class AppointmentController {
                             )
                     )
             }
-
     )
     @PostMapping
     public ResponseEntity<AppointmentDto> create(@RequestBody CreateAppointmentRequest request) {
@@ -215,6 +214,130 @@ public class AppointmentController {
         );
     }
 
+    @Operation(
+            summary = "Получить слот",
+            description = "Возвращает слот по идентификатору"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Успешное получение слота",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = AppointmentDto.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Слот не найден",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = AppException.class),
+                                    examples = @ExampleObject(
+                                            name = "Слот не найден",
+                                            value = """
+                                                    {
+                                                        "code": "APPOINTMENT_NOT_FOUND",
+                                                        "message": "Appointment not found",
+                                                        "details": {"id": 1}
+                                                    }
+                                            """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Невалидные данные слота",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = AppException.class),
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Невалидный id слота",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_ID",
+                                                                "message": "Invalid appointment id",
+                                                                "details": {"id": -1}
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидное время начала слота записи",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_STARTS_AT",
+                                                                "message": "Appointment startsAt is null"
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидное время конца слота записи",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_ENDS_AT",
+                                                                "message": "Appointment endsAt is null"
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидное время начала и конца слота записи",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_TIME_RANGE",
+                                                                "message": "Appointment endsAt must be after startsAt",
+                                                                "details": {
+                                                                    "startsAt": "2026-03-21T10:00:00",
+                                                                    "endsAt": "2026-03-21T09:00:00"
+                                                                }
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный статус слота",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_STATUS",
+                                                                "message": "Appointment status is null"
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный id специалиста",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_SPECIALIST_ID",
+                                                                "message": "Invalid appointment specialistUserId",
+                                                                "details": {"specialistUserId": -1}
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный id пользователя",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_CUSTOMER_ID",
+                                                                "message": "Invalid appointment customerId",
+                                                                "details": {"customerId": -1}
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный id организации",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_ORGANIZATION_ID",
+                                                                "message": "Invalid appointment organizationId",
+                                                                "details": {"organizationId": -1}
+                                                            }
+                                                    """
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentDto> getAppointment(@PathVariable("id") Long id) {
         Appointment result = getAppointmentUseCase.execute(id);
@@ -232,6 +355,112 @@ public class AppointmentController {
         );
     }
 
+    @Operation(
+            summary = "Получить список слотов",
+            description = "Возвращает список всех слотов"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Успешное получение списка слотов",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = AppointmentDto.class))
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Невалидные данные одного из слотов",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = AppException.class),
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Невалидный id слота",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_ID",
+                                                                "message": "Invalid appointment id",
+                                                                "details": {"id": -1}
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидное время начала слота записи",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_STARTS_AT",
+                                                                "message": "Appointment startsAt is null"
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидное время конца слота записи",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_ENDS_AT",
+                                                                "message": "Appointment endsAt is null"
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидное время начала и конца слота записи",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_TIME_RANGE",
+                                                                "message": "Appointment endsAt must be after startsAt",
+                                                                "details": {
+                                                                    "startsAt": "2026-03-21T10:00:00",
+                                                                    "endsAt": "2026-03-21T09:00:00"
+                                                                }
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный статус слота",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_STATUS",
+                                                                "message": "Appointment status is null"
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный id специалиста",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_SPECIALIST_ID",
+                                                                "message": "Invalid appointment specialistUserId",
+                                                                "details": {"specialistUserId": -1}
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный id пользователя",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_CUSTOMER_ID",
+                                                                "message": "Invalid appointment customerId",
+                                                                "details": {"customerId": -1}
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный id организации",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_ORGANIZATION_ID",
+                                                                "message": "Invalid appointment organizationId",
+                                                                "details": {"organizationId": -1}
+                                                            }
+                                                    """
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
     @GetMapping()
     public ResponseEntity<List<AppointmentDto>> getAllAppointments() {
         List<Appointment> result = getAllAppointmentsUseCase.execute();
@@ -249,6 +478,130 @@ public class AppointmentController {
         );
     }
 
+    @Operation(
+            summary = "Удалить слот",
+            description = "Удаляет слот по идентификатору"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Успешное удаление слота",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = AppointmentDto.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Слот не найден",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = AppException.class),
+                                    examples = @ExampleObject(
+                                            name = "Слот не найден",
+                                            value = """
+                                                    {
+                                                        "code": "APPOINTMENT_NOT_FOUND",
+                                                        "message": "Appointment not found",
+                                                        "details": {"id": 1}
+                                                    }
+                                            """
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Невалидные данные слота",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = AppException.class),
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Невалидный id слота",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_ID",
+                                                                "message": "Invalid appointment id",
+                                                                "details": {"id": -1}
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидное время начала слота записи",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_STARTS_AT",
+                                                                "message": "Appointment startsAt is null"
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидное время конца слота записи",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_ENDS_AT",
+                                                                "message": "Appointment endsAt is null"
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидное время начала и конца слота записи",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_TIME_RANGE",
+                                                                "message": "Appointment endsAt must be after startsAt",
+                                                                "details": {
+                                                                    "startsAt": "2026-03-21T10:00:00",
+                                                                    "endsAt": "2026-03-21T09:00:00"
+                                                                }
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный статус слота",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_STATUS",
+                                                                "message": "Appointment status is null"
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный id специалиста",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_SPECIALIST_ID",
+                                                                "message": "Invalid appointment specialistUserId",
+                                                                "details": {"specialistUserId": -1}
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный id пользователя",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_CUSTOMER_ID",
+                                                                "message": "Invalid appointment customerId",
+                                                                "details": {"customerId": -1}
+                                                            }
+                                                    """
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Невалидный id организации",
+                                                    value = """
+                                                            {
+                                                                "code": "INVALID_APPOINTMENT_ORGANIZATION_ID",
+                                                                "message": "Invalid appointment organizationId",
+                                                                "details": {"organizationId": -1}
+                                                            }
+                                                    """
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<AppointmentDto> deleteAppointment(@PathVariable("id") Long id) {
         Appointment result = deleteByIdAppointmentUseCase.execute(id);
@@ -266,6 +619,19 @@ public class AppointmentController {
         );
     }
 
+    @Operation(
+            summary = "Удалить все слоты",
+            description = "Удаляет все слоты"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Успешное удаление всех слотов",
+                            content = @Content
+                    )
+            }
+    )
     @DeleteMapping()
     public ResponseEntity<Void> deleteAllAppointments() {
         deleteAllAppointmentUseCase.execute();
@@ -291,4 +657,3 @@ public class AppointmentController {
             Long organizationId
     ) {}
 }
-
