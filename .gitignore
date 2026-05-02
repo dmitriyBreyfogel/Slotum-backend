@@ -39,3 +39,5 @@ out/
 
 .DS_Store
 .gradle-local
+.gradle-user-home-codex/
+.env
