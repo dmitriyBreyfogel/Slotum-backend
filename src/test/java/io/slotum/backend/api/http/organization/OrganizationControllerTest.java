@@ -2,14 +2,18 @@ package io.slotum.backend.api.http.organization;
 
 import io.slotum.backend.api.http.GlobalExceptionHandler;
 import io.slotum.backend.application.organization.CreateOrganizationUseCase;
+import io.slotum.backend.application.organization.DeleteAllOrganizationUseCase;
+import io.slotum.backend.application.organization.DeleteByIdOrganizationUseCase;
 import io.slotum.backend.application.organization.GetAllOrganizationsUseCase;
 import io.slotum.backend.application.organization.GetOrganizationUseCase;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
+import io.slotum.backend.infrastructure.security.jwt.JwtService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -28,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OrganizationController.class)
+@AutoConfigureMockMvc(addFilters = false)
 @Import(GlobalExceptionHandler.class)
 public class OrganizationControllerTest {
     @Autowired
@@ -44,6 +49,15 @@ public class OrganizationControllerTest {
 
     @MockitoBean
     GetAllOrganizationsUseCase getAllOrganizationsUseCase;
+
+    @MockitoBean
+    DeleteByIdOrganizationUseCase deleteByIdOrganizationUseCase;
+
+    @MockitoBean
+    DeleteAllOrganizationUseCase deleteAllOrganizationUseCase;
+
+    @MockitoBean
+    JwtService jwtService;
 
     @Test
     @DisplayName("Валидное создание организации и возврат CREATED 201")

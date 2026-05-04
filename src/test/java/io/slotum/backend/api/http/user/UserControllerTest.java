@@ -2,13 +2,18 @@ package io.slotum.backend.api.http.user;
 
 import io.slotum.backend.api.http.GlobalExceptionHandler;
 import io.slotum.backend.application.user.CreateUserUseCase;
+import io.slotum.backend.application.user.DeleteAllUserUseCase;
+import io.slotum.backend.application.user.DeleteByIdUserUseCase;
 import io.slotum.backend.application.user.GetAllUsersUseCase;
+import io.slotum.backend.application.user.GetByEmailUserUseCase;
 import io.slotum.backend.application.user.GetUserUseCase;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
+import io.slotum.backend.infrastructure.security.jwt.JwtService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -28,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
+@AutoConfigureMockMvc(addFilters = false)
 @Import(GlobalExceptionHandler.class)
 public class UserControllerTest {
     @Autowired
@@ -44,6 +50,18 @@ public class UserControllerTest {
 
     @MockitoBean
     GetAllUsersUseCase getAllUsersUseCase;
+
+    @MockitoBean
+    DeleteByIdUserUseCase deleteByIdUserUseCase;
+
+    @MockitoBean
+    DeleteAllUserUseCase deleteAllUserUseCase;
+
+    @MockitoBean
+    GetByEmailUserUseCase getByEmailUserUseCase;
+
+    @MockitoBean
+    JwtService jwtService;
 
     @Test
     @DisplayName("Валидное создание через ручку и возврат CREATED 201")
