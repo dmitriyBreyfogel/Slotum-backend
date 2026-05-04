@@ -26,7 +26,7 @@ public class MeController {
     ) {
           CreateSpecialistUseCase.Result result = createSpecialistUseCase.execute(
                   new CreateSpecialistUseCase.Command(
-                          request.userId(),
+                          currentUser.userId(),
                           request.description(),
                           request.grade()
                   )
