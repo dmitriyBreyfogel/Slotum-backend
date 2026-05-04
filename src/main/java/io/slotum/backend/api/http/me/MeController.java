@@ -42,7 +42,6 @@ public class MeController {
     }
 
     public record CreateSpecialistRequest(
-            Long userId,
             String description,
             Double grade
     ) {}
