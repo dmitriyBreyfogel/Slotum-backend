@@ -19,6 +19,12 @@ public class OrganizationMemberJpa {
 
     protected OrganizationMemberJpa() {}
 
+    public OrganizationMemberJpa(Long organizationId, Long specialistUserId) {
+        id = new OrganizationMemberId();
+        id.setOrganizationId(organizationId);
+        id.setSpecialistId(specialistUserId);
+    }
+
     // Getters
     public OrganizationMemberId getId() {
         return id;
