@@ -4,7 +4,7 @@ import io.slotum.backend.domain.specialist.Specialist;
 
 import java.util.List;
 
-public interface OrganizationMembersRepository {
+public interface OrganizationMemberRepository {
     boolean exists(Long organizationId, Long specialistUserId);
 
     void add(Long organizationId, Long specialistUserId);
