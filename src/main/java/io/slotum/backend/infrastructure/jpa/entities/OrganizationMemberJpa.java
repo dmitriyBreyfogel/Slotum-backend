@@ -20,9 +20,7 @@ public class OrganizationMemberJpa {
     protected OrganizationMemberJpa() {}
 
     public OrganizationMemberJpa(Long organizationId, Long specialistUserId) {
-        id = new OrganizationMemberId();
-        id.setOrganizationId(organizationId);
-        id.setSpecialistId(specialistUserId);
+        this.id = new OrganizationMemberId(organizationId, specialistUserId);
     }
 
     // Getters
@@ -46,6 +44,13 @@ public class OrganizationMemberJpa {
 
         @Column(name = "specialist_id")
         private Long specialistId;
+
+        protected OrganizationMemberId() {}
+
+        public OrganizationMemberId(Long organizationId, Long specialistId) {
+            this.organizationId = organizationId;
+            this.specialistId = specialistId;
+        }
 
         public Long getOrganizationId() {
             return organizationId;
