@@ -7,9 +7,9 @@ import java.util.List;
 public interface OrganizationMemberRepository {
     boolean exists(Long organizationId, Long specialistUserId);
 
-    void add(Long organizationId, Long specialistUserId);
+    OrganizationMember save(Long organizationId, Long specialistUserId);
 
-    void remove(Long organizationId, Long specialistUserId);
+    OrganizationMember delete(Long organizationId, Long specialistUserId);
 
     List<Specialist> findSpecialistsByOrganizationId(Long organizationId);
 
