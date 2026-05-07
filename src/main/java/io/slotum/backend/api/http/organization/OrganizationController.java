@@ -2,8 +2,10 @@ package io.slotum.backend.api.http.organization;
 
 import io.slotum.backend.api.http.specialist.SpecialistController;
 import io.slotum.backend.application.organization.*;
+import io.slotum.backend.application.organizationMember.AddSpecialistToOrganizationUseCase;
 import io.slotum.backend.application.organizationMember.GetOrganizationSpecialistsUseCase;
 import io.slotum.backend.domain.organization.Organization;
+import io.slotum.backend.domain.organization.OrganizationMember;
 import io.slotum.backend.domain.specialist.Specialist;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ public class OrganizationController {
     private final DeleteByIdOrganizationUseCase deleteByIdOrganizationUseCase;
     private final DeleteAllOrganizationUseCase deleteAllOrganizationUseCase;
     private final GetOrganizationSpecialistsUseCase getOrganizationSpecialistsUseCase;
+    private final AddSpecialistToOrganizationUseCase addSpecialistToOrganizationUseCase;
 
     public OrganizationController(
             CreateOrganizationUseCase createOrganizationUseCase,
@@ -27,7 +30,8 @@ public class OrganizationController {
             GetAllOrganizationsUseCase getAllOrganizationsUseCase,
             DeleteByIdOrganizationUseCase deleteByIdOrganizationUseCase,
             DeleteAllOrganizationUseCase deleteAllOrganizationUseCase,
-            GetOrganizationSpecialistsUseCase getOrganizationSpecialistsUseCase
+            GetOrganizationSpecialistsUseCase getOrganizationSpecialistsUseCase,
+            AddSpecialistToOrganizationUseCase addSpecialistToOrganizationUseCase
     ) {
         this.createOrganizationUseCase = createOrganizationUseCase;
         this.getOrganizationUseCase = getOrganizationUseCase;
@@ -35,6 +39,7 @@ public class OrganizationController {
         this.deleteByIdOrganizationUseCase = deleteByIdOrganizationUseCase;
         this.deleteAllOrganizationUseCase = deleteAllOrganizationUseCase;
         this.getOrganizationSpecialistsUseCase = getOrganizationSpecialistsUseCase;
+        this.addSpecialistToOrganizationUseCase = addSpecialistToOrganizationUseCase;
     }
 
     @PostMapping
@@ -52,6 +57,21 @@ public class OrganizationController {
                         result.name(),
                         result.description(),
                         result.grade()
+                )
+        );
+    }
+
+    @PostMapping("/{organizationId}/specialists/{specialistUserId}")
+    public ResponseEntity<OrganizationMemberDto> createOrganizationMember(
+            @PathVariable("organizationId") Long organizationId,
+            @PathVariable("specialistUserId") Long specialistUserId
+    ) {
+        OrganizationMember result = addSpecialistToOrganizationUseCase.execute(organizationId, specialistUserId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new OrganizationMemberDto(
+                        result.getOrganizationId(),
+                        result.getSpecialistUserId()
                 )
         );
     }
@@ -127,5 +147,10 @@ public class OrganizationController {
             String name,
             String description,
             Double grade
+    ) {}
+
+    public record OrganizationMemberDto(
+            Long organizationId,
+            Long specialistUserId
     ) {}
 }
