@@ -2,6 +2,7 @@ package io.slotum.backend.api.http.me;
 
 import io.slotum.backend.application.organizationMember.AddSpecialistToOrganizationUseCase;
 import io.slotum.backend.application.organizationMember.GetSpecialistOrganizationsUseCase;
+import io.slotum.backend.application.organizationMember.RemoveSpecialistFromOrganizationUseCase;
 import io.slotum.backend.application.specialist.CreateSpecialistUseCase;
 import io.slotum.backend.domain.organization.Organization;
 import io.slotum.backend.domain.organization.OrganizationMember;
@@ -19,15 +20,18 @@ public class MeController {
     private final CreateSpecialistUseCase createSpecialistUseCase;
     private final GetSpecialistOrganizationsUseCase getSpecialistOrganizationsUseCase;
     private final AddSpecialistToOrganizationUseCase addSpecialistToOrganizationUseCase;
+    private final RemoveSpecialistFromOrganizationUseCase removeSpecialistFromOrganizationUseCase;
 
     public MeController(
             CreateSpecialistUseCase createSpecialistUseCase,
             GetSpecialistOrganizationsUseCase getSpecialistOrganizationsUseCase,
-            AddSpecialistToOrganizationUseCase addSpecialistToOrganizationUseCase
+            AddSpecialistToOrganizationUseCase addSpecialistToOrganizationUseCase,
+            RemoveSpecialistFromOrganizationUseCase removeSpecialistFromOrganizationUseCase
     ) {
         this.createSpecialistUseCase = createSpecialistUseCase;
         this.getSpecialistOrganizationsUseCase = getSpecialistOrganizationsUseCase;
         this.addSpecialistToOrganizationUseCase = addSpecialistToOrganizationUseCase;
+        this.removeSpecialistFromOrganizationUseCase = removeSpecialistFromOrganizationUseCase;
     }
 
     @PostMapping("/specialist")
@@ -76,6 +80,21 @@ public class MeController {
         OrganizationMember result = addSpecialistToOrganizationUseCase.execute(organizationId, currentUser.userId());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
+                new OrganizationMemberDto(
+                        result.getOrganizationId(),
+                        result.getSpecialistUserId()
+                )
+        );
+    }
+
+    @DeleteMapping("/organizations/{organizationId}")
+    public ResponseEntity<OrganizationMemberDto> removeMeFromOrganization(
+            @AuthenticationPrincipal AuthenticatedUser currentUser,
+            @PathVariable("organizationId") Long organizationId
+    ) {
+        OrganizationMember result = removeSpecialistFromOrganizationUseCase.execute(organizationId, currentUser.userId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(
                 new OrganizationMemberDto(
                         result.getOrganizationId(),
                         result.getSpecialistUserId()
