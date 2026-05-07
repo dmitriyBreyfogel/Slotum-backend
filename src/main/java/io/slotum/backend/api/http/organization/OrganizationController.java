@@ -1,6 +1,5 @@
 package io.slotum.backend.api.http.organization;
 
-import io.slotum.backend.api.http.specialist.SpecialistController;
 import io.slotum.backend.application.organization.*;
 import io.slotum.backend.application.organizationMember.AddSpecialistToOrganizationUseCase;
 import io.slotum.backend.application.organizationMember.GetOrganizationSpecialistsUseCase;
@@ -109,11 +108,11 @@ public class OrganizationController {
     }
 
     @GetMapping("/{organizationId}/specialists")
-    public ResponseEntity<List<SpecialistController.SpecialistDto>> getOrganizationSpecialists(@PathVariable("organizationId") Long organizationId) {
+    public ResponseEntity<List<SpecialistDto>> getOrganizationSpecialists(@PathVariable("organizationId") Long organizationId) {
         List<Specialist> result = getOrganizationSpecialistsUseCase.execute(organizationId);
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                result.stream().map(specialist -> new SpecialistController.SpecialistDto(
+                result.stream().map(specialist -> new SpecialistDto(
                         specialist.getUserId(),
                         specialist.getDescription(),
                         specialist.getGrade()
@@ -171,5 +170,11 @@ public class OrganizationController {
     public record OrganizationMemberDto(
             Long organizationId,
             Long specialistUserId
+    ) {}
+
+    public record SpecialistDto(
+            Long specialistUserId,
+            String description,
+            Double grade
     ) {}
 }
