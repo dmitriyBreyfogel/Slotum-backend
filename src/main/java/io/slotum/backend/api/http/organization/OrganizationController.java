@@ -1,7 +1,10 @@
 package io.slotum.backend.api.http.organization;
 
+import io.slotum.backend.api.http.specialist.SpecialistController;
 import io.slotum.backend.application.organization.*;
+import io.slotum.backend.application.organizationMember.GetOrganizationSpecialistsUseCase;
 import io.slotum.backend.domain.organization.Organization;
+import io.slotum.backend.domain.specialist.Specialist;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,19 +19,22 @@ public class OrganizationController {
     private final GetAllOrganizationsUseCase getAllOrganizationsUseCase;
     private final DeleteByIdOrganizationUseCase deleteByIdOrganizationUseCase;
     private final DeleteAllOrganizationUseCase deleteAllOrganizationUseCase;
+    private final GetOrganizationSpecialistsUseCase getOrganizationSpecialistsUseCase;
 
     public OrganizationController(
             CreateOrganizationUseCase createOrganizationUseCase,
             GetOrganizationUseCase getOrganizationUseCase,
             GetAllOrganizationsUseCase getAllOrganizationsUseCase,
             DeleteByIdOrganizationUseCase deleteByIdOrganizationUseCase,
-            DeleteAllOrganizationUseCase deleteAllOrganizationUseCase
+            DeleteAllOrganizationUseCase deleteAllOrganizationUseCase,
+            GetOrganizationSpecialistsUseCase getOrganizationSpecialistsUseCase
     ) {
         this.createOrganizationUseCase = createOrganizationUseCase;
         this.getOrganizationUseCase = getOrganizationUseCase;
         this.getAllOrganizationsUseCase = getAllOrganizationsUseCase;
         this.deleteByIdOrganizationUseCase = deleteByIdOrganizationUseCase;
         this.deleteAllOrganizationUseCase = deleteAllOrganizationUseCase;
+        this.getOrganizationSpecialistsUseCase = getOrganizationSpecialistsUseCase;
     }
 
     @PostMapping
@@ -74,6 +80,19 @@ public class OrganizationController {
                         organization.getName(),
                         organization.getDescription(),
                         organization.getGrade()
+                )).toList()
+        );
+    }
+
+    @GetMapping("/{organizationId}/specialists")
+    public ResponseEntity<List<SpecialistController.SpecialistDto>> getOrganizationSpecialists(@PathVariable("organizationId") Long organizationId) {
+        List<Specialist> result = getOrganizationSpecialistsUseCase.execute(organizationId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                result.stream().map(specialist -> new SpecialistController.SpecialistDto(
+                        specialist.getUserId(),
+                        specialist.getDescription(),
+                        specialist.getGrade()
                 )).toList()
         );
     }
