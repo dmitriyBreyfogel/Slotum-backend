@@ -1,8 +1,10 @@
 package io.slotum.backend.api.http.me;
 
+import io.slotum.backend.application.organizationMember.AddSpecialistToOrganizationUseCase;
 import io.slotum.backend.application.organizationMember.GetSpecialistOrganizationsUseCase;
 import io.slotum.backend.application.specialist.CreateSpecialistUseCase;
 import io.slotum.backend.domain.organization.Organization;
+import io.slotum.backend.domain.organization.OrganizationMember;
 import io.slotum.backend.infrastructure.security.AuthenticatedUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,17 +18,20 @@ import java.util.List;
 public class MeController {
     private final CreateSpecialistUseCase createSpecialistUseCase;
     private final GetSpecialistOrganizationsUseCase getSpecialistOrganizationsUseCase;
+    private final AddSpecialistToOrganizationUseCase addSpecialistToOrganizationUseCase;
 
     public MeController(
             CreateSpecialistUseCase createSpecialistUseCase,
-            GetSpecialistOrganizationsUseCase getSpecialistOrganizationsUseCase
+            GetSpecialistOrganizationsUseCase getSpecialistOrganizationsUseCase,
+            AddSpecialistToOrganizationUseCase addSpecialistToOrganizationUseCase
     ) {
         this.createSpecialistUseCase = createSpecialistUseCase;
         this.getSpecialistOrganizationsUseCase = getSpecialistOrganizationsUseCase;
+        this.addSpecialistToOrganizationUseCase = addSpecialistToOrganizationUseCase;
     }
 
     @PostMapping("/specialist")
-    public ResponseEntity<SpecialistDto> createSpecialist(
+    public ResponseEntity<SpecialistDto> createSpecialistFromMe(
             @AuthenticationPrincipal AuthenticatedUser currentUser,
             @RequestBody CreateSpecialistRequest request
     ) {
@@ -63,6 +68,21 @@ public class MeController {
         );
     }
 
+    @PostMapping("/organizations/{organizationId}")
+    public ResponseEntity<OrganizationMemberDto> addMeToOrganization(
+            @AuthenticationPrincipal AuthenticatedUser currentUser,
+            @PathVariable("organizationId") Long organizationId
+    ) {
+        OrganizationMember result = addSpecialistToOrganizationUseCase.execute(organizationId, currentUser.userId());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new OrganizationMemberDto(
+                        result.getOrganizationId(),
+                        result.getSpecialistUserId()
+                )
+        );
+    }
+
     public record CreateSpecialistRequest(
             String description,
             Double grade
@@ -79,5 +99,10 @@ public class MeController {
             String name,
             String description,
             Double grade
+    ) {}
+
+    public record OrganizationMemberDto(
+            Long organizationId,
+            Long specialistUserId
     ) {}
 }
