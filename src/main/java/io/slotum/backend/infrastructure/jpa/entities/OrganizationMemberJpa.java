@@ -2,6 +2,9 @@ package io.slotum.backend.infrastructure.jpa.entities;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 @Entity
 @Table(name = "organization_members")
 public class OrganizationMemberJpa {
@@ -38,7 +41,7 @@ public class OrganizationMemberJpa {
 
     // Composite key
     @Embeddable
-    public static class OrganizationMemberId {
+    public static class OrganizationMemberId implements Serializable {
         @Column(name = "organization_id")
         private Long organizationId;
 
@@ -66,6 +69,23 @@ public class OrganizationMemberJpa {
 
         public void setSpecialistId(Long specialistId) {
             this.specialistId = specialistId;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof OrganizationMemberId that)) {
+                return false;
+            }
+            return Objects.equals(organizationId, that.organizationId)
+                    && Objects.equals(specialistId, that.specialistId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(organizationId, specialistId);
         }
     }
 }
