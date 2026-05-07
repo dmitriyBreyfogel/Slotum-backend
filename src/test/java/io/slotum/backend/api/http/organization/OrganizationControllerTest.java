@@ -6,6 +6,9 @@ import io.slotum.backend.application.organization.DeleteAllOrganizationUseCase;
 import io.slotum.backend.application.organization.DeleteByIdOrganizationUseCase;
 import io.slotum.backend.application.organization.GetAllOrganizationsUseCase;
 import io.slotum.backend.application.organization.GetOrganizationUseCase;
+import io.slotum.backend.application.organizationMember.AddSpecialistToOrganizationUseCase;
+import io.slotum.backend.application.organizationMember.GetOrganizationSpecialistsUseCase;
+import io.slotum.backend.application.organizationMember.RemoveSpecialistFromOrganizationUseCase;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 import io.slotum.backend.infrastructure.security.jwt.JwtService;
@@ -55,6 +58,15 @@ public class OrganizationControllerTest {
 
     @MockitoBean
     DeleteAllOrganizationUseCase deleteAllOrganizationUseCase;
+
+    @MockitoBean
+    GetOrganizationSpecialistsUseCase getOrganizationSpecialistsUseCase;
+
+    @MockitoBean
+    AddSpecialistToOrganizationUseCase addSpecialistToOrganizationUseCase;
+
+    @MockitoBean
+    RemoveSpecialistFromOrganizationUseCase removeSpecialistFromOrganizationUseCase;
 
     @MockitoBean
     JwtService jwtService;
