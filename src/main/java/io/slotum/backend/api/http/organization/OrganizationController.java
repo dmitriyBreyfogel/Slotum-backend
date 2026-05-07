@@ -173,7 +173,7 @@ public class OrganizationController {
     ) {}
 
     public record SpecialistDto(
-            Long specialistUserId,
+            Long userId,
             String description,
             Double grade
     ) {}
