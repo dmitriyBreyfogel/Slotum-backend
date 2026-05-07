@@ -1,6 +1,6 @@
 package io.slotum.backend.api.http.me;
 
-import io.slotum.backend.application.organizationMember.AddSpecialistToOrganizationUseCase;
+import io.slotum.backend.application.organization.CreateMyOrganizationUseCase;
 import io.slotum.backend.application.organizationMember.GetSpecialistOrganizationsUseCase;
 import io.slotum.backend.application.organizationMember.RemoveSpecialistFromOrganizationUseCase;
 import io.slotum.backend.application.specialist.CreateSpecialistUseCase;
@@ -18,19 +18,19 @@ import java.util.List;
 @RequestMapping("/api/v1/me")
 public class MeController {
     private final CreateSpecialistUseCase createSpecialistUseCase;
+    private final CreateMyOrganizationUseCase createMyOrganizationUseCase;
     private final GetSpecialistOrganizationsUseCase getSpecialistOrganizationsUseCase;
-    private final AddSpecialistToOrganizationUseCase addSpecialistToOrganizationUseCase;
     private final RemoveSpecialistFromOrganizationUseCase removeSpecialistFromOrganizationUseCase;
 
     public MeController(
             CreateSpecialistUseCase createSpecialistUseCase,
+            CreateMyOrganizationUseCase createMyOrganizationUseCase,
             GetSpecialistOrganizationsUseCase getSpecialistOrganizationsUseCase,
-            AddSpecialistToOrganizationUseCase addSpecialistToOrganizationUseCase,
             RemoveSpecialistFromOrganizationUseCase removeSpecialistFromOrganizationUseCase
     ) {
         this.createSpecialistUseCase = createSpecialistUseCase;
+        this.createMyOrganizationUseCase = createMyOrganizationUseCase;
         this.getSpecialistOrganizationsUseCase = getSpecialistOrganizationsUseCase;
-        this.addSpecialistToOrganizationUseCase = addSpecialistToOrganizationUseCase;
         this.removeSpecialistFromOrganizationUseCase = removeSpecialistFromOrganizationUseCase;
     }
 
@@ -56,6 +56,29 @@ public class MeController {
         );
     }
 
+    @PostMapping("/organizations")
+    public ResponseEntity<OrganizationDto> createMyOrganization(
+            @AuthenticationPrincipal AuthenticatedUser currentUser,
+            @RequestBody CreateOrganizationRequest request
+    ) {
+        CreateMyOrganizationUseCase.Result result = createMyOrganizationUseCase.execute(
+                new CreateMyOrganizationUseCase.Command(
+                        currentUser.userId(),
+                        request.name(),
+                        request.description()
+                )
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new OrganizationDto(
+                        result.id(),
+                        result.name(),
+                        result.description(),
+                        result.grade()
+                )
+        );
+    }
+
     @GetMapping("/organizations")
     public ResponseEntity<List<OrganizationDto>> getMyOrganizations(
             @AuthenticationPrincipal AuthenticatedUser currentUser
@@ -69,21 +92,6 @@ public class MeController {
                         organization.getDescription(),
                         organization.getGrade()
                 )).toList()
-        );
-    }
-
-    @PostMapping("/organizations/{organizationId}")
-    public ResponseEntity<OrganizationMemberDto> addMeToOrganization(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @PathVariable("organizationId") Long organizationId
-    ) {
-        OrganizationMember result = addSpecialistToOrganizationUseCase.execute(organizationId, currentUser.userId());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                new OrganizationMemberDto(
-                        result.getOrganizationId(),
-                        result.getSpecialistUserId()
-                )
         );
     }
 
@@ -105,6 +113,11 @@ public class MeController {
     public record CreateSpecialistRequest(
             String description,
             Double grade
+    ) {}
+
+    public record CreateOrganizationRequest(
+            String name,
+            String description
     ) {}
 
     public record SpecialistDto(
