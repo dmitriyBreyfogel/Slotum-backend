@@ -42,6 +42,7 @@ This starts:
 - `backend`
 
 The backend will be available on `http://localhost:8081`.
+PostgreSQL is exposed to the host on `localhost:5433` by default, so it can be inspected from pgAdmin without occupying a local PostgreSQL on `5432`.
 
 ## Useful commands
 
