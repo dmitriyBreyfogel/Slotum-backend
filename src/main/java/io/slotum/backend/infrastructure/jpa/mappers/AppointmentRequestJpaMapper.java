@@ -1,0 +1,47 @@
+package io.slotum.backend.infrastructure.jpa.mappers;
+
+import io.slotum.backend.domain.appointmentRequest.AppointmentRequest;
+import io.slotum.backend.infrastructure.jpa.entities.AppointmentJpa;
+import io.slotum.backend.infrastructure.jpa.entities.AppointmentRequestJpa;
+import io.slotum.backend.infrastructure.jpa.entities.UserJpa;
+
+public final class AppointmentRequestJpaMapper {
+    private AppointmentRequestJpaMapper() {
+    }
+
+    public static AppointmentRequest toDomain(AppointmentRequestJpa source) {
+        if (source == null) {
+            throw new IllegalArgumentException("AppointmentRequestJpa source is null");
+        }
+
+        return AppointmentRequest.restore(
+                source.getId(),
+                source.getAppointment().getId(),
+                source.getCustomer().getId(),
+                source.getStatus(),
+                source.getMessage(),
+                source.getCreatedAt(),
+                source.getDecidedAt()
+        );
+    }
+
+    public static AppointmentRequestJpa toJpa(
+            AppointmentRequest source,
+            AppointmentJpa appointment,
+            UserJpa customer
+    ) {
+        if (source == null) {
+            throw new IllegalArgumentException("AppointmentRequest source is null");
+        }
+
+        return new AppointmentRequestJpa(
+                source.getId(),
+                appointment,
+                customer,
+                source.getStatus(),
+                source.getMessage(),
+                source.getCreatedAt(),
+                source.getDecidedAt()
+        );
+    }
+}
