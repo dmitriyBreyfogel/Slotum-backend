@@ -55,13 +55,15 @@ public class CreateAppointmentUseCase {
             );
         }
 
-        Optional<User> user = userRepository.findById(command.customerId);
-        if (user.isEmpty()) {
-            throw AppException.build(
-                    ErrorCode.USER_NOT_FOUND,
-                    "User customer not found",
-                    Map.of("customerId", command.customerId)
-            );
+        if (appointmentToSave.getCustomerId() != null) {
+            Optional<User> user = userRepository.findById(command.customerId);
+            if (user.isEmpty()) {
+                throw AppException.build(
+                        ErrorCode.USER_NOT_FOUND,
+                        "User customer not found",
+                        Map.of("customerId", command.customerId)
+                );
+            }
         }
 
         Optional<Organization> organization = organizationRepository.findById(command.organizationId);

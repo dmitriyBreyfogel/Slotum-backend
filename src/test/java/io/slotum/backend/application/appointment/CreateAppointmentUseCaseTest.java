@@ -329,7 +329,59 @@ public class CreateAppointmentUseCaseTest {
     }
 
     @Test
-    @DisplayName("Сохраняет новый appointment и возвращает данные из сохранённой сущности")
+    @DisplayName("Creates free appointment without customer")
+    void savesFreeAppointmentWithoutCustomer() {
+        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
+        UserRepository userRepository = mock(UserRepository.class);
+        OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
+        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
+                appointmentRepository,
+                specialistRepository,
+                userRepository,
+                organizationRepository
+        );
+
+        LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
+        LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
+
+        when(specialistRepository.findSpecialistByUserId(10L)).thenReturn(Optional.of(mock(Specialist.class)));
+        when(organizationRepository.findById(30L)).thenReturn(Optional.of(mock(Organization.class)));
+        when(appointmentRepository.save(any())).thenReturn(
+                Appointment.restore(
+                        1L,
+                        startsAt,
+                        endsAt,
+                        AppointmentStatus.FREE,
+                        10L,
+                        null,
+                        30L
+                )
+        );
+
+        CreateAppointmentUseCase.Result result = useCase.execute(
+                new CreateAppointmentUseCase.Command(
+                        startsAt,
+                        endsAt,
+                        AppointmentStatus.FREE,
+                        10L,
+                        null,
+                        30L
+                )
+        );
+
+        assertEquals(1L, result.id());
+        assertEquals(AppointmentStatus.FREE, result.status());
+        assertNull(result.customerId());
+        verify(specialistRepository).findSpecialistByUserId(10L);
+        verify(organizationRepository).findById(30L);
+        verify(appointmentRepository).save(any());
+        verifyNoInteractions(userRepository);
+        verifyNoMoreInteractions(appointmentRepository, specialistRepository, organizationRepository);
+    }
+
+    @Test
+    @DisplayName("РЎРѕС…СЂР°РЅСЏРµС‚ РЅРѕРІС‹Р№ appointment Рё РІРѕР·РІСЂР°С‰Р°РµС‚ РґР°РЅРЅС‹Рµ РёР· СЃРѕС…СЂР°РЅС‘РЅРЅРѕР№ СЃСѓС‰РЅРѕСЃС‚Рё")
     void savesNewAppointmentAndReturnsData() {
         AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
         SpecialistRepository specialistRepository = mock(SpecialistRepository.class);

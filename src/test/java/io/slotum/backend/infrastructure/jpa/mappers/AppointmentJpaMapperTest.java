@@ -76,7 +76,7 @@ public class AppointmentJpaMapperTest {
                 endsAt,
                 AppointmentStatus.FREE,
                 10L,
-                20L,
+                null,
                 30L
         );
 
@@ -91,8 +91,31 @@ public class AppointmentJpaMapperTest {
         assertEquals(endsAt, jpa.getEndsAt());
         assertEquals(AppointmentStatus.FREE, jpa.getStatus());
         assertSame(specialist, jpa.getSpecialist());
-        assertSame(customer, jpa.getCustomer());
+        assertNull(jpa.getCustomer());
         assertSame(organization, jpa.getOrganization());
+    }
+
+    @Test
+    @DisplayName("toDomain: maps free appointment without customer")
+    void toDomainMapsFreeAppointmentWithoutCustomer() {
+        LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
+        LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
+
+        AppointmentJpa jpa = new AppointmentJpa(
+                1L,
+                startsAt,
+                endsAt,
+                AppointmentStatus.FREE,
+                new SpecialistJpa(10L, "Some", 4.5),
+                null,
+                new OrganizationJpa(30L, "Org", "Desc", 0.0)
+        );
+
+        Appointment appointment = AppointmentJpaMapper.toDomain(jpa);
+
+        assertEquals(1L, appointment.getId());
+        assertEquals(AppointmentStatus.FREE, appointment.getStatus());
+        assertNull(appointment.getCustomerId());
     }
 
     @Test

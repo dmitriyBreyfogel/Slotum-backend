@@ -55,7 +55,9 @@ public class AppointmentRepositoryJpaAdapter implements AppointmentRepository {
     @Override
     public Appointment save(Appointment appointment) {
         SpecialistJpa specialistRef = entityManager.getReference(SpecialistJpa.class, appointment.getSpecialistUserId());
-        UserJpa customerRef = entityManager.getReference(UserJpa.class, appointment.getCustomerId());
+        UserJpa customerRef = appointment.getCustomerId() == null
+                ? null
+                : entityManager.getReference(UserJpa.class, appointment.getCustomerId());
         OrganizationJpa organizationRef = entityManager.getReference(OrganizationJpa.class, appointment.getOrganizationId());
 
         return AppointmentJpaMapper.toDomain(

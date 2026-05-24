@@ -55,6 +55,49 @@ public class AppointmentTest {
     }
 
     @Test
+    @DisplayName("create: creates free appointment without customer")
+    void createCreatesFreeAppointmentWithoutCustomer() {
+        LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
+        LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
+
+        Appointment appointment = Appointment.create(
+                startsAt,
+                endsAt,
+                AppointmentStatus.FREE,
+                10L,
+                null,
+                30L
+        );
+
+        assertEquals(AppointmentStatus.FREE, appointment.getStatus());
+        assertNull(appointment.getCustomerId());
+    }
+
+    @Test
+    @DisplayName("book: returns booked appointment with customer")
+    void bookReturnsBookedAppointmentWithCustomer() {
+        LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
+        LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
+        Appointment appointment = Appointment.restore(
+                1L,
+                startsAt,
+                endsAt,
+                AppointmentStatus.FREE,
+                10L,
+                null,
+                30L
+        );
+
+        Appointment booked = appointment.book(20L);
+
+        assertEquals(1L, booked.getId());
+        assertEquals(AppointmentStatus.BOOKED, booked.getStatus());
+        assertEquals(20L, booked.getCustomerId());
+        assertEquals(10L, booked.getSpecialistUserId());
+        assertEquals(30L, booked.getOrganizationId());
+    }
+
+    @Test
     @DisplayName("restore: id = 0 is invalid")
     void rejectsZeroId() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
@@ -223,6 +266,25 @@ public class AppointmentTest {
 
         assertEquals(ErrorCode.INVALID_APPOINTMENT_SPECIALIST_ID, ex.getCode());
         assertEquals(0L, ex.getDetails().get("specialistUserId"));
+    }
+
+    @Test
+    @DisplayName("create: free appointment with customerId is invalid")
+    void rejectsCustomerIdForFreeAppointment() {
+        LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
+        LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
+
+        AppException ex = assertThrows(AppException.class, () -> Appointment.create(
+                startsAt,
+                endsAt,
+                AppointmentStatus.FREE,
+                10L,
+                20L,
+                30L
+        ));
+
+        assertEquals(ErrorCode.INVALID_APPOINTMENT_CUSTOMER_ID, ex.getCode());
+        assertEquals(20L, ex.getDetails().get("customerId"));
     }
 
     @Test

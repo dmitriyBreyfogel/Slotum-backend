@@ -21,7 +21,7 @@ public final class AppointmentJpaMapper {
                 source.getEndsAt(),
                 source.getStatus(),
                 source.getSpecialist().getUserId(),
-                source.getCustomer().getId(),
+                source.getCustomer() == null ? null : source.getCustomer().getId(),
                 source.getOrganization().getId()
         );
     }
@@ -42,7 +42,7 @@ public final class AppointmentJpaMapper {
                 source.getEndsAt(),
                 source.getStatus(),
                 specialist,
-                customer,
+                source.getCustomerId() == null ? null : customer,
                 organization
         );
     }

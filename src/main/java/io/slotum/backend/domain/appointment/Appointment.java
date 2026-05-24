@@ -73,8 +73,20 @@ public final class Appointment {
                 normalizedEndsAt,
                 normalizedStatus,
                 validateSpecialistUserId(specialistUserId),
-                validateCustomerId(customerId),
+                validateCustomerId(customerId, normalizedStatus),
                 validateOrganizationId(organizationId)
+        );
+    }
+
+    public Appointment book(Long customerId) {
+        return restore(
+                id,
+                startsAt,
+                endsAt,
+                AppointmentStatus.BOOKED,
+                specialistUserId,
+                customerId,
+                organizationId
         );
     }
 
@@ -170,17 +182,34 @@ public final class Appointment {
         return specialistUserId;
     }
 
-    private static Long validateCustomerId(Long customerId) {
-        if (customerId == null || customerId <= 0) {
-            Map<String, Object> details = (customerId == null)
-                    ? Map.of()
-                    : Map.of("customerId", customerId);
+    private static Long validateCustomerId(Long customerId, AppointmentStatus status) {
+        if (status == AppointmentStatus.FREE) {
+            if (customerId != null) {
+                throw AppException.build(
+                        ErrorCode.INVALID_APPOINTMENT_CUSTOMER_ID,
+                        "Free appointment must not have customerId",
+                        Map.of("customerId", customerId)
+                );
+            }
+            return null;
+        }
+
+        if (status == AppointmentStatus.BOOKED && customerId == null) {
             throw AppException.build(
                     ErrorCode.INVALID_APPOINTMENT_CUSTOMER_ID,
                     "Invalid appointment customerId",
-                    details
+                    Map.of()
             );
         }
+
+        if (customerId != null && customerId <= 0) {
+            throw AppException.build(
+                    ErrorCode.INVALID_APPOINTMENT_CUSTOMER_ID,
+                    "Invalid appointment customerId",
+                    Map.of("customerId", customerId)
+            );
+        }
+
         return customerId;
     }
 

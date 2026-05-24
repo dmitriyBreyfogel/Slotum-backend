@@ -28,7 +28,7 @@ public class AppointmentJpa {
     private SpecialistJpa specialist;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private UserJpa customer;
 
     @ManyToOne
