@@ -47,7 +47,7 @@ public class OrganizationController {
 
     @PostMapping
     public ResponseEntity<OrganizationDto> create(@RequestBody CreateOrganizationRequest request) {
-        CreateOrganizationUseCase.Result result = createOrganizationUseCase.execute(
+        Organization result = createOrganizationUseCase.execute(
                 new CreateOrganizationUseCase.Command(
                         request.name,
                         request.description
@@ -56,10 +56,10 @@ public class OrganizationController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new OrganizationDto(
-                        result.id(),
-                        result.name(),
-                        result.description(),
-                        result.grade()
+                        result.getId(),
+                        result.getName(),
+                        result.getDescription(),
+                        result.getGrade()
                 )
         );
     }

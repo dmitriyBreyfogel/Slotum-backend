@@ -21,7 +21,7 @@ public class CreateSpecialistUseCase {
         this.userRepository = userRepository;
     }
 
-    public Result execute(Command command) {
+    public Specialist execute(Command command) {
         Specialist specialistToSave = Specialist.create(
                 command.userId,
                 command.description,
@@ -46,12 +46,7 @@ public class CreateSpecialistUseCase {
             );
         }
 
-        Specialist savedSpecialist = specialistRepository.save(specialistToSave);
-        return new Result(
-                savedSpecialist.getUserId(),
-                savedSpecialist.getDescription(),
-                savedSpecialist.getGrade()
-        );
+        return specialistRepository.save(specialistToSave);
     }
 
     public record Command(
@@ -60,9 +55,4 @@ public class CreateSpecialistUseCase {
             Double grade
     ) {}
 
-    public record Result(
-            Long userId,
-            String description,
-            Double grade
-    ) {}
 }

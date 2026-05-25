@@ -17,7 +17,7 @@ public class CreateOrganizationUseCase {
         this.organizationRepository = organizationRepository;
     }
 
-    public Result execute(Command command) {
+    public Organization execute(Command command) {
         Organization organizationToSave = Organization.create(
                 null,
                 command.name,
@@ -34,14 +34,7 @@ public class CreateOrganizationUseCase {
             );
         }
 
-        Organization organization = organizationRepository.save(organizationToSave);
-
-        return new Result(
-                organization.getId(),
-                organization.getName(),
-                organization.getDescription(),
-                organization.getGrade()
-        );
+        return organizationRepository.save(organizationToSave);
     }
 
     public record Command(
@@ -49,10 +42,4 @@ public class CreateOrganizationUseCase {
             String description
     ) {}
 
-    public record Result(
-            Long id,
-            String name,
-            String description,
-            Double grade
-    ) {}
 }

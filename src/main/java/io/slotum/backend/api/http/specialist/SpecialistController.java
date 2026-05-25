@@ -38,7 +38,7 @@ public class SpecialistController {
 
     @PostMapping
     public ResponseEntity<SpecialistDto> createSpecialist(@RequestBody RequestCreateSpecialist specialist) {
-        CreateSpecialistUseCase.Result result = createSpecialistUseCase.execute(
+        Specialist result = createSpecialistUseCase.execute(
                 new CreateSpecialistUseCase.Command(
                     specialist.userId,
                     specialist.description,
@@ -48,9 +48,9 @@ public class SpecialistController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new SpecialistDto(
-                    result.userId(),
-                    result.description(),
-                    result.grade()
+                    result.getUserId(),
+                    result.getDescription(),
+                    result.getGrade()
                 )
         );
     }

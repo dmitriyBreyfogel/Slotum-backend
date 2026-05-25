@@ -36,7 +36,7 @@ public class CreateAppointmentUseCase {
         this.organizationRepository = organizationRepository;
     }
 
-    public Result execute(Command command) {
+    public Appointment execute(Command command) {
         Appointment appointmentToSave = Appointment.create(
                 command.startsAt,
                 command.endsAt,
@@ -84,17 +84,7 @@ public class CreateAppointmentUseCase {
             );
         }
 
-        Appointment savedAppointment = appointmentRepository.save(appointmentToSave);
-
-        return new Result(
-                savedAppointment.getId(),
-                savedAppointment.getStartsAt(),
-                savedAppointment.getEndsAt(),
-                savedAppointment.getStatus(),
-                savedAppointment.getSpecialistUserId(),
-                savedAppointment.getCustomerId(),
-                savedAppointment.getOrganizationId()
-        );
+        return appointmentRepository.save(appointmentToSave);
     }
 
     public record Command(
@@ -106,13 +96,4 @@ public class CreateAppointmentUseCase {
             Long organizationId
     ) {}
 
-    public record Result(
-            Long id,
-            LocalDateTime startsAt,
-            LocalDateTime endsAt,
-            AppointmentStatus status,
-            Long specialistUserId,
-            Long customerId,
-            Long organizationId
-    ) {}
 }

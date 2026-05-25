@@ -6,6 +6,7 @@ import io.slotum.backend.application.organizationMember.RemoveSpecialistFromOrga
 import io.slotum.backend.application.specialist.CreateSpecialistUseCase;
 import io.slotum.backend.domain.organization.Organization;
 import io.slotum.backend.domain.organization.OrganizationMember;
+import io.slotum.backend.domain.specialist.Specialist;
 import io.slotum.backend.infrastructure.security.AuthenticatedUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,7 @@ public class MeController {
             @AuthenticationPrincipal AuthenticatedUser currentUser,
             @RequestBody CreateSpecialistRequest request
     ) {
-          CreateSpecialistUseCase.Result result = createSpecialistUseCase.execute(
+          Specialist result = createSpecialistUseCase.execute(
                   new CreateSpecialistUseCase.Command(
                           currentUser.userId(),
                           request.description(),
@@ -49,9 +50,9 @@ public class MeController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new SpecialistDto(
-                        result.userId(),
-                        result.description(),
-                        result.grade()
+                        result.getUserId(),
+                        result.getDescription(),
+                        result.getGrade()
                 )
         );
     }
@@ -61,7 +62,7 @@ public class MeController {
             @AuthenticationPrincipal AuthenticatedUser currentUser,
             @RequestBody CreateOrganizationRequest request
     ) {
-        CreateMyOrganizationUseCase.Result result = createMyOrganizationUseCase.execute(
+        Organization result = createMyOrganizationUseCase.execute(
                 new CreateMyOrganizationUseCase.Command(
                         currentUser.userId(),
                         request.name(),
@@ -71,10 +72,10 @@ public class MeController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new OrganizationDto(
-                        result.id(),
-                        result.name(),
-                        result.description(),
-                        result.grade()
+                        result.getId(),
+                        result.getName(),
+                        result.getDescription(),
+                        result.getGrade()
                 )
         );
     }

@@ -37,7 +37,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDto> create(@RequestBody CreateUserRequest request) {
-        CreateUserUseCase.Result result = createUserUseCase.execute(
+        User result = createUserUseCase.execute(
                 new CreateUserUseCase.Command(
                         request.surname(),
                         request.firstName(),
@@ -50,12 +50,12 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new UserDto(
-                        result.userId(),
-                        result.surname(),
-                        result.firstName(),
-                        result.secondName(),
-                        result.email(),
-                        result.phone()
+                        result.getId(),
+                        result.getSurname(),
+                        result.getFirstName(),
+                        result.getSecondName(),
+                        result.getEmail().value(),
+                        result.getPhone().value()
                 )
         );
     }

@@ -61,7 +61,7 @@ public class AppointmentRequestController {
             @AuthenticationPrincipal AuthenticatedUser currentUser,
             @RequestBody CreateAppointmentRequest request
     ) {
-        CreateAppointmentRequestUseCase.Result result = createAppointmentRequestUseCase.execute(
+        AppointmentRequest result = createAppointmentRequestUseCase.execute(
                 new CreateAppointmentRequestUseCase.Command(
                         request.appointmentId(),
                         currentUser.userId(),
@@ -138,18 +138,6 @@ public class AppointmentRequestController {
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 toDto(cancelAppointmentRequestUseCase.execute(id, currentUser.userId()))
-        );
-    }
-
-    private static AppointmentRequestDto toDto(CreateAppointmentRequestUseCase.Result source) {
-        return new AppointmentRequestDto(
-                source.id(),
-                source.appointmentId(),
-                source.customerId(),
-                source.status(),
-                source.message(),
-                source.createdAt(),
-                source.decidedAt()
         );
     }
 

@@ -5,7 +5,6 @@ import io.slotum.backend.domain.appointment.AppointmentRepository;
 import io.slotum.backend.domain.appointment.AppointmentStatus;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequest;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequestRepository;
-import io.slotum.backend.domain.appointmentRequest.AppointmentRequestStatus;
 import io.slotum.backend.domain.user.User;
 import io.slotum.backend.domain.user.UserRepository;
 import io.slotum.backend.error.AppException;
@@ -32,7 +31,7 @@ public class CreateAppointmentRequestUseCase {
         this.userRepository = userRepository;
     }
 
-    public Result execute(Command command) {
+    public AppointmentRequest execute(Command command) {
         AppointmentRequest appointmentRequestToSave = AppointmentRequest.create(
                 command.appointmentId,
                 command.customerId,
@@ -83,17 +82,7 @@ public class CreateAppointmentRequestUseCase {
             );
         }
 
-        AppointmentRequest savedAppointmentRequest = appointmentRequestRepository.save(appointmentRequestToSave);
-
-        return new Result(
-                savedAppointmentRequest.getId(),
-                savedAppointmentRequest.getAppointmentId(),
-                savedAppointmentRequest.getCustomerId(),
-                savedAppointmentRequest.getStatus(),
-                savedAppointmentRequest.getMessage(),
-                savedAppointmentRequest.getCreatedAt(),
-                savedAppointmentRequest.getDecidedAt()
-        );
+        return appointmentRequestRepository.save(appointmentRequestToSave);
     }
 
     public record Command(
@@ -102,13 +91,4 @@ public class CreateAppointmentRequestUseCase {
             String message
     ) {}
 
-    public record Result(
-            Long id,
-            Long appointmentId,
-            Long customerId,
-            AppointmentRequestStatus status,
-            String message,
-            LocalDateTime createdAt,
-            LocalDateTime decidedAt
-    ) {}
 }

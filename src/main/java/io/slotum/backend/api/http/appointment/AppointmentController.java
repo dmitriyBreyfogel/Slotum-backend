@@ -190,7 +190,7 @@ public class AppointmentController {
     )
     @PostMapping
     public ResponseEntity<AppointmentDto> create(@RequestBody CreateAppointmentRequest request) {
-        CreateAppointmentUseCase.Result result = createAppointmentUseCase.execute(
+        Appointment result = createAppointmentUseCase.execute(
                 new CreateAppointmentUseCase.Command(
                         request.startsAt,
                         request.endsAt,
@@ -203,13 +203,13 @@ public class AppointmentController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new AppointmentDto(
-                        result.id(),
-                        result.startsAt(),
-                        result.endsAt(),
-                        result.status(),
-                        result.specialistUserId(),
-                        result.customerId(),
-                        result.organizationId()
+                        result.getId(),
+                        result.getStartsAt(),
+                        result.getEndsAt(),
+                        result.getStatus(),
+                        result.getSpecialistUserId(),
+                        result.getCustomerId(),
+                        result.getOrganizationId()
                 )
         );
     }

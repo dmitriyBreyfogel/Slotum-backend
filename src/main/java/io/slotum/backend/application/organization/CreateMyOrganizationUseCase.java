@@ -31,7 +31,7 @@ public class CreateMyOrganizationUseCase {
     }
 
     @Transactional
-    public Result execute(Command command) {
+    public Organization execute(Command command) {
         Organization organizationToSave = Organization.create(
                 null,
                 command.name,
@@ -67,12 +67,7 @@ public class CreateMyOrganizationUseCase {
                 organizationMember.getSpecialistUserId()
         );
 
-        return new Result(
-                savedOrganization.getId(),
-                savedOrganization.getName(),
-                savedOrganization.getDescription(),
-                savedOrganization.getGrade()
-        );
+        return savedOrganization;
     }
 
     public record Command(
@@ -81,10 +76,4 @@ public class CreateMyOrganizationUseCase {
             String description
     ) {}
 
-    public record Result(
-            Long id,
-            String name,
-            String description,
-            Double grade
-    ) {}
 }
