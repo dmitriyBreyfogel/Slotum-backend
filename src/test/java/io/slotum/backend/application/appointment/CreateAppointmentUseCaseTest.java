@@ -347,6 +347,7 @@ public class CreateAppointmentUseCaseTest {
 
         when(specialistRepository.findSpecialistByUserId(10L)).thenReturn(Optional.of(mock(Specialist.class)));
         when(organizationRepository.findById(30L)).thenReturn(Optional.of(mock(Organization.class)));
+        when(appointmentRepository.existsOverlappingAppointment(10L, startsAt, endsAt)).thenReturn(false);
         when(appointmentRepository.save(any())).thenReturn(
                 Appointment.restore(
                         1L,
@@ -359,7 +360,7 @@ public class CreateAppointmentUseCaseTest {
                 )
         );
 
-        CreateAppointmentUseCase.Result result = useCase.execute(
+        Appointment result = useCase.execute(
                 new CreateAppointmentUseCase.Command(
                         startsAt,
                         endsAt,
@@ -370,11 +371,12 @@ public class CreateAppointmentUseCaseTest {
                 )
         );
 
-        assertEquals(1L, result.id());
-        assertEquals(AppointmentStatus.FREE, result.status());
-        assertNull(result.customerId());
+        assertEquals(1L, result.getId());
+        assertEquals(AppointmentStatus.FREE, result.getStatus());
+        assertNull(result.getCustomerId());
         verify(specialistRepository).findSpecialistByUserId(10L);
         verify(organizationRepository).findById(30L);
+        verify(appointmentRepository).existsOverlappingAppointment(10L, startsAt, endsAt);
         verify(appointmentRepository).save(any());
         verifyNoInteractions(userRepository);
         verifyNoMoreInteractions(appointmentRepository, specialistRepository, organizationRepository);
@@ -414,6 +416,7 @@ public class CreateAppointmentUseCaseTest {
         when(specialistRepository.findSpecialistByUserId(10L)).thenReturn(Optional.of(mock(Specialist.class)));
         when(userRepository.findById(20L)).thenReturn(Optional.of(mock(User.class)));
         when(organizationRepository.findById(30L)).thenReturn(Optional.of(mock(Organization.class)));
+        when(appointmentRepository.existsOverlappingAppointment(10L, commandStartsAt, commandEndsAt)).thenReturn(false);
 
         CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
                 commandStartsAt,
@@ -424,16 +427,17 @@ public class CreateAppointmentUseCaseTest {
                 30L
         );
 
-        CreateAppointmentUseCase.Result result = useCase.execute(command);
+        Appointment result = useCase.execute(command);
 
-        assertEquals(savedStartsAt, result.startsAt());
-        assertEquals(savedEndsAt, result.endsAt());
-        assertEquals(AppointmentStatus.CANCELLED, result.status());
-        assertEquals(11L, result.specialistUserId());
-        assertEquals(21L, result.customerId());
-        assertEquals(31L, result.organizationId());
+        assertEquals(savedStartsAt, result.getStartsAt());
+        assertEquals(savedEndsAt, result.getEndsAt());
+        assertEquals(AppointmentStatus.CANCELLED, result.getStatus());
+        assertEquals(11L, result.getSpecialistUserId());
+        assertEquals(21L, result.getCustomerId());
+        assertEquals(31L, result.getOrganizationId());
 
         ArgumentCaptor<Appointment> captor = ArgumentCaptor.forClass(Appointment.class);
+        verify(appointmentRepository).existsOverlappingAppointment(10L, commandStartsAt, commandEndsAt);
         verify(appointmentRepository).save(captor.capture());
 
         assertNull(captor.getValue().getId());

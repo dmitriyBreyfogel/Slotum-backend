@@ -183,10 +183,10 @@ public class CreateUserUseCaseTest {
                 "+7 999-123-45-67"
         );
 
-        CreateUserUseCase.Result result = useCase.execute(command);
+        User result = useCase.execute(command);
 
-        assertEquals(10L, result.userId());
-        assertEquals("test@test.com", result.email());
+        assertEquals(10L, result.getId());
+        assertEquals("test@test.com", result.getEmail().value());
 
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).existsByEmail("test@test.com");

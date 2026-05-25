@@ -232,11 +232,11 @@ public class CreateSpecialistUseCaseTest {
                 4.5
         );
 
-        CreateSpecialistUseCase.Result result = useCase.execute(command);
+        Specialist result = useCase.execute(command);
 
-        assertEquals(10L, result.userId());
-        assertEquals("Saved description", result.description());
-        assertEquals(2.5, result.grade());
+        assertEquals(10L, result.getUserId());
+        assertEquals("Saved description", result.getDescription());
+        assertEquals(2.5, result.getGrade());
 
         ArgumentCaptor<Specialist> captor = ArgumentCaptor.forClass(Specialist.class);
         verify(userRepository).findById(10L);
@@ -261,13 +261,13 @@ public class CreateSpecialistUseCaseTest {
         when(specialistRepository.findSpecialistByUserId(10L)).thenReturn(null);
         when(specialistRepository.save(any())).thenReturn(Specialist.create(10L, "Saved description", 4.5));
 
-        CreateSpecialistUseCase.Result result = useCase.execute(
+        Specialist result = useCase.execute(
                 new CreateSpecialistUseCase.Command(10L, "Some description", 4.5)
         );
 
-        assertEquals(10L, result.userId());
-        assertEquals("Saved description", result.description());
-        assertEquals(4.5, result.grade());
+        assertEquals(10L, result.getUserId());
+        assertEquals("Saved description", result.getDescription());
+        assertEquals(4.5, result.getGrade());
 
         ArgumentCaptor<Specialist> captor = ArgumentCaptor.forClass(Specialist.class);
         verify(userRepository).findById(10L);

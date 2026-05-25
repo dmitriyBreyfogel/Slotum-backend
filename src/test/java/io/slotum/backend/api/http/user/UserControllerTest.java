@@ -7,6 +7,7 @@ import io.slotum.backend.application.user.DeleteByIdUserUseCase;
 import io.slotum.backend.application.user.GetAllUsersUseCase;
 import io.slotum.backend.application.user.GetByEmailUserUseCase;
 import io.slotum.backend.application.user.GetUserUseCase;
+import io.slotum.backend.domain.user.User;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 import io.slotum.backend.infrastructure.security.jwt.JwtService;
@@ -66,14 +67,17 @@ public class UserControllerTest {
     @Test
     @DisplayName("Валидное создание через ручку и возврат CREATED 201")
     void testCreateUser() throws Exception {
-        when(createUserUseCase.execute(any())).thenReturn(new CreateUserUseCase.Result(
-                1L,
-                "Ivanov",
-                "Ivan",
-                "Ivanovich",
-                "slotum@io.com",
-                "88005553535"
-        ));
+        when(createUserUseCase.execute(any())).thenReturn(
+                User.create(
+                        1L,
+                        "Ivanov",
+                        "Ivan",
+                        "Ivanovich",
+                        "slotum@io.com",
+                        "Password123!",
+                        "88005553535"
+                )
+        );
 
         var req = Map.of(
                 "surname", "Ivanov",

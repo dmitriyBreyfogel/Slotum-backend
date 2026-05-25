@@ -9,6 +9,7 @@ import io.slotum.backend.application.organization.GetOrganizationUseCase;
 import io.slotum.backend.application.organizationMember.AddSpecialistToOrganizationUseCase;
 import io.slotum.backend.application.organizationMember.GetOrganizationSpecialistsUseCase;
 import io.slotum.backend.application.organizationMember.RemoveSpecialistFromOrganizationUseCase;
+import io.slotum.backend.domain.organization.Organization;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 import io.slotum.backend.infrastructure.security.jwt.JwtService;
@@ -75,7 +76,7 @@ public class OrganizationControllerTest {
     @DisplayName("Валидное создание организации и возврат CREATED 201")
     void testCreateOrganization() throws Exception {
         when(createOrganizationUseCase.execute(any()))
-                .thenReturn(new CreateOrganizationUseCase.Result(1L, "Acme", "Some description", 0.0));
+                .thenReturn(Organization.create(1L, "Acme", "Some description"));
 
         var req = Map.of(
                 "name", "Acme",

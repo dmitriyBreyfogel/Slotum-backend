@@ -49,12 +49,12 @@ public class CreateOrganizationUseCaseTest {
         when(organizationRepository.save(any()))
                 .thenReturn(Organization.create(10L, "Org", "Desc"));
 
-        CreateOrganizationUseCase.Result result = useCase.execute(
+        Organization result = useCase.execute(
                 new CreateOrganizationUseCase.Command("  Org  ", "Desc")
         );
 
-        assertEquals(10L, result.id());
-        assertEquals("Org", result.name());
+        assertEquals(10L, result.getId());
+        assertEquals("Org", result.getName());
 
         ArgumentCaptor<Organization> captor = ArgumentCaptor.forClass(Organization.class);
         verify(organizationRepository).findByName("Org");
@@ -169,12 +169,12 @@ public class CreateOrganizationUseCaseTest {
         when(organizationRepository.save(any()))
                 .thenReturn(Organization.create(1L, name, description));
 
-        CreateOrganizationUseCase.Result result = useCase.execute(
+        Organization result = useCase.execute(
                 new CreateOrganizationUseCase.Command(name, description)
         );
 
-        assertEquals(1L, result.id());
-        assertEquals(name, result.name());
+        assertEquals(1L, result.getId());
+        assertEquals(name, result.getName());
 
         verify(organizationRepository).findByName(name);
         verify(organizationRepository).save(any());

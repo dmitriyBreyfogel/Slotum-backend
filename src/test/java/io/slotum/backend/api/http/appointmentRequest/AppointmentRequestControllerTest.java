@@ -36,7 +36,7 @@ public class AppointmentRequestControllerTest {
         AppointmentRequestController controller = controller(createUseCase);
         LocalDateTime createdAt = LocalDateTime.of(2026, 5, 24, 10, 0);
         when(createUseCase.execute(any())).thenReturn(
-                new CreateAppointmentRequestUseCase.Result(
+                AppointmentRequest.restore(
                         1L,
                         5L,
                         20L,

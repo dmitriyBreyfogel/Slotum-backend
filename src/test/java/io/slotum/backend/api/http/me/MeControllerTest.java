@@ -4,6 +4,7 @@ import io.slotum.backend.application.organization.CreateMyOrganizationUseCase;
 import io.slotum.backend.application.organizationMember.GetSpecialistOrganizationsUseCase;
 import io.slotum.backend.application.organizationMember.RemoveSpecialistFromOrganizationUseCase;
 import io.slotum.backend.application.specialist.CreateSpecialistUseCase;
+import io.slotum.backend.domain.organization.Organization;
 import io.slotum.backend.infrastructure.security.AuthenticatedUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ public class MeControllerTest {
         );
 
         when(createMyOrganizationUseCase.execute(any()))
-                .thenReturn(new CreateMyOrganizationUseCase.Result(3L, "Org", "Desc", 0.0));
+                .thenReturn(Organization.create(3L, "Org", "Desc"));
 
         ResponseEntity<MeController.OrganizationDto> response = controller.createMyOrganization(
                 new AuthenticatedUser(10L, "spec@example.com"),

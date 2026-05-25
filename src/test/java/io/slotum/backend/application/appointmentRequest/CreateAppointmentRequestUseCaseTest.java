@@ -179,17 +179,17 @@ public class CreateAppointmentRequestUseCaseTest {
                 )
         );
 
-        CreateAppointmentRequestUseCase.Result result = useCase.execute(
+        AppointmentRequest result = useCase.execute(
                 new CreateAppointmentRequestUseCase.Command(5L, 20L, "message")
         );
 
-        assertEquals(1L, result.id());
-        assertEquals(5L, result.appointmentId());
-        assertEquals(20L, result.customerId());
-        assertEquals(AppointmentRequestStatus.PENDING, result.status());
-        assertEquals("message", result.message());
-        assertEquals(savedCreatedAt, result.createdAt());
-        assertNull(result.decidedAt());
+        assertEquals(1L, result.getId());
+        assertEquals(5L, result.getAppointmentId());
+        assertEquals(20L, result.getCustomerId());
+        assertEquals(AppointmentRequestStatus.PENDING, result.getStatus());
+        assertEquals("message", result.getMessage());
+        assertEquals(savedCreatedAt, result.getCreatedAt());
+        assertNull(result.getDecidedAt());
 
         ArgumentCaptor<AppointmentRequest> captor = ArgumentCaptor.forClass(AppointmentRequest.class);
         verify(appointmentRequestRepository).save(captor.capture());
