@@ -1,5 +1,6 @@
 package io.slotum.backend.domain.appointment;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,4 +14,6 @@ public interface AppointmentRepository {
     Appointment deleteById(Long id);
 
     void deleteAll();
+
+    public boolean existsOverlappingAppointment(Long specialistUserId, LocalDateTime startsAt, LocalDateTime endsAt);
 }

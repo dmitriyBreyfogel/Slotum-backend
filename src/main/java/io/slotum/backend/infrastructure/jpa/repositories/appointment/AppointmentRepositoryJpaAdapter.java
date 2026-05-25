@@ -2,6 +2,7 @@ package io.slotum.backend.infrastructure.jpa.repositories.appointment;
 
 import io.slotum.backend.domain.appointment.Appointment;
 import io.slotum.backend.domain.appointment.AppointmentRepository;
+import io.slotum.backend.domain.appointment.AppointmentStatus;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.infrastructure.jpa.entities.AppointmentJpa;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationJpa;
@@ -12,6 +13,7 @@ import io.slotum.backend.infrastructure.jpa.mappers.OrganizationJpaMapper;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,6 +66,16 @@ public class AppointmentRepositoryJpaAdapter implements AppointmentRepository {
                 appointmentJpaRepository.save(
                         AppointmentJpaMapper.toJpa(appointment, specialistRef, customerRef, organizationRef)
                 )
+        );
+    }
+
+    @Override
+    public boolean existsOverlappingAppointment(Long specialistUserId, LocalDateTime startsAt, LocalDateTime endsAt) {
+        return appointmentJpaRepository.existsBySpecialistUserIdAndStatusNotAndStartsAtLessThanAndEndsAtGreaterThan(
+                specialistUserId,
+                AppointmentStatus.CANCELLED,
+                endsAt,
+                startsAt
         );
     }
 }
