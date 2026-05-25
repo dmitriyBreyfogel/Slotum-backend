@@ -2,32 +2,158 @@
   "info": {
     "_postman_id": "1a0e5212-d4df-4d5b-80f4-edfc2fd48c50",
     "name": "Slotum",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "52363201",
-    "_collection_link": "https://go.postman.co/collection/52363201-1a0e5212-d4df-4d5b-80f4-edfc2fd48c50?source=collection_link"
+    "description": "Postman collection for the current Slotum backend API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": []
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": []
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "email",
+      "value": "admin@example.com",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "password123",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "specialistUserId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "organizationId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "appointmentId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "appointmentRequestId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
   "item": [
     {
-      "name": "Create",
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  pm.collectionVariables.set('accessToken', json.accessToken);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
       "item": [
         {
           "name": "Create user",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI3IiwiZW1haWwiOiJpdmFuQGV4YW1wbGUuY29tIiwiaWF0IjoxNzc1OTE2MzgwLCJleHAiOjE3NzU5MTcyODB9.l3Hb4CuXdho4eAFwixXq1cA0LWuu76TmmoBjRioLQyA",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"surname\": \"Admin\",\r\n    \"firstName\": \"Admin\",\r\n    \"secondName\": \"Admin\",\r\n    \"email\": \"admin@example.com\",\r\n    \"password\": \"password123\",\r\n    \"phone\": \"+79999999999\"\r\n  }",
+              "raw": "{\n  \"surname\": \"Admin\",\n  \"firstName\": \"Admin\",\n  \"secondName\": \"Adminovich\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"phone\": \"+79999999999\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -49,13 +175,127 @@
           "response": []
         },
         {
-          "name": "Create organization",
+          "name": "Get user by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get user by email",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/by-email?email={{email}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "by-email"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "{{email}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete user by id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete all users",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Me",
+      "item": [
+        {
+          "name": "Create my specialist profile",
           "request": {
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"name\": \"ООО БНАЛ12\",\r\n    \"description\": \"ahuennaya companiya\"\r\n}",
+              "raw": "{\n  \"description\": \"Senior fitness specialist\",\n  \"grade\": 0\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -63,13 +303,48 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/organizations",
+              "raw": "{{baseUrl}}/api/v1/me/specialist",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
+                "me",
+                "specialist"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create my organization",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Slotum Studio\",\n  \"description\": \"Private specialist studio\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me/organizations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me",
                 "organizations"
               ]
             }
@@ -77,13 +352,64 @@
           "response": []
         },
         {
+          "name": "Get my organizations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me/organizations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me",
+                "organizations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Leave organization",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me/organizations/{{organizationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me",
+                "organizations",
+                "{{organizationId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Specialists",
+      "item": [
+        {
           "name": "Create specialist",
           "request": {
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"userId\": 3,\r\n    \"description\": \"/.<>OOO\",\r\n    \"grade\": 1\r\n}",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"description\": \"Senior fitness specialist\",\n  \"grade\": 0\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -105,13 +431,303 @@
           "response": []
         },
         {
-          "name": "Create appointment",
+          "name": "Get specialist by user id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/specialists/{{specialistUserId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "specialists",
+                "{{specialistUserId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all specialists",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/specialists",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "specialists"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get specialist organizations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/specialists/{{specialistUserId}}/organizations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "specialists",
+                "{{specialistUserId}}",
+                "organizations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete specialist by user id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/specialists/{{specialistUserId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "specialists",
+                "{{specialistUserId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete all specialists",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/specialists",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "specialists"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Organizations",
+      "item": [
+        {
+          "name": "Create organization",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Slotum Organization\",\n  \"description\": \"Organization created through admin API\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add specialist to organization",
           "request": {
             "method": "POST",
             "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations/{{organizationId}}/specialists/{{specialistUserId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "{{organizationId}}",
+                "specialists",
+                "{{specialistUserId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get organization by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations/{{organizationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "{{organizationId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all organizations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get organization specialists",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations/{{organizationId}}/specialists",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "{{organizationId}}",
+                "specialists"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove specialist from organization",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations/{{organizationId}}/specialists/{{specialistUserId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "{{organizationId}}",
+                "specialists",
+                "{{specialistUserId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete organization by id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations/{{organizationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "{{organizationId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete all organizations",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Appointments",
+      "item": [
+        {
+          "name": "Create free appointment slot",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"startsAt\": \"2026-03-21T10:00:00\",\r\n    \"endsAt\": \"2026-03-21T11:00:00\",\r\n    \"status\": \"BOOKED\",\r\n    \"specialistUserId\": 1,\r\n    \"customerId\": 1,\r\n    \"organizationId\": 1\r\n  }",
+              "raw": "{\n  \"startsAt\": \"2026-06-01T10:00:00\",\n  \"endsAt\": \"2026-06-01T11:00:00\",\n  \"status\": \"FREE\",\n  \"specialistUserId\": {{specialistUserId}},\n  \"customerId\": null,\n  \"organizationId\": {{organizationId}}\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -131,295 +747,113 @@
             }
           },
           "response": []
-        }
-      ]
-    },
-    {
-      "name": "Get",
-      "item": [
-        {
-          "name": "Get one",
-          "item": [
-            {
-              "name": "Get specialist",
-              "protocolProfileBehavior": {
-                "disableBodyPruning": true
-              },
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/specialists/3",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "specialists",
-                    "3"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Get user",
-              "protocolProfileBehavior": {
-                "disableBodyPruning": true
-              },
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/users/1",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "users",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Get organization",
-              "protocolProfileBehavior": {
-                "disableBodyPruning": true
-              },
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/organizations/1",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "organizations",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Get appointment",
-              "protocolProfileBehavior": {
-                "disableBodyPruning": true
-              },
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/appointments/1",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "appointments",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
         },
         {
-          "name": "Get all",
-          "item": [
-            {
-              "name": "Get all appointments",
-              "protocolProfileBehavior": {
-                "disableBodyPruning": true
-              },
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/appointments",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "appointments"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Get all organizations",
-              "protocolProfileBehavior": {
-                "disableBodyPruning": true
-              },
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/organizations",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "organizations"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Get all specialists",
-              "protocolProfileBehavior": {
-                "disableBodyPruning": true
-              },
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/specialists",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "specialists"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Get all users",
-              "protocolProfileBehavior": {
-                "disableBodyPruning": true
-              },
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/users",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "users"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "Get user by email",
+          "name": "Create booked appointment",
           "request": {
-            "method": "GET",
-            "header": [],
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startsAt\": \"2026-06-01T12:00:00\",\n  \"endsAt\": \"2026-06-01T13:00:00\",\n  \"status\": \"BOOKED\",\n  \"specialistUserId\": {{specialistUserId}},\n  \"customerId\": {{userId}},\n  \"organizationId\": {{organizationId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/by-email?email=ivan@example.com",
+              "raw": "{{baseUrl}}/api/v1/appointments",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "users",
-                "by-email"
+                "appointments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get appointment by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/appointments/{{appointmentId}}",
+              "host": [
+                "{{baseUrl}}"
               ],
-              "query": [
-                {
-                  "key": "email",
-                  "value": "ivan@example.com"
-                }
+              "path": [
+                "api",
+                "v1",
+                "appointments",
+                "{{appointmentId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all appointments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/appointments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "appointments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete appointment by id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/appointments/{{appointmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "appointments",
+                "{{appointmentId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete all appointments",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/appointments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "appointments"
               ]
             }
           },
@@ -428,276 +862,186 @@
       ]
     },
     {
-      "name": "Delete",
+      "name": "Appointment Requests",
       "item": [
         {
-          "name": "Delete by id",
-          "item": [
-            {
-              "name": "Delete appointment",
-              "request": {
-                "method": "DELETE",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/appointments/1",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "appointments",
-                    "1"
-                  ]
+          "name": "Create appointment request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"appointmentId\": {{appointmentId}},\n  \"message\": \"I want to book this time slot\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
                 }
-              },
-              "response": []
+              }
             },
-            {
-              "name": "Delete specialist",
-              "request": {
-                "method": "DELETE",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/specialists/1",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "specialists",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Delete organization",
-              "request": {
-                "method": "DELETE",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/organizations/1",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "organizations",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Delete user",
-              "request": {
-                "method": "DELETE",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/users/1",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "users",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/appointment-requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "appointment-requests"
+              ]
             }
-          ]
+          },
+          "response": []
         },
         {
-          "name": "Delete all",
-          "item": [
-            {
-              "name": "Delete all appointments",
-              "request": {
-                "method": "DELETE",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/appointments",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "appointments"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Delete all specialists",
-              "request": {
-                "method": "DELETE",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/specialists",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "specialists"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Delete all organizations",
-              "request": {
-                "method": "DELETE",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/organizations",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "organizations"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Delete all users",
-              "request": {
-                "method": "DELETE",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/users",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "users"
-                  ]
-                }
-              },
-              "response": []
+          "name": "Get appointment request by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/appointment-requests/{{appointmentRequestId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "appointment-requests",
+                "{{appointmentRequestId}}"
+              ]
             }
-          ]
+          },
+          "response": []
+        },
+        {
+          "name": "Get my appointment requests",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/appointment-requests/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "appointment-requests",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get incoming appointment requests",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/appointment-requests/incoming",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "appointment-requests",
+                "incoming"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get requests by appointment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/appointment-requests/appointments/{{appointmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "appointment-requests",
+                "appointments",
+                "{{appointmentId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Accept appointment request",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/appointment-requests/{{appointmentRequestId}}/accept",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "appointment-requests",
+                "{{appointmentRequestId}}",
+                "accept"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject appointment request",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/appointment-requests/{{appointmentRequestId}}/reject",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "appointment-requests",
+                "{{appointmentRequestId}}",
+                "reject"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel appointment request",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/appointment-requests/{{appointmentRequestId}}/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "appointment-requests",
+                "{{appointmentRequestId}}",
+                "cancel"
+              ]
+            }
+          },
+          "response": []
         }
       ]
-    },
-    {
-      "name": "Login",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"email\": \"admin@example.com\",\r\n    \"password\": \"password123\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{baseUrl}}/api/v1/auth/login",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "auth",
-            "login"
-          ]
-        }
-      },
-      "response": []
     }
   ]
 }
