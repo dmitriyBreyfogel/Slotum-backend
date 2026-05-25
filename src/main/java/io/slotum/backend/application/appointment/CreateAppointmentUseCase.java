@@ -75,6 +75,15 @@ public class CreateAppointmentUseCase {
             );
         }
 
+        if (appointmentRepository.existsOverlappingAppointment(command.specialistUserId, command.startsAt, command.endsAt)) {
+            throw AppException.build(
+                ErrorCode.APPOINTMENT_OVERLAPPING,
+                    "Appointment overlapping",
+                    Map.of("startsAt", command.startsAt,
+                            "endsAt", command.endsAt)
+            );
+        }
+
         Appointment savedAppointment = appointmentRepository.save(appointmentToSave);
 
         return new Result(
