@@ -5,7 +5,6 @@ import io.slotum.backend.domain.appointment.AppointmentRepository;
 import io.slotum.backend.domain.appointment.AppointmentStatus;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequest;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequestRepository;
-import io.slotum.backend.domain.user.User;
 import io.slotum.backend.domain.user.UserRepository;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
@@ -32,57 +31,74 @@ public class CreateAppointmentRequestUseCase {
     }
 
     public AppointmentRequest execute(Command command) {
-        AppointmentRequest appointmentRequestToSave = AppointmentRequest.create(
+        AppointmentRequest appointmentRequestToSave = createAppointmentRequest(command);
+        Appointment appointment = findAppointment(command.appointmentId);
+
+        ensureAppointmentIsFree(appointment);
+        ensureCustomerExists(command.customerId);
+        ensureNoPendingRequestExists(command.appointmentId, command.customerId);
+
+        return appointmentRequestRepository.save(appointmentRequestToSave);
+    }
+
+    private static AppointmentRequest createAppointmentRequest(Command command) {
+        return AppointmentRequest.create(
                 command.appointmentId,
                 command.customerId,
                 command.message,
                 LocalDateTime.now()
         );
+    }
 
-        Optional<Appointment> appointment = appointmentRepository.findById(command.appointmentId);
+    private Appointment findAppointment(Long appointmentId) {
+        Optional<Appointment> appointment = appointmentRepository.findById(appointmentId);
         if (appointment.isEmpty()) {
             throw AppException.build(
                     ErrorCode.APPOINTMENT_NOT_FOUND,
                     "Appointment not found",
-                    Map.of("id", command.appointmentId)
+                    Map.of("id", appointmentId)
             );
         }
+        return appointment.get();
+    }
 
-        if (appointment.get().getStatus() != AppointmentStatus.FREE) {
+    private static void ensureAppointmentIsFree(Appointment appointment) {
+        if (appointment.getStatus() != AppointmentStatus.FREE) {
             throw AppException.build(
                     ErrorCode.APPOINTMENT_REQUEST_APPOINTMENT_NOT_FREE,
                     "Appointment is not free",
                     Map.of(
-                            "appointmentId", command.appointmentId,
-                            "status", appointment.get().getStatus()
+                            "appointmentId", appointment.getId(),
+                            "status", appointment.getStatus()
                     )
             );
         }
+    }
 
-        Optional<User> customer = userRepository.findById(command.customerId);
-        if (customer.isEmpty()) {
+    private void ensureCustomerExists(Long customerId) {
+        if (userRepository.findById(customerId).isEmpty()) {
             throw AppException.build(
                     ErrorCode.USER_NOT_FOUND,
                     "User customer not found",
-                    Map.of("customerId", command.customerId)
+                    Map.of("customerId", customerId)
             );
         }
+    }
 
+    private void ensureNoPendingRequestExists(Long appointmentId, Long customerId) {
         if (appointmentRequestRepository.existsPendingByAppointmentIdAndCustomerId(
-                command.appointmentId,
-                command.customerId
+                appointmentId,
+                customerId
         )) {
             throw AppException.build(
                     ErrorCode.APPOINTMENT_REQUEST_ALREADY_EXISTS,
                     "Pending appointment request already exists",
                     Map.of(
-                            "appointmentId", command.appointmentId,
-                            "customerId", command.customerId
+                            "appointmentId", appointmentId,
+                            "customerId", customerId
                     )
             );
         }
-
-        return appointmentRequestRepository.save(appointmentRequestToSave);
     }
 
     public record Command(
