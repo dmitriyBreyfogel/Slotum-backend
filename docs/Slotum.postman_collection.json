@@ -73,7 +73,7 @@
       "type": "string"
     },
     {
-      "key": "appointmentRequestId",
+      "key": "slotBookingRequestId",
       "value": "1",
       "type": "string"
     }
@@ -862,10 +862,10 @@
       ]
     },
     {
-      "name": "Appointment Requests",
+      "name": "Slot Booking Requests",
       "item": [
         {
-          "name": "Create appointment request",
+          "name": "Create slot booking request",
           "request": {
             "method": "POST",
             "header": [
@@ -884,53 +884,53 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/appointment-requests",
+              "raw": "{{baseUrl}}/api/v1/slot-booking-requests",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "appointment-requests"
+                "slot-booking-requests"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "Get appointment request by id",
+          "name": "Get slot booking request by id",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/appointment-requests/{{appointmentRequestId}}",
+              "raw": "{{baseUrl}}/api/v1/slot-booking-requests/{{slotBookingRequestId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "appointment-requests",
-                "{{appointmentRequestId}}"
+                "slot-booking-requests",
+                "{{slotBookingRequestId}}"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "Get my appointment requests",
+          "name": "Get my slot booking requests",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/appointment-requests/me",
+              "raw": "{{baseUrl}}/api/v1/slot-booking-requests/me",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "appointment-requests",
+                "slot-booking-requests",
                 "me"
               ]
             }
@@ -938,19 +938,19 @@
           "response": []
         },
         {
-          "name": "Get incoming appointment requests",
+          "name": "Get incoming slot booking requests",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/appointment-requests/incoming",
+              "raw": "{{baseUrl}}/api/v1/slot-booking-requests/incoming",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "appointment-requests",
+                "slot-booking-requests",
                 "incoming"
               ]
             }
@@ -963,14 +963,14 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/appointment-requests/slots/{{slotId}}",
+              "raw": "{{baseUrl}}/api/v1/slot-booking-requests/slots/{{slotId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "appointment-requests",
+                "slot-booking-requests",
                 "slots",
                 "{{slotId}}"
               ]
@@ -979,20 +979,20 @@
           "response": []
         },
         {
-          "name": "Accept appointment request",
+          "name": "Accept slot booking request",
           "request": {
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/appointment-requests/{{appointmentRequestId}}/accept",
+              "raw": "{{baseUrl}}/api/v1/slot-booking-requests/{{slotBookingRequestId}}/accept",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "appointment-requests",
-                "{{appointmentRequestId}}",
+                "slot-booking-requests",
+                "{{slotBookingRequestId}}",
                 "accept"
               ]
             }
@@ -1000,20 +1000,20 @@
           "response": []
         },
         {
-          "name": "Reject appointment request",
+          "name": "Reject slot booking request",
           "request": {
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/appointment-requests/{{appointmentRequestId}}/reject",
+              "raw": "{{baseUrl}}/api/v1/slot-booking-requests/{{slotBookingRequestId}}/reject",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "appointment-requests",
-                "{{appointmentRequestId}}",
+                "slot-booking-requests",
+                "{{slotBookingRequestId}}",
                 "reject"
               ]
             }
@@ -1021,20 +1021,20 @@
           "response": []
         },
         {
-          "name": "Cancel appointment request",
+          "name": "Cancel slot booking request",
           "request": {
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/appointment-requests/{{appointmentRequestId}}/cancel",
+              "raw": "{{baseUrl}}/api/v1/slot-booking-requests/{{slotBookingRequestId}}/cancel",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "appointment-requests",
-                "{{appointmentRequestId}}",
+                "slot-booking-requests",
+                "{{slotBookingRequestId}}",
                 "cancel"
               ]
             }
