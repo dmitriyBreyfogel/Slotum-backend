@@ -1,8 +1,8 @@
 package io.slotum.backend.application.appointmentRequest;
 
-import io.slotum.backend.domain.appointment.Appointment;
-import io.slotum.backend.domain.appointment.AppointmentRepository;
-import io.slotum.backend.domain.appointment.AppointmentStatus;
+import io.slotum.backend.domain.slot.Slot;
+import io.slotum.backend.domain.slot.SlotRepository;
+import io.slotum.backend.domain.slot.SlotStatus;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequest;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequestRepository;
 import io.slotum.backend.domain.user.UserRepository;
@@ -17,59 +17,59 @@ import java.util.Optional;
 @Service
 public class CreateAppointmentRequestUseCase {
     private final AppointmentRequestRepository appointmentRequestRepository;
-    private final AppointmentRepository appointmentRepository;
+    private final SlotRepository slotRepository;
     private final UserRepository userRepository;
 
     public CreateAppointmentRequestUseCase(
             AppointmentRequestRepository appointmentRequestRepository,
-            AppointmentRepository appointmentRepository,
+            SlotRepository slotRepository,
             UserRepository userRepository
     ) {
         this.appointmentRequestRepository = appointmentRequestRepository;
-        this.appointmentRepository = appointmentRepository;
+        this.slotRepository = slotRepository;
         this.userRepository = userRepository;
     }
 
     public AppointmentRequest execute(Command command) {
         AppointmentRequest appointmentRequestToSave = createAppointmentRequest(command);
-        Appointment appointment = findAppointment(command.appointmentId);
+        Slot slot = findSlot(command.slotId);
 
-        ensureAppointmentIsFree(appointment);
+        ensureSlotIsFree(slot);
         ensureCustomerExists(command.customerId);
-        ensureNoPendingRequestExists(command.appointmentId, command.customerId);
+        ensureNoPendingRequestExists(command.slotId, command.customerId);
 
         return appointmentRequestRepository.save(appointmentRequestToSave);
     }
 
     private static AppointmentRequest createAppointmentRequest(Command command) {
         return AppointmentRequest.create(
-                command.appointmentId,
+                command.slotId,
                 command.customerId,
                 command.message,
                 LocalDateTime.now()
         );
     }
 
-    private Appointment findAppointment(Long appointmentId) {
-        Optional<Appointment> appointment = appointmentRepository.findById(appointmentId);
-        if (appointment.isEmpty()) {
+    private Slot findSlot(Long slotId) {
+        Optional<Slot> slot = slotRepository.findById(slotId);
+        if (slot.isEmpty()) {
             throw AppException.build(
-                    ErrorCode.APPOINTMENT_NOT_FOUND,
-                    "Appointment not found",
-                    Map.of("id", appointmentId)
+                    ErrorCode.SLOT_NOT_FOUND,
+                    "Slot not found",
+                    Map.of("id", slotId)
             );
         }
-        return appointment.get();
+        return slot.get();
     }
 
-    private static void ensureAppointmentIsFree(Appointment appointment) {
-        if (appointment.getStatus() != AppointmentStatus.FREE) {
+    private static void ensureSlotIsFree(Slot slot) {
+        if (slot.getStatus() != SlotStatus.FREE) {
             throw AppException.build(
-                    ErrorCode.APPOINTMENT_REQUEST_APPOINTMENT_NOT_FREE,
-                    "Appointment is not free",
+                    ErrorCode.APPOINTMENT_REQUEST_SLOT_NOT_FREE,
+                    "Slot is not free",
                     Map.of(
-                            "appointmentId", appointment.getId(),
-                            "status", appointment.getStatus()
+                            "slotId", slot.getId(),
+                            "status", slot.getStatus()
                     )
             );
         }
@@ -85,16 +85,16 @@ public class CreateAppointmentRequestUseCase {
         }
     }
 
-    private void ensureNoPendingRequestExists(Long appointmentId, Long customerId) {
-        if (appointmentRequestRepository.existsPendingByAppointmentIdAndCustomerId(
-                appointmentId,
+    private void ensureNoPendingRequestExists(Long slotId, Long customerId) {
+        if (appointmentRequestRepository.existsPendingBySlotIdAndCustomerId(
+                slotId,
                 customerId
         )) {
             throw AppException.build(
                     ErrorCode.APPOINTMENT_REQUEST_ALREADY_EXISTS,
                     "Pending appointment request already exists",
                     Map.of(
-                            "appointmentId", appointmentId,
+                            "slotId", slotId,
                             "customerId", customerId
                     )
             );
@@ -102,7 +102,7 @@ public class CreateAppointmentRequestUseCase {
     }
 
     public record Command(
-            Long appointmentId,
+            Long slotId,
             Long customerId,
             String message
     ) {}

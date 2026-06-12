@@ -1,7 +1,7 @@
 package io.slotum.backend.infrastructure.jpa.mappers;
 
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequest;
-import io.slotum.backend.infrastructure.jpa.entities.AppointmentJpa;
+import io.slotum.backend.infrastructure.jpa.entities.SlotJpa;
 import io.slotum.backend.infrastructure.jpa.entities.AppointmentRequestJpa;
 import io.slotum.backend.infrastructure.jpa.entities.UserJpa;
 
@@ -16,7 +16,7 @@ public final class AppointmentRequestJpaMapper {
 
         return AppointmentRequest.restore(
                 source.getId(),
-                source.getAppointment().getId(),
+                source.getSlot().getId(),
                 source.getCustomer().getId(),
                 source.getStatus(),
                 source.getMessage(),
@@ -27,7 +27,7 @@ public final class AppointmentRequestJpaMapper {
 
     public static AppointmentRequestJpa toJpa(
             AppointmentRequest source,
-            AppointmentJpa appointment,
+            SlotJpa slot,
             UserJpa customer
     ) {
         if (source == null) {
@@ -36,7 +36,7 @@ public final class AppointmentRequestJpaMapper {
 
         return new AppointmentRequestJpa(
                 source.getId(),
-                appointment,
+                slot,
                 customer,
                 source.getStatus(),
                 source.getMessage(),

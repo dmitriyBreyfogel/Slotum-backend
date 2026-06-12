@@ -3,7 +3,7 @@ package io.slotum.backend.infrastructure.jpa.repositories.appointmentRequest;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequest;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequestRepository;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequestStatus;
-import io.slotum.backend.infrastructure.jpa.entities.AppointmentJpa;
+import io.slotum.backend.infrastructure.jpa.entities.SlotJpa;
 import io.slotum.backend.infrastructure.jpa.entities.AppointmentRequestJpa;
 import io.slotum.backend.infrastructure.jpa.entities.UserJpa;
 import io.slotum.backend.infrastructure.jpa.mappers.AppointmentRequestJpaMapper;
@@ -39,16 +39,16 @@ public class AppointmentRequestRepositoryJpaAdapter implements AppointmentReques
     }
 
     @Override
-    public List<AppointmentRequest> findByAppointmentId(Long appointmentId) {
-        return appointmentRequestJpaRepository.findAllByAppointment_Id(appointmentId).stream()
+    public List<AppointmentRequest> findBySlotId(Long slotId) {
+        return appointmentRequestJpaRepository.findAllBySlot_Id(slotId).stream()
                 .map(AppointmentRequestJpaMapper::toDomain)
                 .toList();
     }
 
     @Override
-    public List<AppointmentRequest> findPendingByAppointmentId(Long appointmentId) {
+    public List<AppointmentRequest> findPendingBySlotId(Long slotId) {
         return appointmentRequestJpaRepository
-                .findAllByAppointment_IdAndStatus(appointmentId, AppointmentRequestStatus.PENDING)
+                .findAllBySlot_IdAndStatus(slotId, AppointmentRequestStatus.PENDING)
                 .stream()
                 .map(AppointmentRequestJpaMapper::toDomain)
                 .toList();
@@ -63,15 +63,15 @@ public class AppointmentRequestRepositoryJpaAdapter implements AppointmentReques
 
     @Override
     public List<AppointmentRequest> findBySpecialistUserId(Long specialistUserId) {
-        return appointmentRequestJpaRepository.findAllByAppointment_Specialist_UserId(specialistUserId).stream()
+        return appointmentRequestJpaRepository.findAllBySlot_Specialist_UserId(specialistUserId).stream()
                 .map(AppointmentRequestJpaMapper::toDomain)
                 .toList();
     }
 
     @Override
-    public boolean existsPendingByAppointmentIdAndCustomerId(Long appointmentId, Long customerId) {
-        return appointmentRequestJpaRepository.existsByAppointment_IdAndCustomer_IdAndStatus(
-                appointmentId,
+    public boolean existsPendingBySlotIdAndCustomerId(Long slotId, Long customerId) {
+        return appointmentRequestJpaRepository.existsBySlot_IdAndCustomer_IdAndStatus(
+                slotId,
                 customerId,
                 AppointmentRequestStatus.PENDING
         );
@@ -79,14 +79,14 @@ public class AppointmentRequestRepositoryJpaAdapter implements AppointmentReques
 
     @Override
     public AppointmentRequest save(AppointmentRequest appointmentRequest) {
-        AppointmentJpa appointmentRef = entityManager.getReference(
-                AppointmentJpa.class,
-                appointmentRequest.getAppointmentId()
+        SlotJpa slotRef = entityManager.getReference(
+                SlotJpa.class,
+                appointmentRequest.getSlotId()
         );
         UserJpa customerRef = entityManager.getReference(UserJpa.class, appointmentRequest.getCustomerId());
 
         AppointmentRequestJpa saved = appointmentRequestJpaRepository.save(
-                AppointmentRequestJpaMapper.toJpa(appointmentRequest, appointmentRef, customerRef)
+                AppointmentRequestJpaMapper.toJpa(appointmentRequest, slotRef, customerRef)
         );
 
         return AppointmentRequestJpaMapper.toDomain(saved);

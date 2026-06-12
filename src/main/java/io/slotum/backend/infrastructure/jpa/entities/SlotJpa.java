@@ -1,13 +1,13 @@
 package io.slotum.backend.infrastructure.jpa.entities;
 
-import io.slotum.backend.domain.appointment.AppointmentStatus;
+import io.slotum.backend.domain.slot.SlotStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "appointments")
-public class AppointmentJpa {
+@Table(name = "slots")
+public class SlotJpa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +20,7 @@ public class AppointmentJpa {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)
-    private AppointmentStatus status;
+    private SlotStatus status;
 
     // Communications
     @ManyToOne
@@ -35,13 +35,13 @@ public class AppointmentJpa {
     @JoinColumn(name = "organization_id", referencedColumnName = "id", nullable = false)
     private OrganizationJpa organization;
 
-    protected AppointmentJpa() {}
+    protected SlotJpa() {}
 
-    public AppointmentJpa(
+    public SlotJpa(
             Long id,
             LocalDateTime startsAt,
             LocalDateTime endsAt,
-            AppointmentStatus status,
+            SlotStatus status,
             SpecialistJpa specialist,
             UserJpa customer,
             OrganizationJpa organization
@@ -68,7 +68,7 @@ public class AppointmentJpa {
         return endsAt;
     }
 
-    public AppointmentStatus getStatus() {
+    public SlotStatus getStatus() {
         return status;
     }
 

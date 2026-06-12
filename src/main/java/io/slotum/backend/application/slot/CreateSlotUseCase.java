@@ -1,8 +1,8 @@
-package io.slotum.backend.application.appointment;
+package io.slotum.backend.application.slot;
 
-import io.slotum.backend.domain.appointment.Appointment;
-import io.slotum.backend.domain.appointment.AppointmentRepository;
-import io.slotum.backend.domain.appointment.AppointmentStatus;
+import io.slotum.backend.domain.slot.Slot;
+import io.slotum.backend.domain.slot.SlotRepository;
+import io.slotum.backend.domain.slot.SlotStatus;
 import io.slotum.backend.domain.organization.Organization;
 import io.slotum.backend.domain.organization.OrganizationRepository;
 import io.slotum.backend.domain.specialist.Specialist;
@@ -18,26 +18,26 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class CreateAppointmentUseCase {
-    private final AppointmentRepository appointmentRepository;
+public class CreateSlotUseCase {
+    private final SlotRepository slotRepository;
     private final SpecialistRepository specialistRepository;
     private final UserRepository userRepository;
     private final OrganizationRepository organizationRepository;
 
-    public CreateAppointmentUseCase(
-            AppointmentRepository appointmentRepository,
+    public CreateSlotUseCase(
+            SlotRepository slotRepository,
             SpecialistRepository specialistRepository,
             UserRepository userRepository,
             OrganizationRepository organizationRepository
     ) {
-        this.appointmentRepository = appointmentRepository;
+        this.slotRepository = slotRepository;
         this.specialistRepository = specialistRepository;
         this.userRepository = userRepository;
         this.organizationRepository = organizationRepository;
     }
 
-    public Appointment execute(Command command) {
-        Appointment appointmentToSave = Appointment.create(
+    public Slot execute(Command command) {
+        Slot slotToSave = Slot.create(
                 command.startsAt,
                 command.endsAt,
                 command.status,
@@ -55,7 +55,7 @@ public class CreateAppointmentUseCase {
             );
         }
 
-        if (appointmentToSave.getCustomerId() != null) {
+        if (slotToSave.getCustomerId() != null) {
             Optional<User> user = userRepository.findById(command.customerId);
             if (user.isEmpty()) {
                 throw AppException.build(
@@ -75,22 +75,22 @@ public class CreateAppointmentUseCase {
             );
         }
 
-        if (appointmentRepository.existsOverlappingAppointment(command.specialistUserId, command.startsAt, command.endsAt)) {
+        if (slotRepository.existsOverlappingSlot(command.specialistUserId, command.startsAt, command.endsAt)) {
             throw AppException.build(
-                ErrorCode.APPOINTMENT_OVERLAPPING,
-                    "Appointment overlapping",
+                ErrorCode.SLOT_OVERLAPPING,
+                    "Slot overlapping",
                     Map.of("startsAt", command.startsAt,
                             "endsAt", command.endsAt)
             );
         }
 
-        return appointmentRepository.save(appointmentToSave);
+        return slotRepository.save(slotToSave);
     }
 
     public record Command(
             LocalDateTime startsAt,
             LocalDateTime endsAt,
-            AppointmentStatus status,
+            SlotStatus status,
             Long specialistUserId,
             Long customerId,
             Long organizationId

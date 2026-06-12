@@ -1,4 +1,4 @@
-package io.slotum.backend.domain.appointment;
+package io.slotum.backend.domain.slot;
 
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
@@ -9,89 +9,89 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AppointmentTest {
+public class SlotTest {
 
     @Test
-    @DisplayName("create: creates appointment with null id")
-    void createCreatesAppointmentWithNullId() {
+    @DisplayName("create: creates slot with null id")
+    void createCreatesSlotWithNullId() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        Appointment appointment = Appointment.create(
+        Slot slot = Slot.create(
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 30L
         );
 
-        assertNull(appointment.getId());
-        assertEquals(startsAt, appointment.getStartsAt());
-        assertEquals(endsAt, appointment.getEndsAt());
-        assertEquals(AppointmentStatus.BOOKED, appointment.getStatus());
-        assertEquals(10L, appointment.getSpecialistUserId());
-        assertEquals(20L, appointment.getCustomerId());
-        assertEquals(30L, appointment.getOrganizationId());
+        assertNull(slot.getId());
+        assertEquals(startsAt, slot.getStartsAt());
+        assertEquals(endsAt, slot.getEndsAt());
+        assertEquals(SlotStatus.BOOKED, slot.getStatus());
+        assertEquals(10L, slot.getSpecialistUserId());
+        assertEquals(20L, slot.getCustomerId());
+        assertEquals(30L, slot.getOrganizationId());
     }
 
     @Test
-    @DisplayName("restore: restores appointment with id")
-    void restoreRestoresAppointmentWithId() {
+    @DisplayName("restore: restores slot with id")
+    void restoreRestoresSlotWithId() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        Appointment appointment = Appointment.restore(
+        Slot slot = Slot.restore(
                 1L,
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 30L
         );
 
-        assertEquals(1L, appointment.getId());
+        assertEquals(1L, slot.getId());
     }
 
     @Test
-    @DisplayName("create: creates free appointment without customer")
-    void createCreatesFreeAppointmentWithoutCustomer() {
+    @DisplayName("create: creates free slot without customer")
+    void createCreatesFreeSlotWithoutCustomer() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        Appointment appointment = Appointment.create(
+        Slot slot = Slot.create(
                 startsAt,
                 endsAt,
-                AppointmentStatus.FREE,
+                SlotStatus.FREE,
                 10L,
                 null,
                 30L
         );
 
-        assertEquals(AppointmentStatus.FREE, appointment.getStatus());
-        assertNull(appointment.getCustomerId());
+        assertEquals(SlotStatus.FREE, slot.getStatus());
+        assertNull(slot.getCustomerId());
     }
 
     @Test
-    @DisplayName("book: returns booked appointment with customer")
-    void bookReturnsBookedAppointmentWithCustomer() {
+    @DisplayName("book: returns booked slot with customer")
+    void bookReturnsBookedSlotWithCustomer() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
-        Appointment appointment = Appointment.restore(
+        Slot slot = Slot.restore(
                 1L,
                 startsAt,
                 endsAt,
-                AppointmentStatus.FREE,
+                SlotStatus.FREE,
                 10L,
                 null,
                 30L
         );
 
-        Appointment booked = appointment.book(20L);
+        Slot booked = slot.book(20L);
 
         assertEquals(1L, booked.getId());
-        assertEquals(AppointmentStatus.BOOKED, booked.getStatus());
+        assertEquals(SlotStatus.BOOKED, booked.getStatus());
         assertEquals(20L, booked.getCustomerId());
         assertEquals(10L, booked.getSpecialistUserId());
         assertEquals(30L, booked.getOrganizationId());
@@ -103,17 +103,17 @@ public class AppointmentTest {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        AppException ex = assertThrows(AppException.class, () -> Appointment.restore(
+        AppException ex = assertThrows(AppException.class, () -> Slot.restore(
                 0L,
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 30L
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_ID, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_ID, ex.getCode());
         assertEquals(0L, ex.getDetails().get("id"));
     }
 
@@ -123,17 +123,17 @@ public class AppointmentTest {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        AppException ex = assertThrows(AppException.class, () -> Appointment.restore(
+        AppException ex = assertThrows(AppException.class, () -> Slot.restore(
                 -1L,
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 30L
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_ID, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_ID, ex.getCode());
         assertEquals(-1L, ex.getDetails().get("id"));
     }
 
@@ -142,16 +142,16 @@ public class AppointmentTest {
     void rejectsNullStartsAt() {
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        AppException ex = assertThrows(AppException.class, () -> Appointment.create(
+        AppException ex = assertThrows(AppException.class, () -> Slot.create(
                 null,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 30L
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_STARTS_AT, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_STARTS_AT, ex.getCode());
     }
 
     @Test
@@ -159,16 +159,16 @@ public class AppointmentTest {
     void rejectsNullEndsAt() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
 
-        AppException ex = assertThrows(AppException.class, () -> Appointment.create(
+        AppException ex = assertThrows(AppException.class, () -> Slot.create(
                 startsAt,
                 null,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 30L
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_ENDS_AT, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_ENDS_AT, ex.getCode());
     }
 
     @Test
@@ -177,16 +177,16 @@ public class AppointmentTest {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
 
-        AppException ex = assertThrows(AppException.class, () -> Appointment.create(
+        AppException ex = assertThrows(AppException.class, () -> Slot.create(
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 30L
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_TIME_RANGE, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_TIME_RANGE, ex.getCode());
         assertEquals(startsAt, ex.getDetails().get("startsAt"));
         assertEquals(endsAt, ex.getDetails().get("endsAt"));
     }
@@ -197,16 +197,16 @@ public class AppointmentTest {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
 
-        AppException ex = assertThrows(AppException.class, () -> Appointment.create(
+        AppException ex = assertThrows(AppException.class, () -> Slot.create(
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 30L
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_TIME_RANGE, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_TIME_RANGE, ex.getCode());
         assertEquals(startsAt, ex.getDetails().get("startsAt"));
         assertEquals(endsAt, ex.getDetails().get("endsAt"));
     }
@@ -217,7 +217,7 @@ public class AppointmentTest {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        AppException ex = assertThrows(AppException.class, () -> Appointment.create(
+        AppException ex = assertThrows(AppException.class, () -> Slot.create(
                 startsAt,
                 endsAt,
                 null,
@@ -226,7 +226,7 @@ public class AppointmentTest {
                 30L
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_STATUS, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_STATUS, ex.getCode());
         assertTrue(ex.getDetails().isEmpty());
     }
 
@@ -236,16 +236,16 @@ public class AppointmentTest {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        AppException ex = assertThrows(AppException.class, () -> Appointment.create(
+        AppException ex = assertThrows(AppException.class, () -> Slot.create(
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 null,
                 20L,
                 30L
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_SPECIALIST_ID, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_SPECIALIST_ID, ex.getCode());
         assertTrue(ex.getDetails().isEmpty());
     }
 
@@ -255,35 +255,35 @@ public class AppointmentTest {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        AppException ex = assertThrows(AppException.class, () -> Appointment.create(
+        AppException ex = assertThrows(AppException.class, () -> Slot.create(
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 0L,
                 20L,
                 30L
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_SPECIALIST_ID, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_SPECIALIST_ID, ex.getCode());
         assertEquals(0L, ex.getDetails().get("specialistUserId"));
     }
 
     @Test
-    @DisplayName("create: free appointment with customerId is invalid")
-    void rejectsCustomerIdForFreeAppointment() {
+    @DisplayName("create: free slot with customerId is invalid")
+    void rejectsCustomerIdForFreeSlot() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        AppException ex = assertThrows(AppException.class, () -> Appointment.create(
+        AppException ex = assertThrows(AppException.class, () -> Slot.create(
                 startsAt,
                 endsAt,
-                AppointmentStatus.FREE,
+                SlotStatus.FREE,
                 10L,
                 20L,
                 30L
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_CUSTOMER_ID, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_CUSTOMER_ID, ex.getCode());
         assertEquals(20L, ex.getDetails().get("customerId"));
     }
 
@@ -293,16 +293,16 @@ public class AppointmentTest {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        AppException ex = assertThrows(AppException.class, () -> Appointment.create(
+        AppException ex = assertThrows(AppException.class, () -> Slot.create(
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 null,
                 30L
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_CUSTOMER_ID, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_CUSTOMER_ID, ex.getCode());
         assertTrue(ex.getDetails().isEmpty());
     }
 
@@ -312,16 +312,16 @@ public class AppointmentTest {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        AppException ex = assertThrows(AppException.class, () -> Appointment.create(
+        AppException ex = assertThrows(AppException.class, () -> Slot.create(
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 0L,
                 30L
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_CUSTOMER_ID, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_CUSTOMER_ID, ex.getCode());
         assertEquals(0L, ex.getDetails().get("customerId"));
     }
 
@@ -331,16 +331,16 @@ public class AppointmentTest {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        AppException ex = assertThrows(AppException.class, () -> Appointment.create(
+        AppException ex = assertThrows(AppException.class, () -> Slot.create(
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 null
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_ORGANIZATION_ID, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_ORGANIZATION_ID, ex.getCode());
         assertTrue(ex.getDetails().isEmpty());
     }
 
@@ -350,16 +350,16 @@ public class AppointmentTest {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        AppException ex = assertThrows(AppException.class, () -> Appointment.create(
+        AppException ex = assertThrows(AppException.class, () -> Slot.create(
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 -1L
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_ORGANIZATION_ID, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_ORGANIZATION_ID, ex.getCode());
         assertEquals(-1L, ex.getDetails().get("organizationId"));
     }
 }

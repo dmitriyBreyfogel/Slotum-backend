@@ -23,7 +23,7 @@ public class CancelAppointmentRequestUseCase {
         if (appointmentRequest.isEmpty()) {
             throw AppException.build(
                     ErrorCode.APPOINTMENT_REQUEST_NOT_FOUND,
-                    "Appointment request not found",
+                    "Slot request not found",
                     Map.of("id", appointmentRequestId)
             );
         }

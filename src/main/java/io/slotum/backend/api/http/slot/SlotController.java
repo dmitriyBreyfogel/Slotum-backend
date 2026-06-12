@@ -1,8 +1,8 @@
-package io.slotum.backend.api.http.appointment;
+package io.slotum.backend.api.http.slot;
 
-import io.slotum.backend.application.appointment.*;
-import io.slotum.backend.domain.appointment.Appointment;
-import io.slotum.backend.domain.appointment.AppointmentStatus;
+import io.slotum.backend.application.slot.*;
+import io.slotum.backend.domain.slot.Slot;
+import io.slotum.backend.domain.slot.SlotStatus;
 import io.slotum.backend.error.AppException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -19,27 +19,27 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/appointments")
+@RequestMapping("/api/v1/slots")
 @Tag(name = "Слоты", description = "Управление слотами на запись")
-public class AppointmentController {
-    private final CreateAppointmentUseCase createAppointmentUseCase;
-    private final GetAppointmentUseCase getAppointmentUseCase;
-    private final GetAllAppointmentsUseCase getAllAppointmentsUseCase;
-    private final DeleteByIdAppointmentUseCase deleteByIdAppointmentUseCase;
-    private final DeleteAllAppointmentUseCase deleteAllAppointmentUseCase;
+public class SlotController {
+    private final CreateSlotUseCase createSlotUseCase;
+    private final GetSlotUseCase getSlotUseCase;
+    private final GetAllSlotsUseCase getAllSlotsUseCase;
+    private final DeleteByIdSlotUseCase deleteByIdSlotUseCase;
+    private final DeleteAllSlotUseCase deleteAllSlotUseCase;
 
-    public AppointmentController(
-            CreateAppointmentUseCase createAppointmentUseCase,
-            GetAppointmentUseCase getAppointmentUseCase,
-            GetAllAppointmentsUseCase getAllAppointmentsUseCase,
-            DeleteByIdAppointmentUseCase deleteByIdAppointmentUseCase,
-            DeleteAllAppointmentUseCase deleteAllAppointmentUseCase
+    public SlotController(
+            CreateSlotUseCase createSlotUseCase,
+            GetSlotUseCase getSlotUseCase,
+            GetAllSlotsUseCase getAllSlotsUseCase,
+            DeleteByIdSlotUseCase deleteByIdSlotUseCase,
+            DeleteAllSlotUseCase deleteAllSlotUseCase
     ) {
-        this.createAppointmentUseCase = createAppointmentUseCase;
-        this.getAppointmentUseCase = getAppointmentUseCase;
-        this.getAllAppointmentsUseCase = getAllAppointmentsUseCase;
-        this.deleteByIdAppointmentUseCase = deleteByIdAppointmentUseCase;
-        this.deleteAllAppointmentUseCase = deleteAllAppointmentUseCase;
+        this.createSlotUseCase = createSlotUseCase;
+        this.getSlotUseCase = getSlotUseCase;
+        this.getAllSlotsUseCase = getAllSlotsUseCase;
+        this.deleteByIdSlotUseCase = deleteByIdSlotUseCase;
+        this.deleteAllSlotUseCase = deleteAllSlotUseCase;
     }
 
     @Operation(
@@ -53,7 +53,7 @@ public class AppointmentController {
                             description = "Успешное создание слота",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = AppointmentDto.class)
+                                    schema = @Schema(implementation = SlotDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -107,8 +107,8 @@ public class AppointmentController {
                                                     name = "Невалидный id слота",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_ID",
-                                                                "message": "Invalid appointment id",
+                                                                "code": "INVALID_SLOT_ID",
+                                                                "message": "Invalid slot id",
                                                                 "details": {"id": -1}
                                                             }
                                                     """
@@ -117,8 +117,8 @@ public class AppointmentController {
                                                     name = "Невалидное время начала слота записи",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_STARTS_AT",
-                                                                "message": "Appointment startsAt is null"
+                                                                "code": "INVALID_SLOT_STARTS_AT",
+                                                                "message": "Slot startsAt is null"
                                                             }
                                                     """
                                             ),
@@ -126,8 +126,8 @@ public class AppointmentController {
                                                     name = "Невалидное время конца слота записи",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_ENDS_AT",
-                                                                "message": "Appointment endsAt is null"
+                                                                "code": "INVALID_SLOT_ENDS_AT",
+                                                                "message": "Slot endsAt is null"
                                                             }
                                                     """
                                             ),
@@ -135,8 +135,8 @@ public class AppointmentController {
                                                     name = "Невалидное время начала и конца слота записи",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_TIME_RANGE",
-                                                                "message": "Appointment endsAt must be after startsAt",
+                                                                "code": "INVALID_SLOT_TIME_RANGE",
+                                                                "message": "Slot endsAt must be after startsAt",
                                                                 "details": {
                                                                     "startsAt": "2026-03-21T10:00:00",
                                                                     "endsAt": "2026-03-21T09:00:00"
@@ -148,8 +148,8 @@ public class AppointmentController {
                                                     name = "Невалидный статус слота",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_STATUS",
-                                                                "message": "Appointment status is null"
+                                                                "code": "INVALID_SLOT_STATUS",
+                                                                "message": "Slot status is null"
                                                             }
                                                     """
                                             ),
@@ -157,8 +157,8 @@ public class AppointmentController {
                                                     name = "Невалидный id специалиста",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_SPECIALIST_ID",
-                                                                "message": "Invalid appointment specialistUserId",
+                                                                "code": "INVALID_SLOT_SPECIALIST_ID",
+                                                                "message": "Invalid slot specialistUserId",
                                                                 "details": {"specialistUserId": -1}
                                                             }
                                                     """
@@ -167,8 +167,8 @@ public class AppointmentController {
                                                     name = "Невалидный id пользователя",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_CUSTOMER_ID",
-                                                                "message": "Invalid appointment customerId",
+                                                                "code": "INVALID_SLOT_CUSTOMER_ID",
+                                                                "message": "Invalid slot customerId",
                                                                 "details": {"customerId": -1}
                                                             }
                                                     """
@@ -177,8 +177,8 @@ public class AppointmentController {
                                                     name = "Невалидный id организации",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_ORGANIZATION_ID",
-                                                                "message": "Invalid appointment organizationId",
+                                                                "code": "INVALID_SLOT_ORGANIZATION_ID",
+                                                                "message": "Invalid slot organizationId",
                                                                 "details": {"organizationId": -1}
                                                             }
                                                     """
@@ -189,9 +189,9 @@ public class AppointmentController {
             }
     )
     @PostMapping
-    public ResponseEntity<AppointmentDto> create(@RequestBody CreateAppointmentRequest request) {
-        Appointment result = createAppointmentUseCase.execute(
-                new CreateAppointmentUseCase.Command(
+    public ResponseEntity<SlotDto> create(@RequestBody CreateSlotRequest request) {
+        Slot result = createSlotUseCase.execute(
+                new CreateSlotUseCase.Command(
                         request.startsAt,
                         request.endsAt,
                         request.status,
@@ -202,7 +202,7 @@ public class AppointmentController {
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                new AppointmentDto(
+                new SlotDto(
                         result.getId(),
                         result.getStartsAt(),
                         result.getEndsAt(),
@@ -225,7 +225,7 @@ public class AppointmentController {
                             description = "Успешное получение слота",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = AppointmentDto.class)
+                                    schema = @Schema(implementation = SlotDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -238,8 +238,8 @@ public class AppointmentController {
                                             name = "Слот не найден",
                                             value = """
                                                     {
-                                                        "code": "APPOINTMENT_NOT_FOUND",
-                                                        "message": "Appointment not found",
+                                                        "code": "SLOT_NOT_FOUND",
+                                                        "message": "Slot not found",
                                                         "details": {"id": 1}
                                                     }
                                             """
@@ -257,8 +257,8 @@ public class AppointmentController {
                                                     name = "Невалидный id слота",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_ID",
-                                                                "message": "Invalid appointment id",
+                                                                "code": "INVALID_SLOT_ID",
+                                                                "message": "Invalid slot id",
                                                                 "details": {"id": -1}
                                                             }
                                                     """
@@ -267,8 +267,8 @@ public class AppointmentController {
                                                     name = "Невалидное время начала слота записи",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_STARTS_AT",
-                                                                "message": "Appointment startsAt is null"
+                                                                "code": "INVALID_SLOT_STARTS_AT",
+                                                                "message": "Slot startsAt is null"
                                                             }
                                                     """
                                             ),
@@ -276,8 +276,8 @@ public class AppointmentController {
                                                     name = "Невалидное время конца слота записи",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_ENDS_AT",
-                                                                "message": "Appointment endsAt is null"
+                                                                "code": "INVALID_SLOT_ENDS_AT",
+                                                                "message": "Slot endsAt is null"
                                                             }
                                                     """
                                             ),
@@ -285,8 +285,8 @@ public class AppointmentController {
                                                     name = "Невалидное время начала и конца слота записи",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_TIME_RANGE",
-                                                                "message": "Appointment endsAt must be after startsAt",
+                                                                "code": "INVALID_SLOT_TIME_RANGE",
+                                                                "message": "Slot endsAt must be after startsAt",
                                                                 "details": {
                                                                     "startsAt": "2026-03-21T10:00:00",
                                                                     "endsAt": "2026-03-21T09:00:00"
@@ -298,8 +298,8 @@ public class AppointmentController {
                                                     name = "Невалидный статус слота",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_STATUS",
-                                                                "message": "Appointment status is null"
+                                                                "code": "INVALID_SLOT_STATUS",
+                                                                "message": "Slot status is null"
                                                             }
                                                     """
                                             ),
@@ -307,8 +307,8 @@ public class AppointmentController {
                                                     name = "Невалидный id специалиста",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_SPECIALIST_ID",
-                                                                "message": "Invalid appointment specialistUserId",
+                                                                "code": "INVALID_SLOT_SPECIALIST_ID",
+                                                                "message": "Invalid slot specialistUserId",
                                                                 "details": {"specialistUserId": -1}
                                                             }
                                                     """
@@ -317,8 +317,8 @@ public class AppointmentController {
                                                     name = "Невалидный id пользователя",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_CUSTOMER_ID",
-                                                                "message": "Invalid appointment customerId",
+                                                                "code": "INVALID_SLOT_CUSTOMER_ID",
+                                                                "message": "Invalid slot customerId",
                                                                 "details": {"customerId": -1}
                                                             }
                                                     """
@@ -327,8 +327,8 @@ public class AppointmentController {
                                                     name = "Невалидный id организации",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_ORGANIZATION_ID",
-                                                                "message": "Invalid appointment organizationId",
+                                                                "code": "INVALID_SLOT_ORGANIZATION_ID",
+                                                                "message": "Invalid slot organizationId",
                                                                 "details": {"organizationId": -1}
                                                             }
                                                     """
@@ -339,11 +339,11 @@ public class AppointmentController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<AppointmentDto> getAppointment(@PathVariable("id") Long id) {
-        Appointment result = getAppointmentUseCase.execute(id);
+    public ResponseEntity<SlotDto> getSlot(@PathVariable("id") Long id) {
+        Slot result = getSlotUseCase.execute(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new AppointmentDto(
+                new SlotDto(
                         result.getId(),
                         result.getStartsAt(),
                         result.getEndsAt(),
@@ -366,7 +366,7 @@ public class AppointmentController {
                             description = "Успешное получение списка слотов",
                             content = @Content(
                                     mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = AppointmentDto.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = SlotDto.class))
                             )
                     ),
                     @ApiResponse(
@@ -380,8 +380,8 @@ public class AppointmentController {
                                                     name = "Невалидный id слота",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_ID",
-                                                                "message": "Invalid appointment id",
+                                                                "code": "INVALID_SLOT_ID",
+                                                                "message": "Invalid slot id",
                                                                 "details": {"id": -1}
                                                             }
                                                     """
@@ -390,8 +390,8 @@ public class AppointmentController {
                                                     name = "Невалидное время начала слота записи",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_STARTS_AT",
-                                                                "message": "Appointment startsAt is null"
+                                                                "code": "INVALID_SLOT_STARTS_AT",
+                                                                "message": "Slot startsAt is null"
                                                             }
                                                     """
                                             ),
@@ -399,8 +399,8 @@ public class AppointmentController {
                                                     name = "Невалидное время конца слота записи",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_ENDS_AT",
-                                                                "message": "Appointment endsAt is null"
+                                                                "code": "INVALID_SLOT_ENDS_AT",
+                                                                "message": "Slot endsAt is null"
                                                             }
                                                     """
                                             ),
@@ -408,8 +408,8 @@ public class AppointmentController {
                                                     name = "Невалидное время начала и конца слота записи",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_TIME_RANGE",
-                                                                "message": "Appointment endsAt must be after startsAt",
+                                                                "code": "INVALID_SLOT_TIME_RANGE",
+                                                                "message": "Slot endsAt must be after startsAt",
                                                                 "details": {
                                                                     "startsAt": "2026-03-21T10:00:00",
                                                                     "endsAt": "2026-03-21T09:00:00"
@@ -421,8 +421,8 @@ public class AppointmentController {
                                                     name = "Невалидный статус слота",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_STATUS",
-                                                                "message": "Appointment status is null"
+                                                                "code": "INVALID_SLOT_STATUS",
+                                                                "message": "Slot status is null"
                                                             }
                                                     """
                                             ),
@@ -430,8 +430,8 @@ public class AppointmentController {
                                                     name = "Невалидный id специалиста",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_SPECIALIST_ID",
-                                                                "message": "Invalid appointment specialistUserId",
+                                                                "code": "INVALID_SLOT_SPECIALIST_ID",
+                                                                "message": "Invalid slot specialistUserId",
                                                                 "details": {"specialistUserId": -1}
                                                             }
                                                     """
@@ -440,8 +440,8 @@ public class AppointmentController {
                                                     name = "Невалидный id пользователя",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_CUSTOMER_ID",
-                                                                "message": "Invalid appointment customerId",
+                                                                "code": "INVALID_SLOT_CUSTOMER_ID",
+                                                                "message": "Invalid slot customerId",
                                                                 "details": {"customerId": -1}
                                                             }
                                                     """
@@ -450,8 +450,8 @@ public class AppointmentController {
                                                     name = "Невалидный id организации",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_ORGANIZATION_ID",
-                                                                "message": "Invalid appointment organizationId",
+                                                                "code": "INVALID_SLOT_ORGANIZATION_ID",
+                                                                "message": "Invalid slot organizationId",
                                                                 "details": {"organizationId": -1}
                                                             }
                                                     """
@@ -462,18 +462,18 @@ public class AppointmentController {
             }
     )
     @GetMapping()
-    public ResponseEntity<List<AppointmentDto>> getAllAppointments() {
-        List<Appointment> result = getAllAppointmentsUseCase.execute();
+    public ResponseEntity<List<SlotDto>> getAllSlots() {
+        List<Slot> result = getAllSlotsUseCase.execute();
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                result.stream().map(appointment -> new AppointmentDto(
-                        appointment.getId(),
-                        appointment.getStartsAt(),
-                        appointment.getEndsAt(),
-                        appointment.getStatus(),
-                        appointment.getSpecialistUserId(),
-                        appointment.getCustomerId(),
-                        appointment.getOrganizationId()
+                result.stream().map(slot -> new SlotDto(
+                        slot.getId(),
+                        slot.getStartsAt(),
+                        slot.getEndsAt(),
+                        slot.getStatus(),
+                        slot.getSpecialistUserId(),
+                        slot.getCustomerId(),
+                        slot.getOrganizationId()
                 )).toList()
         );
     }
@@ -489,7 +489,7 @@ public class AppointmentController {
                             description = "Успешное удаление слота",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = AppointmentDto.class)
+                                    schema = @Schema(implementation = SlotDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -502,8 +502,8 @@ public class AppointmentController {
                                             name = "Слот не найден",
                                             value = """
                                                     {
-                                                        "code": "APPOINTMENT_NOT_FOUND",
-                                                        "message": "Appointment not found",
+                                                        "code": "SLOT_NOT_FOUND",
+                                                        "message": "Slot not found",
                                                         "details": {"id": 1}
                                                     }
                                             """
@@ -521,8 +521,8 @@ public class AppointmentController {
                                                     name = "Невалидный id слота",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_ID",
-                                                                "message": "Invalid appointment id",
+                                                                "code": "INVALID_SLOT_ID",
+                                                                "message": "Invalid slot id",
                                                                 "details": {"id": -1}
                                                             }
                                                     """
@@ -531,8 +531,8 @@ public class AppointmentController {
                                                     name = "Невалидное время начала слота записи",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_STARTS_AT",
-                                                                "message": "Appointment startsAt is null"
+                                                                "code": "INVALID_SLOT_STARTS_AT",
+                                                                "message": "Slot startsAt is null"
                                                             }
                                                     """
                                             ),
@@ -540,8 +540,8 @@ public class AppointmentController {
                                                     name = "Невалидное время конца слота записи",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_ENDS_AT",
-                                                                "message": "Appointment endsAt is null"
+                                                                "code": "INVALID_SLOT_ENDS_AT",
+                                                                "message": "Slot endsAt is null"
                                                             }
                                                     """
                                             ),
@@ -549,8 +549,8 @@ public class AppointmentController {
                                                     name = "Невалидное время начала и конца слота записи",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_TIME_RANGE",
-                                                                "message": "Appointment endsAt must be after startsAt",
+                                                                "code": "INVALID_SLOT_TIME_RANGE",
+                                                                "message": "Slot endsAt must be after startsAt",
                                                                 "details": {
                                                                     "startsAt": "2026-03-21T10:00:00",
                                                                     "endsAt": "2026-03-21T09:00:00"
@@ -562,8 +562,8 @@ public class AppointmentController {
                                                     name = "Невалидный статус слота",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_STATUS",
-                                                                "message": "Appointment status is null"
+                                                                "code": "INVALID_SLOT_STATUS",
+                                                                "message": "Slot status is null"
                                                             }
                                                     """
                                             ),
@@ -571,8 +571,8 @@ public class AppointmentController {
                                                     name = "Невалидный id специалиста",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_SPECIALIST_ID",
-                                                                "message": "Invalid appointment specialistUserId",
+                                                                "code": "INVALID_SLOT_SPECIALIST_ID",
+                                                                "message": "Invalid slot specialistUserId",
                                                                 "details": {"specialistUserId": -1}
                                                             }
                                                     """
@@ -581,8 +581,8 @@ public class AppointmentController {
                                                     name = "Невалидный id пользователя",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_CUSTOMER_ID",
-                                                                "message": "Invalid appointment customerId",
+                                                                "code": "INVALID_SLOT_CUSTOMER_ID",
+                                                                "message": "Invalid slot customerId",
                                                                 "details": {"customerId": -1}
                                                             }
                                                     """
@@ -591,8 +591,8 @@ public class AppointmentController {
                                                     name = "Невалидный id организации",
                                                     value = """
                                                             {
-                                                                "code": "INVALID_APPOINTMENT_ORGANIZATION_ID",
-                                                                "message": "Invalid appointment organizationId",
+                                                                "code": "INVALID_SLOT_ORGANIZATION_ID",
+                                                                "message": "Invalid slot organizationId",
                                                                 "details": {"organizationId": -1}
                                                             }
                                                     """
@@ -603,11 +603,11 @@ public class AppointmentController {
             }
     )
     @DeleteMapping("/{id}")
-    public ResponseEntity<AppointmentDto> deleteAppointment(@PathVariable("id") Long id) {
-        Appointment result = deleteByIdAppointmentUseCase.execute(id);
+    public ResponseEntity<SlotDto> deleteSlot(@PathVariable("id") Long id) {
+        Slot result = deleteByIdSlotUseCase.execute(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new AppointmentDto(
+                new SlotDto(
                         result.getId(),
                         result.getStartsAt(),
                         result.getEndsAt(),
@@ -633,25 +633,25 @@ public class AppointmentController {
             }
     )
     @DeleteMapping()
-    public ResponseEntity<Void> deleteAllAppointments() {
-        deleteAllAppointmentUseCase.execute();
+    public ResponseEntity<Void> deleteAllSlots() {
+        deleteAllSlotUseCase.execute();
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    public record CreateAppointmentRequest(
+    public record CreateSlotRequest(
             LocalDateTime startsAt,
             LocalDateTime endsAt,
-            AppointmentStatus status,
+            SlotStatus status,
             Long specialistUserId,
             Long customerId,
             Long organizationId
     ) {}
 
-    public record AppointmentDto(
+    public record SlotDto(
             Long id,
             LocalDateTime startsAt,
             LocalDateTime endsAt,
-            AppointmentStatus status,
+            SlotStatus status,
             Long specialistUserId,
             Long customerId,
             Long organizationId

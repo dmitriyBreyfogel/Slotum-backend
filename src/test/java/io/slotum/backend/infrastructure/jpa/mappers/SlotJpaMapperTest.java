@@ -1,10 +1,10 @@
 package io.slotum.backend.infrastructure.jpa.mappers;
 
-import io.slotum.backend.domain.appointment.Appointment;
-import io.slotum.backend.domain.appointment.AppointmentStatus;
+import io.slotum.backend.domain.slot.Slot;
+import io.slotum.backend.domain.slot.SlotStatus;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
-import io.slotum.backend.infrastructure.jpa.entities.AppointmentJpa;
+import io.slotum.backend.infrastructure.jpa.entities.SlotJpa;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationJpa;
 import io.slotum.backend.infrastructure.jpa.entities.SpecialistJpa;
 import io.slotum.backend.infrastructure.jpa.entities.UserJpa;
@@ -15,22 +15,22 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AppointmentJpaMapperTest {
+public class SlotJpaMapperTest {
 
     @Test
     @DisplayName("toDomain: source = null -> IllegalArgumentException")
     void toDomainRejectsNullSource() {
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> AppointmentJpaMapper.toDomain(null));
-        assertEquals("AppointmentJpa source is null", ex.getMessage());
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> SlotJpaMapper.toDomain(null));
+        assertEquals("SlotJpa source is null", ex.getMessage());
     }
 
     @Test
     @DisplayName("toJpa: source = null -> IllegalArgumentException")
     void toJpaRejectsNullSource() {
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                AppointmentJpaMapper.toJpa(null, new SpecialistJpa(1L, "d", 0.0), new UserJpa(1L, "s", "f", null, "a@b.cc", "h", "+79991234567"), new OrganizationJpa(1L, "o", "d", 0.0))
+                SlotJpaMapper.toJpa(null, new SpecialistJpa(1L, "d", 0.0), new UserJpa(1L, "s", "f", null, "a@b.cc", "h", "+79991234567"), new OrganizationJpa(1L, "o", "d", 0.0))
         );
-        assertEquals("Appointment source is null", ex.getMessage());
+        assertEquals("Slot source is null", ex.getMessage());
     }
 
     @Test
@@ -43,25 +43,25 @@ public class AppointmentJpaMapperTest {
         UserJpa customer = new UserJpa(20L, "Doe", "John", null, "john@test.com", "HASH", "+79991234567");
         OrganizationJpa organization = new OrganizationJpa(30L, "Org", "Desc", 0.0);
 
-        AppointmentJpa jpa = new AppointmentJpa(
+        SlotJpa jpa = new SlotJpa(
                 1L,
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 specialist,
                 customer,
                 organization
         );
 
-        Appointment appointment = AppointmentJpaMapper.toDomain(jpa);
+        Slot slot = SlotJpaMapper.toDomain(jpa);
 
-        assertEquals(1L, appointment.getId());
-        assertEquals(startsAt, appointment.getStartsAt());
-        assertEquals(endsAt, appointment.getEndsAt());
-        assertEquals(AppointmentStatus.BOOKED, appointment.getStatus());
-        assertEquals(10L, appointment.getSpecialistUserId());
-        assertEquals(20L, appointment.getCustomerId());
-        assertEquals(30L, appointment.getOrganizationId());
+        assertEquals(1L, slot.getId());
+        assertEquals(startsAt, slot.getStartsAt());
+        assertEquals(endsAt, slot.getEndsAt());
+        assertEquals(SlotStatus.BOOKED, slot.getStatus());
+        assertEquals(10L, slot.getSpecialistUserId());
+        assertEquals(20L, slot.getCustomerId());
+        assertEquals(30L, slot.getOrganizationId());
     }
 
     @Test
@@ -70,11 +70,11 @@ public class AppointmentJpaMapperTest {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        Appointment appointment = Appointment.restore(
+        Slot slot = Slot.restore(
                 1L,
                 startsAt,
                 endsAt,
-                AppointmentStatus.FREE,
+                SlotStatus.FREE,
                 10L,
                 null,
                 30L
@@ -84,51 +84,51 @@ public class AppointmentJpaMapperTest {
         UserJpa customer = new UserJpa(20L, "Doe", "John", null, "john@test.com", "HASH", "+79991234567");
         OrganizationJpa organization = new OrganizationJpa(30L, "Org", "Desc", 0.0);
 
-        AppointmentJpa jpa = AppointmentJpaMapper.toJpa(appointment, specialist, customer, organization);
+        SlotJpa jpa = SlotJpaMapper.toJpa(slot, specialist, customer, organization);
 
         assertEquals(1L, jpa.getId());
         assertEquals(startsAt, jpa.getStartsAt());
         assertEquals(endsAt, jpa.getEndsAt());
-        assertEquals(AppointmentStatus.FREE, jpa.getStatus());
+        assertEquals(SlotStatus.FREE, jpa.getStatus());
         assertSame(specialist, jpa.getSpecialist());
         assertNull(jpa.getCustomer());
         assertSame(organization, jpa.getOrganization());
     }
 
     @Test
-    @DisplayName("toDomain: maps free appointment without customer")
-    void toDomainMapsFreeAppointmentWithoutCustomer() {
+    @DisplayName("toDomain: maps free slot without customer")
+    void toDomainMapsFreeSlotWithoutCustomer() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        AppointmentJpa jpa = new AppointmentJpa(
+        SlotJpa jpa = new SlotJpa(
                 1L,
                 startsAt,
                 endsAt,
-                AppointmentStatus.FREE,
+                SlotStatus.FREE,
                 new SpecialistJpa(10L, "Some", 4.5),
                 null,
                 new OrganizationJpa(30L, "Org", "Desc", 0.0)
         );
 
-        Appointment appointment = AppointmentJpaMapper.toDomain(jpa);
+        Slot slot = SlotJpaMapper.toDomain(jpa);
 
-        assertEquals(1L, appointment.getId());
-        assertEquals(AppointmentStatus.FREE, appointment.getStatus());
-        assertNull(appointment.getCustomerId());
+        assertEquals(1L, slot.getId());
+        assertEquals(SlotStatus.FREE, slot.getStatus());
+        assertNull(slot.getCustomerId());
     }
 
     @Test
-    @DisplayName("Round-trip: Appointment -> AppointmentJpa -> Appointment сохраняет поля")
+    @DisplayName("Round-trip: Slot -> SlotJpa -> Slot сохраняет поля")
     void roundTripPreservesFields() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        Appointment source = Appointment.restore(
+        Slot source = Slot.restore(
                 5L,
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 30L
@@ -138,24 +138,24 @@ public class AppointmentJpaMapperTest {
         UserJpa customer = new UserJpa(20L, "Doe", "John", null, "john@test.com", "HASH", "+79991234567");
         OrganizationJpa organization = new OrganizationJpa(30L, "Org", "Desc", 0.0);
 
-        Appointment mapped = AppointmentJpaMapper.toDomain(AppointmentJpaMapper.toJpa(source, specialist, customer, organization));
+        Slot mapped = SlotJpaMapper.toDomain(SlotJpaMapper.toJpa(source, specialist, customer, organization));
 
         assertEquals(5L, mapped.getId());
         assertEquals(startsAt, mapped.getStartsAt());
         assertEquals(endsAt, mapped.getEndsAt());
-        assertEquals(AppointmentStatus.BOOKED, mapped.getStatus());
+        assertEquals(SlotStatus.BOOKED, mapped.getStatus());
         assertEquals(10L, mapped.getSpecialistUserId());
         assertEquals(20L, mapped.getCustomerId());
         assertEquals(30L, mapped.getOrganizationId());
     }
 
     @Test
-    @DisplayName("toDomain: status = null -> AppException INVALID_APPOINTMENT_STATUS")
+    @DisplayName("toDomain: status = null -> AppException INVALID_SLOT_STATUS")
     void toDomainRejectsNullStatus() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        AppointmentJpa jpa = new AppointmentJpa(
+        SlotJpa jpa = new SlotJpa(
                 1L,
                 startsAt,
                 endsAt,
@@ -165,29 +165,29 @@ public class AppointmentJpaMapperTest {
                 new OrganizationJpa(30L, "Org", "Desc", 0.0)
         );
 
-        AppException ex = assertThrows(AppException.class, () -> AppointmentJpaMapper.toDomain(jpa));
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_STATUS, ex.getCode());
+        AppException ex = assertThrows(AppException.class, () -> SlotJpaMapper.toDomain(jpa));
+        assertEquals(ErrorCode.INVALID_SLOT_STATUS, ex.getCode());
         assertTrue(ex.getDetails().isEmpty());
     }
 
     @Test
-    @DisplayName("toDomain: specialist.userId <= 0 -> AppException INVALID_APPOINTMENT_SPECIALIST_ID")
+    @DisplayName("toDomain: specialist.userId <= 0 -> AppException INVALID_SLOT_SPECIALIST_ID")
     void toDomainRejectsInvalidSpecialistId() {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 11, 0);
 
-        AppointmentJpa jpa = new AppointmentJpa(
+        SlotJpa jpa = new SlotJpa(
                 1L,
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 new SpecialistJpa(0L, "Some", 4.5),
                 new UserJpa(20L, "Doe", "John", null, "john@test.com", "HASH", "+79991234567"),
                 new OrganizationJpa(30L, "Org", "Desc", 0.0)
         );
 
-        AppException ex = assertThrows(AppException.class, () -> AppointmentJpaMapper.toDomain(jpa));
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_SPECIALIST_ID, ex.getCode());
+        AppException ex = assertThrows(AppException.class, () -> SlotJpaMapper.toDomain(jpa));
+        assertEquals(ErrorCode.INVALID_SLOT_SPECIALIST_ID, ex.getCode());
         assertEquals(0L, ex.getDetails().get("specialistUserId"));
     }
 }

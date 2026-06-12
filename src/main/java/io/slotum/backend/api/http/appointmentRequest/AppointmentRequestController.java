@@ -4,7 +4,7 @@ import io.slotum.backend.application.appointmentRequest.AcceptAppointmentRequest
 import io.slotum.backend.application.appointmentRequest.CancelAppointmentRequestUseCase;
 import io.slotum.backend.application.appointmentRequest.CreateAppointmentRequestUseCase;
 import io.slotum.backend.application.appointmentRequest.GetAppointmentRequestUseCase;
-import io.slotum.backend.application.appointmentRequest.GetAppointmentRequestsByAppointmentUseCase;
+import io.slotum.backend.application.appointmentRequest.GetAppointmentRequestsBySlotUseCase;
 import io.slotum.backend.application.appointmentRequest.GetIncomingAppointmentRequestsUseCase;
 import io.slotum.backend.application.appointmentRequest.GetMyAppointmentRequestsUseCase;
 import io.slotum.backend.application.appointmentRequest.RejectAppointmentRequestUseCase;
@@ -31,7 +31,7 @@ public class AppointmentRequestController {
     private final GetAppointmentRequestUseCase getAppointmentRequestUseCase;
     private final GetMyAppointmentRequestsUseCase getMyAppointmentRequestsUseCase;
     private final GetIncomingAppointmentRequestsUseCase getIncomingAppointmentRequestsUseCase;
-    private final GetAppointmentRequestsByAppointmentUseCase getAppointmentRequestsByAppointmentUseCase;
+    private final GetAppointmentRequestsBySlotUseCase getAppointmentRequestsBySlotUseCase;
     private final AcceptAppointmentRequestUseCase acceptAppointmentRequestUseCase;
     private final RejectAppointmentRequestUseCase rejectAppointmentRequestUseCase;
     private final CancelAppointmentRequestUseCase cancelAppointmentRequestUseCase;
@@ -41,7 +41,7 @@ public class AppointmentRequestController {
             GetAppointmentRequestUseCase getAppointmentRequestUseCase,
             GetMyAppointmentRequestsUseCase getMyAppointmentRequestsUseCase,
             GetIncomingAppointmentRequestsUseCase getIncomingAppointmentRequestsUseCase,
-            GetAppointmentRequestsByAppointmentUseCase getAppointmentRequestsByAppointmentUseCase,
+            GetAppointmentRequestsBySlotUseCase getAppointmentRequestsBySlotUseCase,
             AcceptAppointmentRequestUseCase acceptAppointmentRequestUseCase,
             RejectAppointmentRequestUseCase rejectAppointmentRequestUseCase,
             CancelAppointmentRequestUseCase cancelAppointmentRequestUseCase
@@ -50,7 +50,7 @@ public class AppointmentRequestController {
         this.getAppointmentRequestUseCase = getAppointmentRequestUseCase;
         this.getMyAppointmentRequestsUseCase = getMyAppointmentRequestsUseCase;
         this.getIncomingAppointmentRequestsUseCase = getIncomingAppointmentRequestsUseCase;
-        this.getAppointmentRequestsByAppointmentUseCase = getAppointmentRequestsByAppointmentUseCase;
+        this.getAppointmentRequestsBySlotUseCase = getAppointmentRequestsBySlotUseCase;
         this.acceptAppointmentRequestUseCase = acceptAppointmentRequestUseCase;
         this.rejectAppointmentRequestUseCase = rejectAppointmentRequestUseCase;
         this.cancelAppointmentRequestUseCase = cancelAppointmentRequestUseCase;
@@ -63,7 +63,7 @@ public class AppointmentRequestController {
     ) {
         AppointmentRequest result = createAppointmentRequestUseCase.execute(
                 new CreateAppointmentRequestUseCase.Command(
-                        request.appointmentId(),
+                        request.slotId(),
                         currentUser.userId(),
                         request.message()
                 )
@@ -99,13 +99,13 @@ public class AppointmentRequestController {
         );
     }
 
-    @GetMapping("/appointments/{appointmentId}")
-    public ResponseEntity<List<AppointmentRequestDto>> getByAppointment(
+    @GetMapping("/slots/{slotId}")
+    public ResponseEntity<List<AppointmentRequestDto>> getBySlot(
             @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @PathVariable("appointmentId") Long appointmentId
+            @PathVariable("slotId") Long slotId
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                getAppointmentRequestsByAppointmentUseCase.execute(appointmentId, currentUser.userId()).stream()
+                getAppointmentRequestsBySlotUseCase.execute(slotId, currentUser.userId()).stream()
                         .map(AppointmentRequestController::toDto)
                         .toList()
         );
@@ -144,7 +144,7 @@ public class AppointmentRequestController {
     private static AppointmentRequestDto toDto(AppointmentRequest source) {
         return new AppointmentRequestDto(
                 source.getId(),
-                source.getAppointmentId(),
+                source.getSlotId(),
                 source.getCustomerId(),
                 source.getStatus(),
                 source.getMessage(),
@@ -154,13 +154,13 @@ public class AppointmentRequestController {
     }
 
     public record CreateAppointmentRequest(
-            Long appointmentId,
+            Long slotId,
             String message
     ) {}
 
     public record AppointmentRequestDto(
             Long id,
-            Long appointmentId,
+            Long slotId,
             Long customerId,
             AppointmentRequestStatus status,
             String message,

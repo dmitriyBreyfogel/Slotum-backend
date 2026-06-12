@@ -138,11 +138,11 @@ databaseChangeLog:
             onDelete: CASCADE
 
   - changeSet:
-      id: 005-create-appointments
+      id: 005-create-slots
       author: dmitriyBreyfogel
       changes:
         - createTable:
-            tableName: appointments
+            tableName: slots
             columns:
               - column:
                   name: id
@@ -182,37 +182,37 @@ databaseChangeLog:
                   constraints:
                     nullable: false
         - addForeignKeyConstraint:
-            baseTableName: appointments
+            baseTableName: slots
             baseColumnNames: specialist_id
             referencedTableName: specialists
             referencedColumnNames: user_id
-            constraintName: fk_appointments_specialist
+            constraintName: fk_slots_specialist
             onDelete: RESTRICT
         - addForeignKeyConstraint:
-            baseTableName: appointments
+            baseTableName: slots
             baseColumnNames: organization_id
             referencedTableName: organizations
             referencedColumnNames: id
-            constraintName: fk_appointments_organization
+            constraintName: fk_slots_organization
             onDelete: RESTRICT
         - addForeignKeyConstraint:
-            baseTableName: appointments
+            baseTableName: slots
             baseColumnNames: customer_id
             referencedTableName: users
             referencedColumnNames: id
-            constraintName: fk_appointments_customer
+            constraintName: fk_slots_customer
             onDelete: RESTRICT
         - createIndex:
-            tableName: appointments
-            indexName: idx_appointments_specialist_starts_at
+            tableName: slots
+            indexName: idx_slots_specialist_starts_at
             columns:
               - column:
                   name: specialist_id
               - column:
                   name: starts_at
         - createIndex:
-            tableName: appointments
-            indexName: idx_appointments_customer_starts_at
+            tableName: slots
+            indexName: idx_slots_customer_starts_at
             columns:
               - column:
                   name: customer_id

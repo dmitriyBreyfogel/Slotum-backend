@@ -1,9 +1,9 @@
 package io.slotum.backend.infrastructure.jpa.repositories.appointmentRequest;
 
-import io.slotum.backend.domain.appointment.AppointmentStatus;
+import io.slotum.backend.domain.slot.SlotStatus;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequest;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequestStatus;
-import io.slotum.backend.infrastructure.jpa.entities.AppointmentJpa;
+import io.slotum.backend.infrastructure.jpa.entities.SlotJpa;
 import io.slotum.backend.infrastructure.jpa.entities.AppointmentRequestJpa;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationJpa;
 import io.slotum.backend.infrastructure.jpa.entities.SpecialistJpa;
@@ -40,7 +40,7 @@ public class AppointmentRequestRepositoryJpaAdapterTest {
 
         assertEquals(true, result.isPresent());
         assertEquals(1L, result.get().getId());
-        assertEquals(5L, result.get().getAppointmentId());
+        assertEquals(5L, result.get().getSlotId());
         verify(jpaRepository).findById(1L);
         verifyNoMoreInteractions(jpaRepository, entityManager);
     }
@@ -63,35 +63,35 @@ public class AppointmentRequestRepositoryJpaAdapterTest {
     }
 
     @Test
-    @DisplayName("findByAppointmentId delegates to nested appointment id query")
-    void findByAppointmentIdDelegates() {
+    @DisplayName("findBySlotId delegates to nested slot id query")
+    void findBySlotIdDelegates() {
         AppointmentRequestJpaRepository jpaRepository = mock(AppointmentRequestJpaRepository.class);
         EntityManager entityManager = mock(EntityManager.class);
         AppointmentRequestRepositoryJpaAdapter adapter =
                 new AppointmentRequestRepositoryJpaAdapter(jpaRepository, entityManager);
-        when(jpaRepository.findAllByAppointment_Id(5L)).thenReturn(List.of(pendingJpa(1L)));
+        when(jpaRepository.findAllBySlot_Id(5L)).thenReturn(List.of(pendingJpa(1L)));
 
-        List<AppointmentRequest> result = adapter.findByAppointmentId(5L);
+        List<AppointmentRequest> result = adapter.findBySlotId(5L);
 
         assertEquals(1, result.size());
-        verify(jpaRepository).findAllByAppointment_Id(5L);
+        verify(jpaRepository).findAllBySlot_Id(5L);
         verifyNoMoreInteractions(jpaRepository, entityManager);
     }
 
     @Test
-    @DisplayName("findPendingByAppointmentId delegates with PENDING status")
-    void findPendingByAppointmentIdDelegates() {
+    @DisplayName("findPendingBySlotId delegates with PENDING status")
+    void findPendingBySlotIdDelegates() {
         AppointmentRequestJpaRepository jpaRepository = mock(AppointmentRequestJpaRepository.class);
         EntityManager entityManager = mock(EntityManager.class);
         AppointmentRequestRepositoryJpaAdapter adapter =
                 new AppointmentRequestRepositoryJpaAdapter(jpaRepository, entityManager);
-        when(jpaRepository.findAllByAppointment_IdAndStatus(5L, AppointmentRequestStatus.PENDING))
+        when(jpaRepository.findAllBySlot_IdAndStatus(5L, AppointmentRequestStatus.PENDING))
                 .thenReturn(List.of(pendingJpa(1L)));
 
-        List<AppointmentRequest> result = adapter.findPendingByAppointmentId(5L);
+        List<AppointmentRequest> result = adapter.findPendingBySlotId(5L);
 
         assertEquals(1, result.size());
-        verify(jpaRepository).findAllByAppointment_IdAndStatus(5L, AppointmentRequestStatus.PENDING);
+        verify(jpaRepository).findAllBySlot_IdAndStatus(5L, AppointmentRequestStatus.PENDING);
         verifyNoMoreInteractions(jpaRepository, entityManager);
     }
 
@@ -112,38 +112,38 @@ public class AppointmentRequestRepositoryJpaAdapterTest {
     }
 
     @Test
-    @DisplayName("findBySpecialistUserId delegates to nested appointment specialist query")
+    @DisplayName("findBySpecialistUserId delegates to nested slot specialist query")
     void findBySpecialistUserIdDelegates() {
         AppointmentRequestJpaRepository jpaRepository = mock(AppointmentRequestJpaRepository.class);
         EntityManager entityManager = mock(EntityManager.class);
         AppointmentRequestRepositoryJpaAdapter adapter =
                 new AppointmentRequestRepositoryJpaAdapter(jpaRepository, entityManager);
-        when(jpaRepository.findAllByAppointment_Specialist_UserId(10L)).thenReturn(List.of(pendingJpa(1L)));
+        when(jpaRepository.findAllBySlot_Specialist_UserId(10L)).thenReturn(List.of(pendingJpa(1L)));
 
         List<AppointmentRequest> result = adapter.findBySpecialistUserId(10L);
 
         assertEquals(1, result.size());
-        verify(jpaRepository).findAllByAppointment_Specialist_UserId(10L);
+        verify(jpaRepository).findAllBySlot_Specialist_UserId(10L);
         verifyNoMoreInteractions(jpaRepository, entityManager);
     }
 
     @Test
-    @DisplayName("existsPendingByAppointmentIdAndCustomerId delegates with PENDING status")
+    @DisplayName("existsPendingBySlotIdAndCustomerId delegates with PENDING status")
     void existsPendingDelegates() {
         AppointmentRequestJpaRepository jpaRepository = mock(AppointmentRequestJpaRepository.class);
         EntityManager entityManager = mock(EntityManager.class);
         AppointmentRequestRepositoryJpaAdapter adapter =
                 new AppointmentRequestRepositoryJpaAdapter(jpaRepository, entityManager);
-        when(jpaRepository.existsByAppointment_IdAndCustomer_IdAndStatus(
+        when(jpaRepository.existsBySlot_IdAndCustomer_IdAndStatus(
                 5L,
                 20L,
                 AppointmentRequestStatus.PENDING
         )).thenReturn(true);
 
-        boolean result = adapter.existsPendingByAppointmentIdAndCustomerId(5L, 20L);
+        boolean result = adapter.existsPendingBySlotIdAndCustomerId(5L, 20L);
 
         assertEquals(true, result);
-        verify(jpaRepository).existsByAppointment_IdAndCustomer_IdAndStatus(
+        verify(jpaRepository).existsBySlot_IdAndCustomer_IdAndStatus(
                 5L,
                 20L,
                 AppointmentRequestStatus.PENDING
@@ -158,16 +158,16 @@ public class AppointmentRequestRepositoryJpaAdapterTest {
         EntityManager entityManager = mock(EntityManager.class);
         AppointmentRequestRepositoryJpaAdapter adapter =
                 new AppointmentRequestRepositoryJpaAdapter(jpaRepository, entityManager);
-        AppointmentJpa appointment = appointmentJpa();
+        SlotJpa slot = slotJpa();
         UserJpa customer = userJpa();
         LocalDateTime createdAt = LocalDateTime.of(2026, 5, 24, 10, 0);
         AppointmentRequest request = AppointmentRequest.create(5L, 20L, "message", createdAt);
 
-        when(entityManager.getReference(AppointmentJpa.class, 5L)).thenReturn(appointment);
+        when(entityManager.getReference(SlotJpa.class, 5L)).thenReturn(slot);
         when(entityManager.getReference(UserJpa.class, 20L)).thenReturn(customer);
         when(jpaRepository.save(any())).thenReturn(new AppointmentRequestJpa(
                 1L,
-                appointment,
+                slot,
                 customer,
                 AppointmentRequestStatus.PENDING,
                 "message",
@@ -178,14 +178,14 @@ public class AppointmentRequestRepositoryJpaAdapterTest {
         AppointmentRequest result = adapter.save(request);
 
         assertEquals(1L, result.getId());
-        assertEquals(5L, result.getAppointmentId());
+        assertEquals(5L, result.getSlotId());
         assertEquals(20L, result.getCustomerId());
 
         ArgumentCaptor<AppointmentRequestJpa> captor = ArgumentCaptor.forClass(AppointmentRequestJpa.class);
         verify(jpaRepository).save(captor.capture());
         assertNull(captor.getValue().getId());
         assertEquals(AppointmentRequestStatus.PENDING, captor.getValue().getStatus());
-        verify(entityManager).getReference(AppointmentJpa.class, 5L);
+        verify(entityManager).getReference(SlotJpa.class, 5L);
         verify(entityManager).getReference(UserJpa.class, 20L);
         verifyNoMoreInteractions(jpaRepository, entityManager);
     }
@@ -193,7 +193,7 @@ public class AppointmentRequestRepositoryJpaAdapterTest {
     private static AppointmentRequestJpa pendingJpa(Long id) {
         return new AppointmentRequestJpa(
                 id,
-                appointmentJpa(),
+                slotJpa(),
                 userJpa(),
                 AppointmentRequestStatus.PENDING,
                 "message",
@@ -202,12 +202,12 @@ public class AppointmentRequestRepositoryJpaAdapterTest {
         );
     }
 
-    private static AppointmentJpa appointmentJpa() {
-        return new AppointmentJpa(
+    private static SlotJpa slotJpa() {
+        return new SlotJpa(
                 5L,
                 LocalDateTime.of(2026, 5, 24, 12, 0),
                 LocalDateTime.of(2026, 5, 24, 13, 0),
-                AppointmentStatus.FREE,
+                SlotStatus.FREE,
                 new SpecialistJpa(10L, "description", 4.5),
                 null,
                 new OrganizationJpa(30L, "Org", "Description", 0.0)

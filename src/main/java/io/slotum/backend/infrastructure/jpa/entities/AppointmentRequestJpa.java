@@ -22,8 +22,8 @@ public class AppointmentRequestJpa {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "appointment_id", referencedColumnName = "id", nullable = false)
-    private AppointmentJpa appointment;
+    @JoinColumn(name = "slot_id", referencedColumnName = "id", nullable = false)
+    private SlotJpa slot;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
@@ -46,7 +46,7 @@ public class AppointmentRequestJpa {
 
     public AppointmentRequestJpa(
             Long id,
-            AppointmentJpa appointment,
+            SlotJpa slot,
             UserJpa customer,
             AppointmentRequestStatus status,
             String message,
@@ -54,7 +54,7 @@ public class AppointmentRequestJpa {
             LocalDateTime decidedAt
     ) {
         this.id = id;
-        this.appointment = appointment;
+        this.slot = slot;
         this.customer = customer;
         this.status = status;
         this.message = message;
@@ -66,8 +66,8 @@ public class AppointmentRequestJpa {
         return id;
     }
 
-    public AppointmentJpa getAppointment() {
-        return appointment;
+    public SlotJpa getSlot() {
+        return slot;
     }
 
     public UserJpa getCustomer() {

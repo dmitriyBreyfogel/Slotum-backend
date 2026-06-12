@@ -68,7 +68,7 @@
       "type": "string"
     },
     {
-      "key": "appointmentId",
+      "key": "slotId",
       "value": "1",
       "type": "string"
     },
@@ -713,10 +713,10 @@
       ]
     },
     {
-      "name": "Appointments",
+      "name": "Slots",
       "item": [
         {
-          "name": "Create free appointment slot",
+          "name": "Create free slot slot",
           "request": {
             "method": "POST",
             "header": [
@@ -735,21 +735,21 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/appointments",
+              "raw": "{{baseUrl}}/api/v1/slots",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "appointments"
+                "slots"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "Create booked appointment",
+          "name": "Create booked slot",
           "request": {
             "method": "POST",
             "header": [
@@ -768,92 +768,92 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/appointments",
+              "raw": "{{baseUrl}}/api/v1/slots",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "appointments"
+                "slots"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "Get appointment by id",
+          "name": "Get slot by id",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/appointments/{{appointmentId}}",
+              "raw": "{{baseUrl}}/api/v1/slots/{{slotId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "appointments",
-                "{{appointmentId}}"
+                "slots",
+                "{{slotId}}"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "Get all appointments",
+          "name": "Get all slots",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/appointments",
+              "raw": "{{baseUrl}}/api/v1/slots",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "appointments"
+                "slots"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "Delete appointment by id",
+          "name": "Delete slot by id",
           "request": {
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/appointments/{{appointmentId}}",
+              "raw": "{{baseUrl}}/api/v1/slots/{{slotId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "appointments",
-                "{{appointmentId}}"
+                "slots",
+                "{{slotId}}"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "Delete all appointments",
+          "name": "Delete all slots",
           "request": {
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/appointments",
+              "raw": "{{baseUrl}}/api/v1/slots",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "appointments"
+                "slots"
               ]
             }
           },
@@ -876,7 +876,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"appointmentId\": {{appointmentId}},\n  \"message\": \"I want to book this time slot\"\n}",
+              "raw": "{\n  \"slotId\": {{slotId}},\n  \"message\": \"I want to book this time slot\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -958,12 +958,12 @@
           "response": []
         },
         {
-          "name": "Get requests by appointment",
+          "name": "Get requests by slot",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/appointment-requests/appointments/{{appointmentId}}",
+              "raw": "{{baseUrl}}/api/v1/appointment-requests/slots/{{slotId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -971,8 +971,8 @@
                 "api",
                 "v1",
                 "appointment-requests",
-                "appointments",
-                "{{appointmentId}}"
+                "slots",
+                "{{slotId}}"
               ]
             }
           },

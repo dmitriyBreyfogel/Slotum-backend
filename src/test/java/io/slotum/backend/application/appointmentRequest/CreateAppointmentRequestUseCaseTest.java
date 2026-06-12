@@ -1,8 +1,8 @@
 package io.slotum.backend.application.appointmentRequest;
 
-import io.slotum.backend.domain.appointment.Appointment;
-import io.slotum.backend.domain.appointment.AppointmentRepository;
-import io.slotum.backend.domain.appointment.AppointmentStatus;
+import io.slotum.backend.domain.slot.Slot;
+import io.slotum.backend.domain.slot.SlotRepository;
+import io.slotum.backend.domain.slot.SlotStatus;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequest;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequestRepository;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequestStatus;
@@ -30,14 +30,14 @@ import static org.mockito.Mockito.when;
 public class CreateAppointmentRequestUseCaseTest {
 
     @Test
-    @DisplayName("execute: invalid appointmentId is rejected before repositories")
-    void rejectsInvalidAppointmentIdBeforeRepositories() {
+    @DisplayName("execute: invalid slotId is rejected before repositories")
+    void rejectsInvalidSlotIdBeforeRepositories() {
         AppointmentRequestRepository appointmentRequestRepository = mock(AppointmentRequestRepository.class);
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         CreateAppointmentRequestUseCase useCase = new CreateAppointmentRequestUseCase(
                 appointmentRequestRepository,
-                appointmentRepository,
+                slotRepository,
                 userRepository
         );
 
@@ -45,71 +45,71 @@ public class CreateAppointmentRequestUseCaseTest {
                 new CreateAppointmentRequestUseCase.Command(0L, 20L, "message")
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_REQUEST_APPOINTMENT_ID, ex.getCode());
-        verifyNoInteractions(appointmentRequestRepository, appointmentRepository, userRepository);
+        assertEquals(ErrorCode.INVALID_APPOINTMENT_REQUEST_SLOT_ID, ex.getCode());
+        verifyNoInteractions(appointmentRequestRepository, slotRepository, userRepository);
     }
 
     @Test
-    @DisplayName("execute: throws APPOINTMENT_NOT_FOUND if appointment does not exist")
-    void throwsIfAppointmentNotFound() {
+    @DisplayName("execute: throws SLOT_NOT_FOUND if slot does not exist")
+    void throwsIfSlotNotFound() {
         AppointmentRequestRepository appointmentRequestRepository = mock(AppointmentRequestRepository.class);
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         CreateAppointmentRequestUseCase useCase = new CreateAppointmentRequestUseCase(
                 appointmentRequestRepository,
-                appointmentRepository,
+                slotRepository,
                 userRepository
         );
-        when(appointmentRepository.findById(5L)).thenReturn(Optional.empty());
+        when(slotRepository.findById(5L)).thenReturn(Optional.empty());
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(
                 new CreateAppointmentRequestUseCase.Command(5L, 20L, "message")
         ));
 
-        assertEquals(ErrorCode.APPOINTMENT_NOT_FOUND, ex.getCode());
+        assertEquals(ErrorCode.SLOT_NOT_FOUND, ex.getCode());
         assertEquals(5L, ex.getDetails().get("id"));
-        verify(appointmentRepository).findById(5L);
+        verify(slotRepository).findById(5L);
         verifyNoInteractions(userRepository, appointmentRequestRepository);
-        verifyNoMoreInteractions(appointmentRepository);
+        verifyNoMoreInteractions(slotRepository);
     }
 
     @Test
-    @DisplayName("execute: throws APPOINTMENT_REQUEST_APPOINTMENT_NOT_FREE for busy appointment")
-    void throwsIfAppointmentIsNotFree() {
+    @DisplayName("execute: throws APPOINTMENT_REQUEST_SLOT_NOT_FREE for busy slot")
+    void throwsIfSlotIsNotFree() {
         AppointmentRequestRepository appointmentRequestRepository = mock(AppointmentRequestRepository.class);
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         CreateAppointmentRequestUseCase useCase = new CreateAppointmentRequestUseCase(
                 appointmentRequestRepository,
-                appointmentRepository,
+                slotRepository,
                 userRepository
         );
-        when(appointmentRepository.findById(5L)).thenReturn(Optional.of(bookedAppointment()));
+        when(slotRepository.findById(5L)).thenReturn(Optional.of(bookedSlot()));
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(
                 new CreateAppointmentRequestUseCase.Command(5L, 20L, "message")
         ));
 
-        assertEquals(ErrorCode.APPOINTMENT_REQUEST_APPOINTMENT_NOT_FREE, ex.getCode());
-        assertEquals(5L, ex.getDetails().get("appointmentId"));
-        assertEquals(AppointmentStatus.BOOKED, ex.getDetails().get("status"));
-        verify(appointmentRepository).findById(5L);
+        assertEquals(ErrorCode.APPOINTMENT_REQUEST_SLOT_NOT_FREE, ex.getCode());
+        assertEquals(5L, ex.getDetails().get("slotId"));
+        assertEquals(SlotStatus.BOOKED, ex.getDetails().get("status"));
+        verify(slotRepository).findById(5L);
         verifyNoInteractions(userRepository, appointmentRequestRepository);
-        verifyNoMoreInteractions(appointmentRepository);
+        verifyNoMoreInteractions(slotRepository);
     }
 
     @Test
     @DisplayName("execute: throws USER_NOT_FOUND if customer does not exist")
     void throwsIfCustomerNotFound() {
         AppointmentRequestRepository appointmentRequestRepository = mock(AppointmentRequestRepository.class);
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         CreateAppointmentRequestUseCase useCase = new CreateAppointmentRequestUseCase(
                 appointmentRequestRepository,
-                appointmentRepository,
+                slotRepository,
                 userRepository
         );
-        when(appointmentRepository.findById(5L)).thenReturn(Optional.of(freeAppointment()));
+        when(slotRepository.findById(5L)).thenReturn(Optional.of(freeSlot()));
         when(userRepository.findById(20L)).thenReturn(Optional.empty());
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(
@@ -118,55 +118,55 @@ public class CreateAppointmentRequestUseCaseTest {
 
         assertEquals(ErrorCode.USER_NOT_FOUND, ex.getCode());
         assertEquals(20L, ex.getDetails().get("customerId"));
-        verify(appointmentRepository).findById(5L);
+        verify(slotRepository).findById(5L);
         verify(userRepository).findById(20L);
         verifyNoInteractions(appointmentRequestRepository);
-        verifyNoMoreInteractions(appointmentRepository, userRepository);
+        verifyNoMoreInteractions(slotRepository, userRepository);
     }
 
     @Test
     @DisplayName("execute: throws APPOINTMENT_REQUEST_ALREADY_EXISTS for duplicate pending request")
     void throwsIfPendingRequestAlreadyExists() {
         AppointmentRequestRepository appointmentRequestRepository = mock(AppointmentRequestRepository.class);
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         CreateAppointmentRequestUseCase useCase = new CreateAppointmentRequestUseCase(
                 appointmentRequestRepository,
-                appointmentRepository,
+                slotRepository,
                 userRepository
         );
-        when(appointmentRepository.findById(5L)).thenReturn(Optional.of(freeAppointment()));
+        when(slotRepository.findById(5L)).thenReturn(Optional.of(freeSlot()));
         when(userRepository.findById(20L)).thenReturn(Optional.of(mock(User.class)));
-        when(appointmentRequestRepository.existsPendingByAppointmentIdAndCustomerId(5L, 20L)).thenReturn(true);
+        when(appointmentRequestRepository.existsPendingBySlotIdAndCustomerId(5L, 20L)).thenReturn(true);
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(
                 new CreateAppointmentRequestUseCase.Command(5L, 20L, "message")
         ));
 
         assertEquals(ErrorCode.APPOINTMENT_REQUEST_ALREADY_EXISTS, ex.getCode());
-        assertEquals(5L, ex.getDetails().get("appointmentId"));
+        assertEquals(5L, ex.getDetails().get("slotId"));
         assertEquals(20L, ex.getDetails().get("customerId"));
-        verify(appointmentRepository).findById(5L);
+        verify(slotRepository).findById(5L);
         verify(userRepository).findById(20L);
-        verify(appointmentRequestRepository).existsPendingByAppointmentIdAndCustomerId(5L, 20L);
-        verifyNoMoreInteractions(appointmentRequestRepository, appointmentRepository, userRepository);
+        verify(appointmentRequestRepository).existsPendingBySlotIdAndCustomerId(5L, 20L);
+        verifyNoMoreInteractions(appointmentRequestRepository, slotRepository, userRepository);
     }
 
     @Test
     @DisplayName("execute: saves pending request and returns saved data")
     void savesPendingRequest() {
         AppointmentRequestRepository appointmentRequestRepository = mock(AppointmentRequestRepository.class);
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         CreateAppointmentRequestUseCase useCase = new CreateAppointmentRequestUseCase(
                 appointmentRequestRepository,
-                appointmentRepository,
+                slotRepository,
                 userRepository
         );
         LocalDateTime savedCreatedAt = LocalDateTime.of(2026, 5, 24, 10, 0);
-        when(appointmentRepository.findById(5L)).thenReturn(Optional.of(freeAppointment()));
+        when(slotRepository.findById(5L)).thenReturn(Optional.of(freeSlot()));
         when(userRepository.findById(20L)).thenReturn(Optional.of(mock(User.class)));
-        when(appointmentRequestRepository.existsPendingByAppointmentIdAndCustomerId(5L, 20L)).thenReturn(false);
+        when(appointmentRequestRepository.existsPendingBySlotIdAndCustomerId(5L, 20L)).thenReturn(false);
         when(appointmentRequestRepository.save(any())).thenReturn(
                 AppointmentRequest.restore(
                         1L,
@@ -184,7 +184,7 @@ public class CreateAppointmentRequestUseCaseTest {
         );
 
         assertEquals(1L, result.getId());
-        assertEquals(5L, result.getAppointmentId());
+        assertEquals(5L, result.getSlotId());
         assertEquals(20L, result.getCustomerId());
         assertEquals(AppointmentRequestStatus.PENDING, result.getStatus());
         assertEquals("message", result.getMessage());
@@ -194,36 +194,36 @@ public class CreateAppointmentRequestUseCaseTest {
         ArgumentCaptor<AppointmentRequest> captor = ArgumentCaptor.forClass(AppointmentRequest.class);
         verify(appointmentRequestRepository).save(captor.capture());
         assertNull(captor.getValue().getId());
-        assertEquals(5L, captor.getValue().getAppointmentId());
+        assertEquals(5L, captor.getValue().getSlotId());
         assertEquals(20L, captor.getValue().getCustomerId());
         assertEquals(AppointmentRequestStatus.PENDING, captor.getValue().getStatus());
         assertEquals("message", captor.getValue().getMessage());
         assertNull(captor.getValue().getDecidedAt());
 
-        verify(appointmentRepository).findById(5L);
+        verify(slotRepository).findById(5L);
         verify(userRepository).findById(20L);
-        verify(appointmentRequestRepository).existsPendingByAppointmentIdAndCustomerId(5L, 20L);
-        verifyNoMoreInteractions(appointmentRequestRepository, appointmentRepository, userRepository);
+        verify(appointmentRequestRepository).existsPendingBySlotIdAndCustomerId(5L, 20L);
+        verifyNoMoreInteractions(appointmentRequestRepository, slotRepository, userRepository);
     }
 
-    private static Appointment freeAppointment() {
-        return Appointment.restore(
+    private static Slot freeSlot() {
+        return Slot.restore(
                 5L,
                 LocalDateTime.of(2026, 5, 24, 12, 0),
                 LocalDateTime.of(2026, 5, 24, 13, 0),
-                AppointmentStatus.FREE,
+                SlotStatus.FREE,
                 10L,
                 null,
                 30L
         );
     }
 
-    private static Appointment bookedAppointment() {
-        return Appointment.restore(
+    private static Slot bookedSlot() {
+        return Slot.restore(
                 5L,
                 LocalDateTime.of(2026, 5, 24, 12, 0),
                 LocalDateTime.of(2026, 5, 24, 13, 0),
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 99L,
                 30L

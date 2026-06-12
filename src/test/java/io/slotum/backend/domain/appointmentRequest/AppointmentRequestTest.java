@@ -26,7 +26,7 @@ public class AppointmentRequestTest {
         );
 
         assertNull(request.getId());
-        assertEquals(1L, request.getAppointmentId());
+        assertEquals(1L, request.getSlotId());
         assertEquals(2L, request.getCustomerId());
         assertEquals(AppointmentRequestStatus.PENDING, request.getStatus());
         assertEquals("please book me", request.getMessage());
@@ -129,8 +129,8 @@ public class AppointmentRequestTest {
     }
 
     @Test
-    @DisplayName("create: appointmentId is required")
-    void rejectsNullAppointmentId() {
+    @DisplayName("create: slotId is required")
+    void rejectsNullSlotId() {
         AppException ex = assertThrows(AppException.class, () -> AppointmentRequest.create(
                 null,
                 3L,
@@ -138,7 +138,7 @@ public class AppointmentRequestTest {
                 LocalDateTime.of(2026, 5, 24, 10, 0)
         ));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_REQUEST_APPOINTMENT_ID, ex.getCode());
+        assertEquals(ErrorCode.INVALID_APPOINTMENT_REQUEST_SLOT_ID, ex.getCode());
     }
 
     @Test

@@ -10,7 +10,7 @@ public final class AppointmentRequest {
     private static final int MAX_MESSAGE_LENGTH = 1024;
 
     private final Long id;
-    private final Long appointmentId;
+    private final Long slotId;
     private final Long customerId;
     private final AppointmentRequestStatus status;
     private final String message;
@@ -19,7 +19,7 @@ public final class AppointmentRequest {
 
     private AppointmentRequest(
             Long id,
-            Long appointmentId,
+            Long slotId,
             Long customerId,
             AppointmentRequestStatus status,
             String message,
@@ -27,7 +27,7 @@ public final class AppointmentRequest {
             LocalDateTime decidedAt
     ) {
         this.id = id;
-        this.appointmentId = appointmentId;
+        this.slotId = slotId;
         this.customerId = customerId;
         this.status = status;
         this.message = message;
@@ -36,14 +36,14 @@ public final class AppointmentRequest {
     }
 
     public static AppointmentRequest create(
-            Long appointmentId,
+            Long slotId,
             Long customerId,
             String message,
             LocalDateTime createdAt
     ) {
         return restore(
                 null,
-                appointmentId,
+                slotId,
                 customerId,
                 AppointmentRequestStatus.PENDING,
                 message,
@@ -54,7 +54,7 @@ public final class AppointmentRequest {
 
     public static AppointmentRequest restore(
             Long id,
-            Long appointmentId,
+            Long slotId,
             Long customerId,
             AppointmentRequestStatus status,
             String message,
@@ -66,7 +66,7 @@ public final class AppointmentRequest {
 
         return new AppointmentRequest(
                 id,
-                validateAppointmentId(appointmentId),
+                validateSlotId(slotId),
                 validateCustomerId(customerId),
                 normalizedStatus,
                 validateAndNormalizeMessage(message),
@@ -91,8 +91,8 @@ public final class AppointmentRequest {
         return id;
     }
 
-    public Long getAppointmentId() {
-        return appointmentId;
+    public Long getSlotId() {
+        return slotId;
     }
 
     public Long getCustomerId() {
@@ -122,14 +122,14 @@ public final class AppointmentRequest {
                     : Map.of("id", id, "status", status);
             throw AppException.build(
                     ErrorCode.APPOINTMENT_REQUEST_NOT_PENDING,
-                    "Appointment request is not pending",
+                    "Slot request is not pending",
                     details
             );
         }
 
         return restore(
                 id,
-                appointmentId,
+                slotId,
                 customerId,
                 targetStatus,
                 message,
@@ -148,18 +148,18 @@ public final class AppointmentRequest {
         }
     }
 
-    private static Long validateAppointmentId(Long appointmentId) {
-        if (appointmentId == null || appointmentId <= 0) {
-            Map<String, Object> details = appointmentId == null
+    private static Long validateSlotId(Long slotId) {
+        if (slotId == null || slotId <= 0) {
+            Map<String, Object> details = slotId == null
                     ? Map.of()
-                    : Map.of("appointmentId", appointmentId);
+                    : Map.of("slotId", slotId);
             throw AppException.build(
-                    ErrorCode.INVALID_APPOINTMENT_REQUEST_APPOINTMENT_ID,
-                    "Invalid appointment request appointmentId",
+                    ErrorCode.INVALID_APPOINTMENT_REQUEST_SLOT_ID,
+                    "Invalid appointment request slotId",
                     details
             );
         }
-        return appointmentId;
+        return slotId;
     }
 
     private static Long validateCustomerId(Long customerId) {
@@ -180,7 +180,7 @@ public final class AppointmentRequest {
         if (status == null) {
             throw AppException.build(
                     ErrorCode.INVALID_APPOINTMENT_REQUEST_STATUS,
-                    "Appointment request status is null"
+                    "Slot request status is null"
             );
         }
         return status;
@@ -207,7 +207,7 @@ public final class AppointmentRequest {
         if (createdAt == null) {
             throw AppException.build(
                     ErrorCode.INVALID_APPOINTMENT_REQUEST_CREATED_AT,
-                    "Appointment request createdAt is null"
+                    "Slot request createdAt is null"
             );
         }
         return createdAt;

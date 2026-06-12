@@ -1,7 +1,7 @@
 package io.slotum.backend.application.appointmentRequest;
 
-import io.slotum.backend.domain.appointment.Appointment;
-import io.slotum.backend.domain.appointment.AppointmentRepository;
+import io.slotum.backend.domain.slot.Slot;
+import io.slotum.backend.domain.slot.SlotRepository;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequest;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequestRepository;
 import io.slotum.backend.error.AppException;
@@ -15,26 +15,26 @@ import java.util.Optional;
 @Service
 public class RejectAppointmentRequestUseCase {
     private final AppointmentRequestRepository appointmentRequestRepository;
-    private final AppointmentRepository appointmentRepository;
+    private final SlotRepository slotRepository;
 
     public RejectAppointmentRequestUseCase(
             AppointmentRequestRepository appointmentRequestRepository,
-            AppointmentRepository appointmentRepository
+            SlotRepository slotRepository
     ) {
         this.appointmentRequestRepository = appointmentRequestRepository;
-        this.appointmentRepository = appointmentRepository;
+        this.slotRepository = slotRepository;
     }
 
     public AppointmentRequest execute(Long appointmentRequestId, Long specialistUserId) {
         AppointmentRequest appointmentRequest = findAppointmentRequest(appointmentRequestId);
-        Appointment appointment = findAppointment(appointmentRequest.getAppointmentId());
+        Slot slot = findSlot(appointmentRequest.getSlotId());
 
-        if (!appointment.getSpecialistUserId().equals(specialistUserId)) {
+        if (!slot.getSpecialistUserId().equals(specialistUserId)) {
             throw AppException.build(
                     ErrorCode.APPOINTMENT_REQUEST_FORBIDDEN,
                     "Specialist cannot reject appointment request",
                     Map.of(
-                            "appointmentId", appointment.getId(),
+                            "slotId", slot.getId(),
                             "specialistUserId", specialistUserId
                     )
             );
@@ -48,22 +48,22 @@ public class RejectAppointmentRequestUseCase {
         if (appointmentRequest.isEmpty()) {
             throw AppException.build(
                     ErrorCode.APPOINTMENT_REQUEST_NOT_FOUND,
-                    "Appointment request not found",
+                    "Slot request not found",
                     Map.of("id", appointmentRequestId)
             );
         }
         return appointmentRequest.get();
     }
 
-    private Appointment findAppointment(Long appointmentId) {
-        Optional<Appointment> appointment = appointmentRepository.findById(appointmentId);
-        if (appointment.isEmpty()) {
+    private Slot findSlot(Long slotId) {
+        Optional<Slot> slot = slotRepository.findById(slotId);
+        if (slot.isEmpty()) {
             throw AppException.build(
-                    ErrorCode.APPOINTMENT_NOT_FOUND,
-                    "Appointment not found",
-                    Map.of("id", appointmentId)
+                    ErrorCode.SLOT_NOT_FOUND,
+                    "Slot not found",
+                    Map.of("id", slotId)
             );
         }
-        return appointment.get();
+        return slot.get();
     }
 }

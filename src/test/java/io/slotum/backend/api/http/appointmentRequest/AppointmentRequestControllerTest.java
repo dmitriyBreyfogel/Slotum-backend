@@ -4,7 +4,7 @@ import io.slotum.backend.application.appointmentRequest.AcceptAppointmentRequest
 import io.slotum.backend.application.appointmentRequest.CancelAppointmentRequestUseCase;
 import io.slotum.backend.application.appointmentRequest.CreateAppointmentRequestUseCase;
 import io.slotum.backend.application.appointmentRequest.GetAppointmentRequestUseCase;
-import io.slotum.backend.application.appointmentRequest.GetAppointmentRequestsByAppointmentUseCase;
+import io.slotum.backend.application.appointmentRequest.GetAppointmentRequestsBySlotUseCase;
 import io.slotum.backend.application.appointmentRequest.GetIncomingAppointmentRequestsUseCase;
 import io.slotum.backend.application.appointmentRequest.GetMyAppointmentRequestsUseCase;
 import io.slotum.backend.application.appointmentRequest.RejectAppointmentRequestUseCase;
@@ -54,7 +54,7 @@ public class AppointmentRequestControllerTest {
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(1L, response.getBody().id());
-        assertEquals(5L, response.getBody().appointmentId());
+        assertEquals(5L, response.getBody().slotId());
         assertEquals(20L, response.getBody().customerId());
         assertEquals(AppointmentRequestStatus.PENDING, response.getBody().status());
         assertEquals(createdAt, response.getBody().createdAt());
@@ -62,7 +62,7 @@ public class AppointmentRequestControllerTest {
         ArgumentCaptor<CreateAppointmentRequestUseCase.Command> captor =
                 ArgumentCaptor.forClass(CreateAppointmentRequestUseCase.Command.class);
         verify(createUseCase).execute(captor.capture());
-        assertEquals(5L, captor.getValue().appointmentId());
+        assertEquals(5L, captor.getValue().slotId());
         assertEquals(20L, captor.getValue().customerId());
         assertEquals("message", captor.getValue().message());
         verifyNoMoreInteractions(createUseCase);
@@ -118,20 +118,20 @@ public class AppointmentRequestControllerTest {
     }
 
     @Test
-    @DisplayName("getByAppointment: passes appointmentId and current specialist user id")
-    void getByAppointmentPassesAppointmentIdAndCurrentUserId() {
-        GetAppointmentRequestsByAppointmentUseCase getByAppointmentUseCase =
-                mock(GetAppointmentRequestsByAppointmentUseCase.class);
-        AppointmentRequestController controller = controller(getByAppointmentUseCase);
-        when(getByAppointmentUseCase.execute(5L, 10L)).thenReturn(List.of(request(1L)));
+    @DisplayName("getBySlot: passes slotId and current specialist user id")
+    void getBySlotPassesSlotIdAndCurrentUserId() {
+        GetAppointmentRequestsBySlotUseCase getBySlotUseCase =
+                mock(GetAppointmentRequestsBySlotUseCase.class);
+        AppointmentRequestController controller = controller(getBySlotUseCase);
+        when(getBySlotUseCase.execute(5L, 10L)).thenReturn(List.of(request(1L)));
 
         ResponseEntity<List<AppointmentRequestController.AppointmentRequestDto>> response =
-                controller.getByAppointment(new AuthenticatedUser(10L, "specialist@test.com"), 5L);
+                controller.getBySlot(new AuthenticatedUser(10L, "specialist@test.com"), 5L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
-        verify(getByAppointmentUseCase).execute(5L, 10L);
-        verifyNoMoreInteractions(getByAppointmentUseCase);
+        verify(getBySlotUseCase).execute(5L, 10L);
+        verifyNoMoreInteractions(getBySlotUseCase);
     }
 
     @Test
@@ -188,7 +188,7 @@ public class AppointmentRequestControllerTest {
                 mock(GetAppointmentRequestUseCase.class),
                 mock(GetMyAppointmentRequestsUseCase.class),
                 mock(GetIncomingAppointmentRequestsUseCase.class),
-                mock(GetAppointmentRequestsByAppointmentUseCase.class),
+                mock(GetAppointmentRequestsBySlotUseCase.class),
                 mock(AcceptAppointmentRequestUseCase.class),
                 mock(RejectAppointmentRequestUseCase.class),
                 mock(CancelAppointmentRequestUseCase.class)
@@ -201,7 +201,7 @@ public class AppointmentRequestControllerTest {
                 getUseCase,
                 mock(GetMyAppointmentRequestsUseCase.class),
                 mock(GetIncomingAppointmentRequestsUseCase.class),
-                mock(GetAppointmentRequestsByAppointmentUseCase.class),
+                mock(GetAppointmentRequestsBySlotUseCase.class),
                 mock(AcceptAppointmentRequestUseCase.class),
                 mock(RejectAppointmentRequestUseCase.class),
                 mock(CancelAppointmentRequestUseCase.class)
@@ -214,7 +214,7 @@ public class AppointmentRequestControllerTest {
                 mock(GetAppointmentRequestUseCase.class),
                 getMyUseCase,
                 mock(GetIncomingAppointmentRequestsUseCase.class),
-                mock(GetAppointmentRequestsByAppointmentUseCase.class),
+                mock(GetAppointmentRequestsBySlotUseCase.class),
                 mock(AcceptAppointmentRequestUseCase.class),
                 mock(RejectAppointmentRequestUseCase.class),
                 mock(CancelAppointmentRequestUseCase.class)
@@ -227,7 +227,7 @@ public class AppointmentRequestControllerTest {
                 mock(GetAppointmentRequestUseCase.class),
                 mock(GetMyAppointmentRequestsUseCase.class),
                 getIncomingUseCase,
-                mock(GetAppointmentRequestsByAppointmentUseCase.class),
+                mock(GetAppointmentRequestsBySlotUseCase.class),
                 mock(AcceptAppointmentRequestUseCase.class),
                 mock(RejectAppointmentRequestUseCase.class),
                 mock(CancelAppointmentRequestUseCase.class)
@@ -235,14 +235,14 @@ public class AppointmentRequestControllerTest {
     }
 
     private static AppointmentRequestController controller(
-            GetAppointmentRequestsByAppointmentUseCase getByAppointmentUseCase
+            GetAppointmentRequestsBySlotUseCase getBySlotUseCase
     ) {
         return new AppointmentRequestController(
                 mock(CreateAppointmentRequestUseCase.class),
                 mock(GetAppointmentRequestUseCase.class),
                 mock(GetMyAppointmentRequestsUseCase.class),
                 mock(GetIncomingAppointmentRequestsUseCase.class),
-                getByAppointmentUseCase,
+                getBySlotUseCase,
                 mock(AcceptAppointmentRequestUseCase.class),
                 mock(RejectAppointmentRequestUseCase.class),
                 mock(CancelAppointmentRequestUseCase.class)
@@ -255,7 +255,7 @@ public class AppointmentRequestControllerTest {
                 mock(GetAppointmentRequestUseCase.class),
                 mock(GetMyAppointmentRequestsUseCase.class),
                 mock(GetIncomingAppointmentRequestsUseCase.class),
-                mock(GetAppointmentRequestsByAppointmentUseCase.class),
+                mock(GetAppointmentRequestsBySlotUseCase.class),
                 acceptUseCase,
                 mock(RejectAppointmentRequestUseCase.class),
                 mock(CancelAppointmentRequestUseCase.class)
@@ -268,7 +268,7 @@ public class AppointmentRequestControllerTest {
                 mock(GetAppointmentRequestUseCase.class),
                 mock(GetMyAppointmentRequestsUseCase.class),
                 mock(GetIncomingAppointmentRequestsUseCase.class),
-                mock(GetAppointmentRequestsByAppointmentUseCase.class),
+                mock(GetAppointmentRequestsBySlotUseCase.class),
                 mock(AcceptAppointmentRequestUseCase.class),
                 rejectUseCase,
                 mock(CancelAppointmentRequestUseCase.class)
@@ -281,7 +281,7 @@ public class AppointmentRequestControllerTest {
                 mock(GetAppointmentRequestUseCase.class),
                 mock(GetMyAppointmentRequestsUseCase.class),
                 mock(GetIncomingAppointmentRequestsUseCase.class),
-                mock(GetAppointmentRequestsByAppointmentUseCase.class),
+                mock(GetAppointmentRequestsBySlotUseCase.class),
                 mock(AcceptAppointmentRequestUseCase.class),
                 mock(RejectAppointmentRequestUseCase.class),
                 cancelUseCase

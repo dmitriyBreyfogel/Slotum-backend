@@ -1,7 +1,7 @@
 package io.slotum.backend.application.appointmentRequest;
 
-import io.slotum.backend.domain.appointment.Appointment;
-import io.slotum.backend.domain.appointment.AppointmentRepository;
+import io.slotum.backend.domain.slot.Slot;
+import io.slotum.backend.domain.slot.SlotRepository;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequest;
 import io.slotum.backend.domain.appointmentRequest.AppointmentRequestRepository;
 import io.slotum.backend.error.AppException;
@@ -13,39 +13,39 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class GetAppointmentRequestsByAppointmentUseCase {
+public class GetAppointmentRequestsBySlotUseCase {
     private final AppointmentRequestRepository appointmentRequestRepository;
-    private final AppointmentRepository appointmentRepository;
+    private final SlotRepository slotRepository;
 
-    public GetAppointmentRequestsByAppointmentUseCase(
+    public GetAppointmentRequestsBySlotUseCase(
             AppointmentRequestRepository appointmentRequestRepository,
-            AppointmentRepository appointmentRepository
+            SlotRepository slotRepository
     ) {
         this.appointmentRequestRepository = appointmentRequestRepository;
-        this.appointmentRepository = appointmentRepository;
+        this.slotRepository = slotRepository;
     }
 
-    public List<AppointmentRequest> execute(Long appointmentId, Long specialistUserId) {
-        Optional<Appointment> appointment = appointmentRepository.findById(appointmentId);
-        if (appointment.isEmpty()) {
+    public List<AppointmentRequest> execute(Long slotId, Long specialistUserId) {
+        Optional<Slot> slot = slotRepository.findById(slotId);
+        if (slot.isEmpty()) {
             throw AppException.build(
-                    ErrorCode.APPOINTMENT_NOT_FOUND,
-                    "Appointment not found",
-                    Map.of("id", appointmentId)
+                    ErrorCode.SLOT_NOT_FOUND,
+                    "Slot not found",
+                    Map.of("id", slotId)
             );
         }
 
-        if (!appointment.get().getSpecialistUserId().equals(specialistUserId)) {
+        if (!slot.get().getSpecialistUserId().equals(specialistUserId)) {
             throw AppException.build(
                     ErrorCode.APPOINTMENT_REQUEST_FORBIDDEN,
                     "Specialist cannot access appointment requests",
                     Map.of(
-                            "appointmentId", appointmentId,
+                            "slotId", slotId,
                             "specialistUserId", specialistUserId
                     )
             );
         }
 
-        return appointmentRequestRepository.findByAppointmentId(appointmentId);
+        return appointmentRequestRepository.findBySlotId(slotId);
     }
 }

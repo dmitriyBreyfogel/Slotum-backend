@@ -1,6 +1,5 @@
 package io.slotum.backend.application.organization;
 
-import io.slotum.backend.domain.appointment.Appointment;
 import io.slotum.backend.domain.organization.Organization;
 import io.slotum.backend.domain.organization.OrganizationRepository;
 import io.slotum.backend.error.AppException;

@@ -1,13 +1,13 @@
-package io.slotum.backend.domain.appointment;
+package io.slotum.backend.domain.slot;
 
-public enum AppointmentStatus {
+public enum SlotStatus {
     FREE("FREE"),
     BOOKED("BOOKED"),
     CANCELLED("CANCELLED");
 
     private final String value;
 
-    AppointmentStatus(String value) {
+    SlotStatus(String value) {
         this.value = value;
     }
 

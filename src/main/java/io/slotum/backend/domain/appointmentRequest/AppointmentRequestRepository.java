@@ -8,15 +8,15 @@ public interface AppointmentRequestRepository {
 
     List<AppointmentRequest> findAll();
 
-    List<AppointmentRequest> findByAppointmentId(Long appointmentId);
+    List<AppointmentRequest> findBySlotId(Long slotId);
 
-    List<AppointmentRequest> findPendingByAppointmentId(Long appointmentId);
+    List<AppointmentRequest> findPendingBySlotId(Long slotId);
 
     List<AppointmentRequest> findByCustomerId(Long customerId);
 
     List<AppointmentRequest> findBySpecialistUserId(Long specialistUserId);
 
-    boolean existsPendingByAppointmentIdAndCustomerId(Long appointmentId, Long customerId);
+    boolean existsPendingBySlotIdAndCustomerId(Long slotId, Long customerId);
 
     AppointmentRequest save(AppointmentRequest appointmentRequest);
 }

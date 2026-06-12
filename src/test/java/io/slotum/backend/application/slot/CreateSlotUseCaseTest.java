@@ -1,8 +1,8 @@
-package io.slotum.backend.application.appointment;
+package io.slotum.backend.application.slot;
 
-import io.slotum.backend.domain.appointment.Appointment;
-import io.slotum.backend.domain.appointment.AppointmentRepository;
-import io.slotum.backend.domain.appointment.AppointmentStatus;
+import io.slotum.backend.domain.slot.Slot;
+import io.slotum.backend.domain.slot.SlotRepository;
+import io.slotum.backend.domain.slot.SlotStatus;
 import io.slotum.backend.domain.organization.Organization;
 import io.slotum.backend.domain.organization.OrganizationRepository;
 import io.slotum.backend.domain.specialist.Specialist;
@@ -29,26 +29,26 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-public class CreateAppointmentUseCaseTest {
+public class CreateSlotUseCaseTest {
 
     @Test
     @DisplayName("Не обращается к репозиторию, если startsAt = null")
     void rejectsNullStartsAtBeforeRepository() {
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
-                appointmentRepository,
+        CreateSlotUseCase useCase = new CreateSlotUseCase(
+                slotRepository,
                 specialistRepository,
                 userRepository,
                 organizationRepository
         );
 
-        CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
+        CreateSlotUseCase.Command command = new CreateSlotUseCase.Command(
                 null,
                 LocalDateTime.of(2026, 3, 21, 11, 0),
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 30L
@@ -56,28 +56,28 @@ public class CreateAppointmentUseCaseTest {
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(command));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_STARTS_AT, ex.getCode());
-        verifyNoInteractions(appointmentRepository);
+        assertEquals(ErrorCode.INVALID_SLOT_STARTS_AT, ex.getCode());
+        verifyNoInteractions(slotRepository);
     }
 
     @Test
     @DisplayName("Не обращается к репозиторию, если endsAt = null")
     void rejectsNullEndsAtBeforeRepository() {
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
-                appointmentRepository,
+        CreateSlotUseCase useCase = new CreateSlotUseCase(
+                slotRepository,
                 specialistRepository,
                 userRepository,
                 organizationRepository
         );
 
-        CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
+        CreateSlotUseCase.Command command = new CreateSlotUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
                 null,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 30L
@@ -85,19 +85,19 @@ public class CreateAppointmentUseCaseTest {
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(command));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_ENDS_AT, ex.getCode());
-        verifyNoInteractions(appointmentRepository);
+        assertEquals(ErrorCode.INVALID_SLOT_ENDS_AT, ex.getCode());
+        verifyNoInteractions(slotRepository);
     }
 
     @Test
     @DisplayName("Не обращается к репозиторию, если endsAt не позже startsAt (валидация диапазона времени)")
     void rejectsInvalidTimeRangeBeforeRepository() {
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
-                appointmentRepository,
+        CreateSlotUseCase useCase = new CreateSlotUseCase(
+                slotRepository,
                 specialistRepository,
                 userRepository,
                 organizationRepository
@@ -106,10 +106,10 @@ public class CreateAppointmentUseCaseTest {
         LocalDateTime startsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
         LocalDateTime endsAt = LocalDateTime.of(2026, 3, 21, 10, 0);
 
-        CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
+        CreateSlotUseCase.Command command = new CreateSlotUseCase.Command(
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 30L
@@ -117,26 +117,26 @@ public class CreateAppointmentUseCaseTest {
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(command));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_TIME_RANGE, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_TIME_RANGE, ex.getCode());
         assertEquals(Map.of("startsAt", startsAt, "endsAt", endsAt), ex.getDetails());
-        verifyNoInteractions(appointmentRepository);
+        verifyNoInteractions(slotRepository);
     }
 
     @Test
     @DisplayName("Не обращается к репозиторию, если status = null")
     void rejectsNullStatusBeforeRepository() {
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
-                appointmentRepository,
+        CreateSlotUseCase useCase = new CreateSlotUseCase(
+                slotRepository,
                 specialistRepository,
                 userRepository,
                 organizationRepository
         );
 
-        CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
+        CreateSlotUseCase.Command command = new CreateSlotUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
                 LocalDateTime.of(2026, 3, 21, 11, 0),
                 null,
@@ -147,28 +147,28 @@ public class CreateAppointmentUseCaseTest {
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(command));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_STATUS, ex.getCode());
-        verifyNoInteractions(appointmentRepository);
+        assertEquals(ErrorCode.INVALID_SLOT_STATUS, ex.getCode());
+        verifyNoInteractions(slotRepository);
     }
 
     @Test
     @DisplayName("Не обращается к репозиторию, если specialistUserId = null")
     void rejectsNullSpecialistUserIdBeforeRepository() {
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
-                appointmentRepository,
+        CreateSlotUseCase useCase = new CreateSlotUseCase(
+                slotRepository,
                 specialistRepository,
                 userRepository,
                 organizationRepository
         );
 
-        CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
+        CreateSlotUseCase.Command command = new CreateSlotUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
                 LocalDateTime.of(2026, 3, 21, 11, 0),
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 null,
                 20L,
                 30L
@@ -176,28 +176,28 @@ public class CreateAppointmentUseCaseTest {
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(command));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_SPECIALIST_ID, ex.getCode());
-        verifyNoInteractions(appointmentRepository);
+        assertEquals(ErrorCode.INVALID_SLOT_SPECIALIST_ID, ex.getCode());
+        verifyNoInteractions(slotRepository);
     }
 
     @Test
     @DisplayName("Не обращается к репозиторию, если specialistUserId <= 0")
     void rejectsNonPositiveSpecialistUserIdBeforeRepository() {
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
-                appointmentRepository,
+        CreateSlotUseCase useCase = new CreateSlotUseCase(
+                slotRepository,
                 specialistRepository,
                 userRepository,
                 organizationRepository
         );
 
-        CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
+        CreateSlotUseCase.Command command = new CreateSlotUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
                 LocalDateTime.of(2026, 3, 21, 11, 0),
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 0L,
                 20L,
                 30L
@@ -205,29 +205,29 @@ public class CreateAppointmentUseCaseTest {
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(command));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_SPECIALIST_ID, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_SPECIALIST_ID, ex.getCode());
         assertEquals(0L, ex.getDetails().get("specialistUserId"));
-        verifyNoInteractions(appointmentRepository);
+        verifyNoInteractions(slotRepository);
     }
 
     @Test
     @DisplayName("Не обращается к репозиторию, если customerId = null")
     void rejectsNullCustomerIdBeforeRepository() {
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
-                appointmentRepository,
+        CreateSlotUseCase useCase = new CreateSlotUseCase(
+                slotRepository,
                 specialistRepository,
                 userRepository,
                 organizationRepository
         );
 
-        CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
+        CreateSlotUseCase.Command command = new CreateSlotUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
                 LocalDateTime.of(2026, 3, 21, 11, 0),
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 null,
                 30L
@@ -235,28 +235,28 @@ public class CreateAppointmentUseCaseTest {
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(command));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_CUSTOMER_ID, ex.getCode());
-        verifyNoInteractions(appointmentRepository);
+        assertEquals(ErrorCode.INVALID_SLOT_CUSTOMER_ID, ex.getCode());
+        verifyNoInteractions(slotRepository);
     }
 
     @Test
     @DisplayName("Не обращается к репозиторию, если customerId <= 0")
     void rejectsNonPositiveCustomerIdBeforeRepository() {
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
-                appointmentRepository,
+        CreateSlotUseCase useCase = new CreateSlotUseCase(
+                slotRepository,
                 specialistRepository,
                 userRepository,
                 organizationRepository
         );
 
-        CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
+        CreateSlotUseCase.Command command = new CreateSlotUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
                 LocalDateTime.of(2026, 3, 21, 11, 0),
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 -1L,
                 30L
@@ -264,29 +264,29 @@ public class CreateAppointmentUseCaseTest {
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(command));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_CUSTOMER_ID, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_CUSTOMER_ID, ex.getCode());
         assertEquals(-1L, ex.getDetails().get("customerId"));
-        verifyNoInteractions(appointmentRepository);
+        verifyNoInteractions(slotRepository);
     }
 
     @Test
     @DisplayName("Не обращается к репозиторию, если organizationId = null")
     void rejectsNullOrganizationIdBeforeRepository() {
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
-                appointmentRepository,
+        CreateSlotUseCase useCase = new CreateSlotUseCase(
+                slotRepository,
                 specialistRepository,
                 userRepository,
                 organizationRepository
         );
 
-        CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
+        CreateSlotUseCase.Command command = new CreateSlotUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
                 LocalDateTime.of(2026, 3, 21, 11, 0),
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 null
@@ -294,28 +294,28 @@ public class CreateAppointmentUseCaseTest {
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(command));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_ORGANIZATION_ID, ex.getCode());
-        verifyNoInteractions(appointmentRepository);
+        assertEquals(ErrorCode.INVALID_SLOT_ORGANIZATION_ID, ex.getCode());
+        verifyNoInteractions(slotRepository);
     }
 
     @Test
     @DisplayName("Не обращается к репозиторию, если organizationId <= 0")
     void rejectsNonPositiveOrganizationIdBeforeRepository() {
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
         SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
-                appointmentRepository,
+        CreateSlotUseCase useCase = new CreateSlotUseCase(
+                slotRepository,
                 specialistRepository,
                 userRepository,
                 organizationRepository
         );
 
-        CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
+        CreateSlotUseCase.Command command = new CreateSlotUseCase.Command(
                 LocalDateTime.of(2026, 3, 21, 10, 0),
                 LocalDateTime.of(2026, 3, 21, 11, 0),
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 0L
@@ -323,20 +323,20 @@ public class CreateAppointmentUseCaseTest {
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(command));
 
-        assertEquals(ErrorCode.INVALID_APPOINTMENT_ORGANIZATION_ID, ex.getCode());
+        assertEquals(ErrorCode.INVALID_SLOT_ORGANIZATION_ID, ex.getCode());
         assertEquals(0L, ex.getDetails().get("organizationId"));
-        verifyNoInteractions(appointmentRepository);
+        verifyNoInteractions(slotRepository);
     }
 
     @Test
-    @DisplayName("Creates free appointment without customer")
-    void savesFreeAppointmentWithoutCustomer() {
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+    @DisplayName("Creates free slot without customer")
+    void savesFreeSlotWithoutCustomer() {
+        SlotRepository slotRepository = mock(SlotRepository.class);
         SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
-                appointmentRepository,
+        CreateSlotUseCase useCase = new CreateSlotUseCase(
+                slotRepository,
                 specialistRepository,
                 userRepository,
                 organizationRepository
@@ -347,24 +347,24 @@ public class CreateAppointmentUseCaseTest {
 
         when(specialistRepository.findSpecialistByUserId(10L)).thenReturn(Optional.of(mock(Specialist.class)));
         when(organizationRepository.findById(30L)).thenReturn(Optional.of(mock(Organization.class)));
-        when(appointmentRepository.existsOverlappingAppointment(10L, startsAt, endsAt)).thenReturn(false);
-        when(appointmentRepository.save(any())).thenReturn(
-                Appointment.restore(
+        when(slotRepository.existsOverlappingSlot(10L, startsAt, endsAt)).thenReturn(false);
+        when(slotRepository.save(any())).thenReturn(
+                Slot.restore(
                         1L,
                         startsAt,
                         endsAt,
-                        AppointmentStatus.FREE,
+                        SlotStatus.FREE,
                         10L,
                         null,
                         30L
                 )
         );
 
-        Appointment result = useCase.execute(
-                new CreateAppointmentUseCase.Command(
+        Slot result = useCase.execute(
+                new CreateSlotUseCase.Command(
                         startsAt,
                         endsAt,
-                        AppointmentStatus.FREE,
+                        SlotStatus.FREE,
                         10L,
                         null,
                         30L
@@ -372,25 +372,25 @@ public class CreateAppointmentUseCaseTest {
         );
 
         assertEquals(1L, result.getId());
-        assertEquals(AppointmentStatus.FREE, result.getStatus());
+        assertEquals(SlotStatus.FREE, result.getStatus());
         assertNull(result.getCustomerId());
         verify(specialistRepository).findSpecialistByUserId(10L);
         verify(organizationRepository).findById(30L);
-        verify(appointmentRepository).existsOverlappingAppointment(10L, startsAt, endsAt);
-        verify(appointmentRepository).save(any());
+        verify(slotRepository).existsOverlappingSlot(10L, startsAt, endsAt);
+        verify(slotRepository).save(any());
         verifyNoInteractions(userRepository);
-        verifyNoMoreInteractions(appointmentRepository, specialistRepository, organizationRepository);
+        verifyNoMoreInteractions(slotRepository, specialistRepository, organizationRepository);
     }
 
     @Test
-    @DisplayName("РЎРѕС…СЂР°РЅСЏРµС‚ РЅРѕРІС‹Р№ appointment Рё РІРѕР·РІСЂР°С‰Р°РµС‚ РґР°РЅРЅС‹Рµ РёР· СЃРѕС…СЂР°РЅС‘РЅРЅРѕР№ СЃСѓС‰РЅРѕСЃС‚Рё")
-    void savesNewAppointmentAndReturnsData() {
-        AppointmentRepository appointmentRepository = mock(AppointmentRepository.class);
+    @DisplayName("РЎРѕС…СЂР°РЅСЏРµС‚ РЅРѕРІС‹Р№ slot Рё РІРѕР·РІСЂР°С‰Р°РµС‚ РґР°РЅРЅС‹Рµ РёР· СЃРѕС…СЂР°РЅС‘РЅРЅРѕР№ СЃСѓС‰РЅРѕСЃС‚Рё")
+    void savesNewSlotAndReturnsData() {
+        SlotRepository slotRepository = mock(SlotRepository.class);
         SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
-        CreateAppointmentUseCase useCase = new CreateAppointmentUseCase(
-                appointmentRepository,
+        CreateSlotUseCase useCase = new CreateSlotUseCase(
+                slotRepository,
                 specialistRepository,
                 userRepository,
                 organizationRepository
@@ -402,12 +402,12 @@ public class CreateAppointmentUseCaseTest {
         LocalDateTime savedStartsAt = LocalDateTime.of(2026, 3, 22, 12, 0);
         LocalDateTime savedEndsAt = LocalDateTime.of(2026, 3, 22, 13, 0);
 
-        when(appointmentRepository.save(any())).thenReturn(
-                Appointment.restore(
+        when(slotRepository.save(any())).thenReturn(
+                Slot.restore(
                         1L,
                         savedStartsAt,
                         savedEndsAt,
-                        AppointmentStatus.CANCELLED,
+                        SlotStatus.CANCELLED,
                         11L,
                         21L,
                         31L
@@ -416,38 +416,38 @@ public class CreateAppointmentUseCaseTest {
         when(specialistRepository.findSpecialistByUserId(10L)).thenReturn(Optional.of(mock(Specialist.class)));
         when(userRepository.findById(20L)).thenReturn(Optional.of(mock(User.class)));
         when(organizationRepository.findById(30L)).thenReturn(Optional.of(mock(Organization.class)));
-        when(appointmentRepository.existsOverlappingAppointment(10L, commandStartsAt, commandEndsAt)).thenReturn(false);
+        when(slotRepository.existsOverlappingSlot(10L, commandStartsAt, commandEndsAt)).thenReturn(false);
 
-        CreateAppointmentUseCase.Command command = new CreateAppointmentUseCase.Command(
+        CreateSlotUseCase.Command command = new CreateSlotUseCase.Command(
                 commandStartsAt,
                 commandEndsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 10L,
                 20L,
                 30L
         );
 
-        Appointment result = useCase.execute(command);
+        Slot result = useCase.execute(command);
 
         assertEquals(savedStartsAt, result.getStartsAt());
         assertEquals(savedEndsAt, result.getEndsAt());
-        assertEquals(AppointmentStatus.CANCELLED, result.getStatus());
+        assertEquals(SlotStatus.CANCELLED, result.getStatus());
         assertEquals(11L, result.getSpecialistUserId());
         assertEquals(21L, result.getCustomerId());
         assertEquals(31L, result.getOrganizationId());
 
-        ArgumentCaptor<Appointment> captor = ArgumentCaptor.forClass(Appointment.class);
-        verify(appointmentRepository).existsOverlappingAppointment(10L, commandStartsAt, commandEndsAt);
-        verify(appointmentRepository).save(captor.capture());
+        ArgumentCaptor<Slot> captor = ArgumentCaptor.forClass(Slot.class);
+        verify(slotRepository).existsOverlappingSlot(10L, commandStartsAt, commandEndsAt);
+        verify(slotRepository).save(captor.capture());
 
         assertNull(captor.getValue().getId());
         assertEquals(commandStartsAt, captor.getValue().getStartsAt());
         assertEquals(commandEndsAt, captor.getValue().getEndsAt());
-        assertEquals(AppointmentStatus.BOOKED, captor.getValue().getStatus());
+        assertEquals(SlotStatus.BOOKED, captor.getValue().getStatus());
         assertEquals(10L, captor.getValue().getSpecialistUserId());
         assertEquals(20L, captor.getValue().getCustomerId());
         assertEquals(30L, captor.getValue().getOrganizationId());
 
-        verifyNoMoreInteractions(appointmentRepository);
+        verifyNoMoreInteractions(slotRepository);
     }
 }

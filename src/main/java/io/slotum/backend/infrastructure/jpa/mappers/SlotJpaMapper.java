@@ -1,21 +1,21 @@
 package io.slotum.backend.infrastructure.jpa.mappers;
 
-import io.slotum.backend.domain.appointment.Appointment;
-import io.slotum.backend.infrastructure.jpa.entities.AppointmentJpa;
+import io.slotum.backend.domain.slot.Slot;
+import io.slotum.backend.infrastructure.jpa.entities.SlotJpa;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationJpa;
 import io.slotum.backend.infrastructure.jpa.entities.SpecialistJpa;
 import io.slotum.backend.infrastructure.jpa.entities.UserJpa;
 
-public final class AppointmentJpaMapper {
-    private AppointmentJpaMapper() {
+public final class SlotJpaMapper {
+    private SlotJpaMapper() {
     }
 
-    public static Appointment toDomain(AppointmentJpa source) {
+    public static Slot toDomain(SlotJpa source) {
         if (source == null) {
-            throw new IllegalArgumentException("AppointmentJpa source is null");
+            throw new IllegalArgumentException("SlotJpa source is null");
         }
 
-        return Appointment.restore(
+        return Slot.restore(
                 source.getId(),
                 source.getStartsAt(),
                 source.getEndsAt(),
@@ -26,17 +26,17 @@ public final class AppointmentJpaMapper {
         );
     }
 
-    public static AppointmentJpa toJpa(
-            Appointment source,
+    public static SlotJpa toJpa(
+            Slot source,
             SpecialistJpa specialist,
             UserJpa customer,
             OrganizationJpa organization
     ) {
         if (source == null) {
-            throw new IllegalArgumentException("Appointment source is null");
+            throw new IllegalArgumentException("Slot source is null");
         }
 
-        return new AppointmentJpa(
+        return new SlotJpa(
                 source.getId(),
                 source.getStartsAt(),
                 source.getEndsAt(),

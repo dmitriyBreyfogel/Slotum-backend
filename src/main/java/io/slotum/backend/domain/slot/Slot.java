@@ -1,4 +1,4 @@
-package io.slotum.backend.domain.appointment;
+package io.slotum.backend.domain.slot;
 
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
@@ -6,20 +6,20 @@ import io.slotum.backend.error.ErrorCode;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-public final class Appointment {
+public final class Slot {
     private final Long id;
     private final LocalDateTime startsAt;
     private final LocalDateTime endsAt;
-    private final AppointmentStatus status;
+    private final SlotStatus status;
     private final Long specialistUserId;
     private final Long customerId;
     private final Long organizationId;
 
-    private Appointment(
+    private Slot(
             Long id,
             LocalDateTime startsAt,
             LocalDateTime endsAt,
-            AppointmentStatus status,
+            SlotStatus status,
             Long specialistUserId,
             Long customerId,
             Long organizationId
@@ -33,10 +33,10 @@ public final class Appointment {
         this.organizationId = organizationId;
     }
 
-    public static Appointment create(
+    public static Slot create(
             LocalDateTime startsAt,
             LocalDateTime endsAt,
-            AppointmentStatus status,
+            SlotStatus status,
             Long specialistUserId,
             Long customerId,
             Long organizationId
@@ -52,11 +52,11 @@ public final class Appointment {
         );
     }
 
-    public static Appointment restore(
+    public static Slot restore(
             Long id,
             LocalDateTime startsAt,
             LocalDateTime endsAt,
-            AppointmentStatus status,
+            SlotStatus status,
             Long specialistUserId,
             Long customerId,
             Long organizationId
@@ -64,10 +64,10 @@ public final class Appointment {
         validateId(id);
         LocalDateTime normalizedStartsAt = validateStartsAt(startsAt);
         LocalDateTime normalizedEndsAt = validateEndsAt(endsAt);
-        AppointmentStatus normalizedStatus = validateStatus(status);
+        SlotStatus normalizedStatus = validateStatus(status);
         validateTimeRange(normalizedStartsAt, normalizedEndsAt);
 
-        return new Appointment(
+        return new Slot(
                 id,
                 normalizedStartsAt,
                 normalizedEndsAt,
@@ -78,12 +78,12 @@ public final class Appointment {
         );
     }
 
-    public Appointment book(Long customerId) {
+    public Slot book(Long customerId) {
         return restore(
                 id,
                 startsAt,
                 endsAt,
-                AppointmentStatus.BOOKED,
+                SlotStatus.BOOKED,
                 specialistUserId,
                 customerId,
                 organizationId
@@ -102,7 +102,7 @@ public final class Appointment {
         return endsAt;
     }
 
-    public AppointmentStatus getStatus() {
+    public SlotStatus getStatus() {
         return status;
     }
 
@@ -121,8 +121,8 @@ public final class Appointment {
     private static void validateId(Long id) {
         if (id != null && id <= 0) {
             throw AppException.build(
-                    ErrorCode.INVALID_APPOINTMENT_ID,
-                    "Invalid appointment id",
+                    ErrorCode.INVALID_SLOT_ID,
+                    "Invalid slot id",
                     Map.of("id", id)
             );
         }
@@ -131,8 +131,8 @@ public final class Appointment {
     private static LocalDateTime validateStartsAt(LocalDateTime startsAt) {
         if (startsAt == null) {
             throw AppException.build(
-                    ErrorCode.INVALID_APPOINTMENT_STARTS_AT,
-                    "Appointment startsAt is null"
+                    ErrorCode.INVALID_SLOT_STARTS_AT,
+                    "Slot startsAt is null"
             );
         }
         return startsAt;
@@ -141,8 +141,8 @@ public final class Appointment {
     private static LocalDateTime validateEndsAt(LocalDateTime endsAt) {
         if (endsAt == null) {
             throw AppException.build(
-                    ErrorCode.INVALID_APPOINTMENT_ENDS_AT,
-                    "Appointment endsAt is null"
+                    ErrorCode.INVALID_SLOT_ENDS_AT,
+                    "Slot endsAt is null"
             );
         }
         return endsAt;
@@ -151,18 +151,18 @@ public final class Appointment {
     private static void validateTimeRange(LocalDateTime startsAt, LocalDateTime endsAt) {
         if (!endsAt.isAfter(startsAt)) {
             throw AppException.build(
-                    ErrorCode.INVALID_APPOINTMENT_TIME_RANGE,
-                    "Appointment endsAt must be after startsAt",
+                    ErrorCode.INVALID_SLOT_TIME_RANGE,
+                    "Slot endsAt must be after startsAt",
                     Map.of("startsAt", startsAt, "endsAt", endsAt)
             );
         }
     }
 
-    private static AppointmentStatus validateStatus(AppointmentStatus status) {
+    private static SlotStatus validateStatus(SlotStatus status) {
         if (status == null) {
             throw AppException.build(
-                    ErrorCode.INVALID_APPOINTMENT_STATUS,
-                    "Appointment status is null"
+                    ErrorCode.INVALID_SLOT_STATUS,
+                    "Slot status is null"
             );
         }
         return status;
@@ -174,38 +174,38 @@ public final class Appointment {
                     ? Map.of()
                     : Map.of("specialistUserId", specialistUserId);
             throw AppException.build(
-                    ErrorCode.INVALID_APPOINTMENT_SPECIALIST_ID,
-                    "Invalid appointment specialistUserId",
+                    ErrorCode.INVALID_SLOT_SPECIALIST_ID,
+                    "Invalid slot specialistUserId",
                     details
             );
         }
         return specialistUserId;
     }
 
-    private static Long validateCustomerId(Long customerId, AppointmentStatus status) {
-        if (status == AppointmentStatus.FREE) {
+    private static Long validateCustomerId(Long customerId, SlotStatus status) {
+        if (status == SlotStatus.FREE) {
             if (customerId != null) {
                 throw AppException.build(
-                        ErrorCode.INVALID_APPOINTMENT_CUSTOMER_ID,
-                        "Free appointment must not have customerId",
+                        ErrorCode.INVALID_SLOT_CUSTOMER_ID,
+                        "Free slot must not have customerId",
                         Map.of("customerId", customerId)
                 );
             }
             return null;
         }
 
-        if (status == AppointmentStatus.BOOKED && customerId == null) {
+        if (status == SlotStatus.BOOKED && customerId == null) {
             throw AppException.build(
-                    ErrorCode.INVALID_APPOINTMENT_CUSTOMER_ID,
-                    "Invalid appointment customerId",
+                    ErrorCode.INVALID_SLOT_CUSTOMER_ID,
+                    "Invalid slot customerId",
                     Map.of()
             );
         }
 
         if (customerId != null && customerId <= 0) {
             throw AppException.build(
-                    ErrorCode.INVALID_APPOINTMENT_CUSTOMER_ID,
-                    "Invalid appointment customerId",
+                    ErrorCode.INVALID_SLOT_CUSTOMER_ID,
+                    "Invalid slot customerId",
                     Map.of("customerId", customerId)
             );
         }
@@ -219,8 +219,8 @@ public final class Appointment {
                     ? Map.of()
                     : Map.of("organizationId", organizationId);
             throw AppException.build(
-                    ErrorCode.INVALID_APPOINTMENT_ORGANIZATION_ID,
-                    "Invalid appointment organizationId",
+                    ErrorCode.INVALID_SLOT_ORGANIZATION_ID,
+                    "Invalid slot organizationId",
                     details
             );
         }
