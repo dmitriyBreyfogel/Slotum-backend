@@ -15,5 +15,7 @@ public interface SlotRepository {
 
     void deleteAll();
 
-    public boolean existsOverlappingSlot(Long specialistUserId, LocalDateTime startsAt, LocalDateTime endsAt);
+    boolean existsOverlappingSlot(Long specialistUserId, LocalDateTime startsAt, LocalDateTime endsAt);
+
+    boolean bookIfFree(Long slotId, Long specialistUserId, Long customerId);
 }

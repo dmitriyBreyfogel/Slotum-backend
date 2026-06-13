@@ -2,7 +2,6 @@ package io.slotum.backend.application.slotBookingRequest;
 
 import io.slotum.backend.domain.slot.Slot;
 import io.slotum.backend.domain.slot.SlotRepository;
-import io.slotum.backend.domain.slot.SlotStatus;
 import io.slotum.backend.domain.slotBookingRequest.SlotBookingRequest;
 import io.slotum.backend.domain.slotBookingRequest.SlotBookingRequestRepository;
 import io.slotum.backend.error.AppException;
@@ -32,14 +31,31 @@ public class AcceptSlotBookingRequestUseCase {
     public SlotBookingRequest execute(Long slotBookingRequestId, Long specialistUserId) {
         SlotBookingRequest slotBookingRequest = findSlotBookingRequest(slotBookingRequestId);
         LocalDateTime decidedAt = LocalDateTime.now();
+
         SlotBookingRequest acceptedSlotBookingRequest = slotBookingRequest.accept(decidedAt);
 
         Slot slot = findSlot(slotBookingRequest.getSlotId());
         ensureSpecialistOwnsSlot(slot, specialistUserId);
-        ensureSlotIsFree(slot);
 
-        slotRepository.save(slot.book(slotBookingRequest.getCustomerId()));
-        SlotBookingRequest savedSlotBookingRequest = slotBookingRequestRepository.save(acceptedSlotBookingRequest);
+        boolean booked = slotRepository.bookIfFree(
+                slot.getId(),
+                specialistUserId,
+                slotBookingRequest.getCustomerId()
+        );
+
+        if (!booked) {
+            throw AppException.build(
+                    ErrorCode.SLOT_BOOKING_REQUEST_SLOT_NOT_FREE,
+                    "Slot not free",
+                    Map.of(
+                            "slotId", slotBookingRequest.getSlotId(),
+                            "specialistUserId", specialistUserId
+                    )
+            );
+        }
+
+        SlotBookingRequest savedSlotBookingRequest =
+                slotBookingRequestRepository.save(acceptedSlotBookingRequest);
 
         slotBookingRequestRepository.findPendingBySlotId(slot.getId()).stream()
                 .filter(otherRequest -> !Objects.equals(otherRequest.getId(), slotBookingRequest.getId()))
@@ -81,19 +97,6 @@ public class AcceptSlotBookingRequestUseCase {
                     Map.of(
                             "slotId", slot.getId(),
                             "specialistUserId", specialistUserId
-                    )
-            );
-        }
-    }
-
-    private static void ensureSlotIsFree(Slot slot) {
-        if (slot.getStatus() != SlotStatus.FREE) {
-            throw AppException.build(
-                    ErrorCode.SLOT_BOOKING_REQUEST_SLOT_NOT_FREE,
-                    "Slot is not free",
-                    Map.of(
-                            "slotId", slot.getId(),
-                            "status", slot.getStatus()
                     )
             );
         }

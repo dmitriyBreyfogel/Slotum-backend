@@ -78,4 +78,10 @@ public class SlotRepositoryJpaAdapter implements SlotRepository {
                 startsAt
         );
     }
+
+    @Override
+    public boolean bookIfFree(Long slotId, Long specialistUserId, Long customerId) {
+        int updatedRows = slotJpaRepository.bookIfFree(slotId, specialistUserId, customerId);
+        return updatedRows == 1;
+    }
 }
