@@ -112,8 +112,8 @@ public class AcceptSlotBookingRequestUseCaseTest {
     }
 
     @Test
-    @DisplayName("execute: throws SLOT_BOOKING_REQUEST_SLOT_NOT_FREE if slot is busy")
-    void throwsIfSlotIsNotFree() {
+    @DisplayName("execute: throws SLOT_BOOKING_REQUEST_SLOT_NOT_FREE if booking fails")
+    void throwsIfBookingFails() {
         SlotBookingRequestRepository slotBookingRequestRepository = mock(SlotBookingRequestRepository.class);
         SlotRepository slotRepository = mock(SlotRepository.class);
         AcceptSlotBookingRequestUseCase useCase = new AcceptSlotBookingRequestUseCase(
@@ -121,15 +121,17 @@ public class AcceptSlotBookingRequestUseCaseTest {
                 slotRepository
         );
         when(slotBookingRequestRepository.findById(1L)).thenReturn(Optional.of(pendingRequest(1L, 20L)));
-        when(slotRepository.findById(5L)).thenReturn(Optional.of(bookedSlot()));
+        when(slotRepository.findById(5L)).thenReturn(Optional.of(freeSlot()));
+        when(slotRepository.bookIfFree(5L, 10L, 20L)).thenReturn(false);
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(1L, 10L));
 
         assertEquals(ErrorCode.SLOT_BOOKING_REQUEST_SLOT_NOT_FREE, ex.getCode());
         assertEquals(5L, ex.getDetails().get("slotId"));
-        assertEquals(SlotStatus.BOOKED, ex.getDetails().get("status"));
+        assertEquals(10L, ex.getDetails().get("specialistUserId"));
         verify(slotBookingRequestRepository).findById(1L);
         verify(slotRepository).findById(5L);
+        verify(slotRepository).bookIfFree(5L, 10L, 20L);
         verifyNoMoreInteractions(slotBookingRequestRepository, slotRepository);
     }
 
@@ -146,7 +148,7 @@ public class AcceptSlotBookingRequestUseCaseTest {
         SlotBookingRequest otherRequest = pendingRequest(2L, 21L);
         when(slotBookingRequestRepository.findById(1L)).thenReturn(Optional.of(targetRequest));
         when(slotRepository.findById(5L)).thenReturn(Optional.of(freeSlot()));
-        when(slotRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(slotRepository.bookIfFree(5L, 10L, 20L)).thenReturn(true);
         when(slotBookingRequestRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         when(slotBookingRequestRepository.findPendingBySlotId(5L)).thenReturn(List.of(targetRequest, otherRequest));
 
@@ -154,11 +156,6 @@ public class AcceptSlotBookingRequestUseCaseTest {
 
         assertEquals(SlotBookingRequestStatus.ACCEPTED, result.getStatus());
         assertNotNull(result.getDecidedAt());
-
-        ArgumentCaptor<Slot> slotCaptor = ArgumentCaptor.forClass(Slot.class);
-        verify(slotRepository).save(slotCaptor.capture());
-        assertEquals(SlotStatus.BOOKED, slotCaptor.getValue().getStatus());
-        assertEquals(20L, slotCaptor.getValue().getCustomerId());
 
         ArgumentCaptor<SlotBookingRequest> requestCaptor = ArgumentCaptor.forClass(SlotBookingRequest.class);
         verify(slotBookingRequestRepository, org.mockito.Mockito.times(2)).save(requestCaptor.capture());
@@ -169,6 +166,7 @@ public class AcceptSlotBookingRequestUseCaseTest {
 
         verify(slotBookingRequestRepository).findById(1L);
         verify(slotRepository).findById(5L);
+        verify(slotRepository).bookIfFree(5L, 10L, 20L);
         verify(slotBookingRequestRepository).findPendingBySlotId(5L);
         verifyNoMoreInteractions(slotBookingRequestRepository, slotRepository);
     }
@@ -209,15 +207,4 @@ public class AcceptSlotBookingRequestUseCaseTest {
         );
     }
 
-    private static Slot bookedSlot() {
-        return Slot.restore(
-                5L,
-                LocalDateTime.of(2026, 5, 24, 12, 0),
-                LocalDateTime.of(2026, 5, 24, 13, 0),
-                SlotStatus.BOOKED,
-                10L,
-                99L,
-                30L
-        );
-    }
 }
