@@ -3,6 +3,8 @@ package io.slotum.backend.infrastructure.jpa.repositories.slotBookingRequest;
 import io.slotum.backend.domain.slot.SlotStatus;
 import io.slotum.backend.domain.slotBookingRequest.SlotBookingRequest;
 import io.slotum.backend.domain.slotBookingRequest.SlotBookingRequestStatus;
+import io.slotum.backend.error.AppException;
+import io.slotum.backend.error.ErrorCode;
 import io.slotum.backend.infrastructure.jpa.entities.SlotJpa;
 import io.slotum.backend.infrastructure.jpa.entities.SlotBookingRequestJpa;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationJpa;
@@ -12,6 +14,7 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,6 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -187,6 +191,40 @@ public class SlotBookingRequestRepositoryJpaAdapterTest {
         assertEquals(SlotBookingRequestStatus.PENDING, captor.getValue().getStatus());
         verify(entityManager).getReference(SlotJpa.class, 5L);
         verify(entityManager).getReference(UserJpa.class, 20L);
+        verifyNoMoreInteractions(jpaRepository, entityManager);
+    }
+
+    @Test
+    @DisplayName("save maps pending duplicate unique violation to domain error")
+    void saveMapsPendingDuplicateUniqueViolation() {
+        SlotBookingRequestJpaRepository jpaRepository = mock(SlotBookingRequestJpaRepository.class);
+        EntityManager entityManager = mock(EntityManager.class);
+        SlotBookingRequestRepositoryJpaAdapter adapter =
+                new SlotBookingRequestRepositoryJpaAdapter(jpaRepository, entityManager);
+        SlotJpa slot = slotJpa();
+        UserJpa customer = userJpa();
+        SlotBookingRequest request = SlotBookingRequest.create(
+                5L,
+                20L,
+                "message",
+                LocalDateTime.of(2026, 5, 24, 10, 0)
+        );
+        DataIntegrityViolationException violation = new DataIntegrityViolationException(
+                "duplicate key value violates unique constraint \"uq_slot_booking_requests_pending_slot_customer\""
+        );
+
+        when(entityManager.getReference(SlotJpa.class, 5L)).thenReturn(slot);
+        when(entityManager.getReference(UserJpa.class, 20L)).thenReturn(customer);
+        when(jpaRepository.save(any())).thenThrow(violation);
+
+        AppException ex = assertThrows(AppException.class, () -> adapter.save(request));
+
+        assertEquals(ErrorCode.SLOT_BOOKING_REQUEST_ALREADY_EXISTS, ex.getCode());
+        assertEquals(5L, ex.getDetails().get("slotId"));
+        assertEquals(20L, ex.getDetails().get("customerId"));
+        verify(entityManager).getReference(SlotJpa.class, 5L);
+        verify(entityManager).getReference(UserJpa.class, 20L);
+        verify(jpaRepository).save(any());
         verifyNoMoreInteractions(jpaRepository, entityManager);
     }
 
