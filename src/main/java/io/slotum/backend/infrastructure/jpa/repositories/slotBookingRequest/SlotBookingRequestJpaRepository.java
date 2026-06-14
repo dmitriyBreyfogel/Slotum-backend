@@ -42,4 +42,19 @@ public interface SlotBookingRequestJpaRepository extends JpaRepository<SlotBooki
             @Param("pendingStatus") SlotBookingRequestStatus pendingStatus,
             @Param("acceptedStatus") SlotBookingRequestStatus acceptedStatus
     );
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("""
+            update SlotBookingRequestJpa request
+            set request.status = :rejectedStatus,
+                request.decidedAt = :decidedAt
+            where request.id = :id
+              and request.status = :pendingStatus
+            """)
+    int rejectIfPending(
+            @Param("id") Long id,
+            @Param("decidedAt") LocalDateTime decidedAt,
+            @Param("pendingStatus") SlotBookingRequestStatus pendingStatus,
+            @Param("rejectedStatus") SlotBookingRequestStatus rejectedStatus
+    );
 }

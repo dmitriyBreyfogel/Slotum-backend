@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -67,6 +68,29 @@ public class RejectSlotBookingRequestUseCaseTest {
     }
 
     @Test
+    @DisplayName("execute: throws SLOT_BOOKING_REQUEST_NOT_PENDING if atomic reject fails")
+    void throwsIfAtomicRejectFails() {
+        SlotBookingRequestRepository slotBookingRequestRepository = mock(SlotBookingRequestRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
+        RejectSlotBookingRequestUseCase useCase = new RejectSlotBookingRequestUseCase(
+                slotBookingRequestRepository,
+                slotRepository
+        );
+        when(slotBookingRequestRepository.findById(1L)).thenReturn(Optional.of(pendingRequest()));
+        when(slotRepository.findById(5L)).thenReturn(Optional.of(freeSlot()));
+        when(slotBookingRequestRepository.rejectIfPending(eq(1L), any(LocalDateTime.class))).thenReturn(false);
+
+        AppException ex = assertThrows(AppException.class, () -> useCase.execute(1L, 10L));
+
+        assertEquals(ErrorCode.SLOT_BOOKING_REQUEST_NOT_PENDING, ex.getCode());
+        assertEquals(1L, ex.getDetails().get("id"));
+        verify(slotBookingRequestRepository).findById(1L);
+        verify(slotRepository).findById(5L);
+        verify(slotBookingRequestRepository).rejectIfPending(eq(1L), any(LocalDateTime.class));
+        verifyNoMoreInteractions(slotBookingRequestRepository, slotRepository);
+    }
+
+    @Test
     @DisplayName("execute: rejects pending request")
     void rejectsPendingRequest() {
         SlotBookingRequestRepository slotBookingRequestRepository = mock(SlotBookingRequestRepository.class);
@@ -77,7 +101,7 @@ public class RejectSlotBookingRequestUseCaseTest {
         );
         when(slotBookingRequestRepository.findById(1L)).thenReturn(Optional.of(pendingRequest()));
         when(slotRepository.findById(5L)).thenReturn(Optional.of(freeSlot()));
-        when(slotBookingRequestRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(slotBookingRequestRepository.rejectIfPending(eq(1L), any(LocalDateTime.class))).thenReturn(true);
 
         SlotBookingRequest result = useCase.execute(1L, 10L);
 
@@ -85,7 +109,7 @@ public class RejectSlotBookingRequestUseCaseTest {
         assertNotNull(result.getDecidedAt());
         verify(slotBookingRequestRepository).findById(1L);
         verify(slotRepository).findById(5L);
-        verify(slotBookingRequestRepository).save(any());
+        verify(slotBookingRequestRepository).rejectIfPending(eq(1L), any(LocalDateTime.class));
         verifyNoMoreInteractions(slotBookingRequestRepository, slotRepository);
     }
 

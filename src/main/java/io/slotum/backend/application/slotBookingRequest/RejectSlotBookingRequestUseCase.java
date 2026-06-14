@@ -7,6 +7,7 @@ import io.slotum.backend.domain.slotBookingRequest.SlotBookingRequestRepository;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -25,8 +26,11 @@ public class RejectSlotBookingRequestUseCase {
         this.slotRepository = slotRepository;
     }
 
+    @Transactional
     public SlotBookingRequest execute(Long slotBookingRequestId, Long specialistUserId) {
         SlotBookingRequest slotBookingRequest = findSlotBookingRequest(slotBookingRequestId);
+        LocalDateTime decidedAt = LocalDateTime.now();
+        SlotBookingRequest rejectedSlotBookingRequest = slotBookingRequest.reject(decidedAt);
         Slot slot = findSlot(slotBookingRequest.getSlotId());
 
         if (!slot.getSpecialistUserId().equals(specialistUserId)) {
@@ -40,7 +44,20 @@ public class RejectSlotBookingRequestUseCase {
             );
         }
 
-        return slotBookingRequestRepository.save(slotBookingRequest.reject(LocalDateTime.now()));
+        boolean rejected = slotBookingRequestRepository.rejectIfPending(
+                slotBookingRequest.getId(),
+                decidedAt
+        );
+
+        if (!rejected) {
+            throw AppException.build(
+                    ErrorCode.SLOT_BOOKING_REQUEST_NOT_PENDING,
+                    "Slot request is not pending",
+                    Map.of("id", slotBookingRequest.getId())
+            );
+        }
+
+        return rejectedSlotBookingRequest;
     }
 
     private SlotBookingRequest findSlotBookingRequest(Long slotBookingRequestId) {

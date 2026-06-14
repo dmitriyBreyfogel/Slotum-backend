@@ -127,6 +127,17 @@ public class SlotBookingRequestRepositoryJpaAdapter implements SlotBookingReques
         return updatedRows == 1;
     }
 
+    @Override
+    public boolean rejectIfPending(Long id, LocalDateTime decidedAt) {
+        int updatedRows = slotBookingRequestJpaRepository.rejectIfPending(
+                id,
+                decidedAt,
+                SlotBookingRequestStatus.PENDING,
+                SlotBookingRequestStatus.REJECTED
+        );
+        return updatedRows == 1;
+    }
+
     private static boolean isPendingRequestDuplicate(DataIntegrityViolationException ex) {
         Throwable cause = ex;
         while (cause != null) {

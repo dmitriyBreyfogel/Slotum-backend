@@ -22,4 +22,6 @@ public interface SlotBookingRequestRepository {
     SlotBookingRequest save(SlotBookingRequest slotBookingRequest);
 
     boolean acceptIfPending(Long id, LocalDateTime decidedAt);
+
+    boolean rejectIfPending(Long id, LocalDateTime decidedAt);
 }

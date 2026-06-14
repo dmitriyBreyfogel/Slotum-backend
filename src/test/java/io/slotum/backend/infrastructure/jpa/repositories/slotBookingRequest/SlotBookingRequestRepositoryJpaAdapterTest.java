@@ -255,6 +255,33 @@ public class SlotBookingRequestRepositoryJpaAdapterTest {
         verifyNoMoreInteractions(jpaRepository, entityManager);
     }
 
+    @Test
+    @DisplayName("rejectIfPending delegates PENDING to REJECTED transition")
+    void rejectIfPendingDelegatesTransition() {
+        SlotBookingRequestJpaRepository jpaRepository = mock(SlotBookingRequestJpaRepository.class);
+        EntityManager entityManager = mock(EntityManager.class);
+        SlotBookingRequestRepositoryJpaAdapter adapter =
+                new SlotBookingRequestRepositoryJpaAdapter(jpaRepository, entityManager);
+        LocalDateTime decidedAt = LocalDateTime.of(2026, 5, 24, 11, 0);
+        when(jpaRepository.rejectIfPending(
+                1L,
+                decidedAt,
+                SlotBookingRequestStatus.PENDING,
+                SlotBookingRequestStatus.REJECTED
+        )).thenReturn(1);
+
+        boolean result = adapter.rejectIfPending(1L, decidedAt);
+
+        assertEquals(true, result);
+        verify(jpaRepository).rejectIfPending(
+                1L,
+                decidedAt,
+                SlotBookingRequestStatus.PENDING,
+                SlotBookingRequestStatus.REJECTED
+        );
+        verifyNoMoreInteractions(jpaRepository, entityManager);
+    }
+
     private static SlotBookingRequestJpa pendingJpa(Long id) {
         return new SlotBookingRequestJpa(
                 id,
