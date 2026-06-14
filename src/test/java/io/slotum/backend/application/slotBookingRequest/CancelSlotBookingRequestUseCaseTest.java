@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -52,19 +53,36 @@ public class CancelSlotBookingRequestUseCaseTest {
     }
 
     @Test
+    @DisplayName("execute: throws SLOT_BOOKING_REQUEST_NOT_PENDING if atomic cancel fails")
+    void throwsIfAtomicCancelFails() {
+        SlotBookingRequestRepository slotBookingRequestRepository = mock(SlotBookingRequestRepository.class);
+        CancelSlotBookingRequestUseCase useCase = new CancelSlotBookingRequestUseCase(slotBookingRequestRepository);
+        when(slotBookingRequestRepository.findById(1L)).thenReturn(Optional.of(pendingRequest()));
+        when(slotBookingRequestRepository.cancelIfPending(eq(1L), any(LocalDateTime.class))).thenReturn(false);
+
+        AppException ex = assertThrows(AppException.class, () -> useCase.execute(1L, 20L));
+
+        assertEquals(ErrorCode.SLOT_BOOKING_REQUEST_NOT_PENDING, ex.getCode());
+        assertEquals(1L, ex.getDetails().get("id"));
+        verify(slotBookingRequestRepository).findById(1L);
+        verify(slotBookingRequestRepository).cancelIfPending(eq(1L), any(LocalDateTime.class));
+        verifyNoMoreInteractions(slotBookingRequestRepository);
+    }
+
+    @Test
     @DisplayName("execute: cancels pending request")
     void cancelsPendingRequest() {
         SlotBookingRequestRepository slotBookingRequestRepository = mock(SlotBookingRequestRepository.class);
         CancelSlotBookingRequestUseCase useCase = new CancelSlotBookingRequestUseCase(slotBookingRequestRepository);
         when(slotBookingRequestRepository.findById(1L)).thenReturn(Optional.of(pendingRequest()));
-        when(slotBookingRequestRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(slotBookingRequestRepository.cancelIfPending(eq(1L), any(LocalDateTime.class))).thenReturn(true);
 
         SlotBookingRequest result = useCase.execute(1L, 20L);
 
         assertEquals(SlotBookingRequestStatus.CANCELLED, result.getStatus());
         assertNotNull(result.getDecidedAt());
         verify(slotBookingRequestRepository).findById(1L);
-        verify(slotBookingRequestRepository).save(any());
+        verify(slotBookingRequestRepository).cancelIfPending(eq(1L), any(LocalDateTime.class));
         verifyNoMoreInteractions(slotBookingRequestRepository);
     }
 

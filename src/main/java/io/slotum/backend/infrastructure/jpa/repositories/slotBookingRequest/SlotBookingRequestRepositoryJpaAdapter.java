@@ -138,6 +138,17 @@ public class SlotBookingRequestRepositoryJpaAdapter implements SlotBookingReques
         return updatedRows == 1;
     }
 
+    @Override
+    public boolean cancelIfPending(Long id, LocalDateTime decidedAt) {
+        int updatedRows = slotBookingRequestJpaRepository.cancelIfPending(
+                id,
+                decidedAt,
+                SlotBookingRequestStatus.PENDING,
+                SlotBookingRequestStatus.CANCELLED
+        );
+        return updatedRows == 1;
+    }
+
     private static boolean isPendingRequestDuplicate(DataIntegrityViolationException ex) {
         Throwable cause = ex;
         while (cause != null) {

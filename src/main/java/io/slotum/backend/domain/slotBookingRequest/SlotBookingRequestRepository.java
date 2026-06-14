@@ -24,4 +24,6 @@ public interface SlotBookingRequestRepository {
     boolean acceptIfPending(Long id, LocalDateTime decidedAt);
 
     boolean rejectIfPending(Long id, LocalDateTime decidedAt);
+
+    boolean cancelIfPending(Long id, LocalDateTime decidedAt);
 }

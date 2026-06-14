@@ -282,6 +282,33 @@ public class SlotBookingRequestRepositoryJpaAdapterTest {
         verifyNoMoreInteractions(jpaRepository, entityManager);
     }
 
+    @Test
+    @DisplayName("cancelIfPending delegates PENDING to CANCELLED transition")
+    void cancelIfPendingDelegatesTransition() {
+        SlotBookingRequestJpaRepository jpaRepository = mock(SlotBookingRequestJpaRepository.class);
+        EntityManager entityManager = mock(EntityManager.class);
+        SlotBookingRequestRepositoryJpaAdapter adapter =
+                new SlotBookingRequestRepositoryJpaAdapter(jpaRepository, entityManager);
+        LocalDateTime decidedAt = LocalDateTime.of(2026, 5, 24, 11, 0);
+        when(jpaRepository.cancelIfPending(
+                1L,
+                decidedAt,
+                SlotBookingRequestStatus.PENDING,
+                SlotBookingRequestStatus.CANCELLED
+        )).thenReturn(1);
+
+        boolean result = adapter.cancelIfPending(1L, decidedAt);
+
+        assertEquals(true, result);
+        verify(jpaRepository).cancelIfPending(
+                1L,
+                decidedAt,
+                SlotBookingRequestStatus.PENDING,
+                SlotBookingRequestStatus.CANCELLED
+        );
+        verifyNoMoreInteractions(jpaRepository, entityManager);
+    }
+
     private static SlotBookingRequestJpa pendingJpa(Long id) {
         return new SlotBookingRequestJpa(
                 id,
