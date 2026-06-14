@@ -4,22 +4,27 @@ import io.slotum.backend.domain.slot.Slot;
 import io.slotum.backend.domain.slot.SlotRepository;
 import io.slotum.backend.domain.slot.SlotStatus;
 import io.slotum.backend.error.AppException;
+import io.slotum.backend.error.ErrorCode;
 import io.slotum.backend.infrastructure.jpa.entities.SlotJpa;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationJpa;
 import io.slotum.backend.infrastructure.jpa.entities.SpecialistJpa;
 import io.slotum.backend.infrastructure.jpa.entities.UserJpa;
 import io.slotum.backend.infrastructure.jpa.mappers.SlotJpaMapper;
-import io.slotum.backend.infrastructure.jpa.mappers.OrganizationJpaMapper;
 import jakarta.persistence.EntityManager;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
 public class SlotRepositoryJpaAdapter implements SlotRepository {
+    private static final String SLOTS_NO_OVERLAP_CONSTRAINT = "ex_slots_no_overlap";
+
     private final SlotJpaRepository slotJpaRepository;
     private final EntityManager entityManager;
 
@@ -62,11 +67,26 @@ public class SlotRepositoryJpaAdapter implements SlotRepository {
                 : entityManager.getReference(UserJpa.class, slot.getCustomerId());
         OrganizationJpa organizationRef = entityManager.getReference(OrganizationJpa.class, slot.getOrganizationId());
 
-        return SlotJpaMapper.toDomain(
-                slotJpaRepository.save(
-                        SlotJpaMapper.toJpa(slot, specialistRef, customerRef, organizationRef)
-                )
-        );
+        try {
+            return SlotJpaMapper.toDomain(
+                    slotJpaRepository.save(
+                            SlotJpaMapper.toJpa(slot, specialistRef, customerRef, organizationRef)
+                    )
+            );
+        } catch (DataIntegrityViolationException ex) {
+            if (isOverlappingSlot(ex)) {
+                throw AppException.build(
+                        ErrorCode.SLOT_OVERLAPPING,
+                        "Slot overlapping",
+                        Map.of(
+                                "specialistUserId", slot.getSpecialistUserId(),
+                                "startsAt", slot.getStartsAt(),
+                                "endsAt", slot.getEndsAt()
+                        )
+                );
+            }
+            throw ex;
+        }
     }
 
     @Override
@@ -83,5 +103,23 @@ public class SlotRepositoryJpaAdapter implements SlotRepository {
     public boolean bookIfFree(Long slotId, Long specialistUserId, Long customerId) {
         int updatedRows = slotJpaRepository.bookIfFree(slotId, specialistUserId, customerId);
         return updatedRows == 1;
+    }
+
+    private static boolean isOverlappingSlot(DataIntegrityViolationException ex) {
+        Throwable cause = ex;
+        while (cause != null) {
+            if (cause instanceof ConstraintViolationException constraintViolation
+                    && SLOTS_NO_OVERLAP_CONSTRAINT.equals(constraintViolation.getConstraintName())) {
+                return true;
+            }
+
+            String message = cause.getMessage();
+            if (message != null && message.contains(SLOTS_NO_OVERLAP_CONSTRAINT)) {
+                return true;
+            }
+
+            cause = cause.getCause();
+        }
+        return false;
     }
 }

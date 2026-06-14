@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/changes/002-create-slot-booking-requests.yaml
   - include:
       file: db/changelog/changes/003-add-pending-slot-booking-request-unique-index.yaml
+  - include:
+      file: db/changelog/changes/004-add-slots-no-overlap-exclusion-constraint.yaml

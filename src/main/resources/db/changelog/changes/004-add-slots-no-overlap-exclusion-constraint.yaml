@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: 009-create-btree-gist-extension
+      author: dmitriyBreyfogel
+      changes:
+        - sql:
+            dbms: postgresql
+            sql: CREATE EXTENSION IF NOT EXISTS btree_gist;
+
+  - changeSet:
+      id: 010-add-slots-no-overlap-exclusion-constraint
+      author: dmitriyBreyfogel
+      changes:
+        - sql:
+            dbms: postgresql
+            sql: |
+              ALTER TABLE slots
+              ADD CONSTRAINT ex_slots_no_overlap
+              EXCLUDE USING gist (
+                  specialist_id WITH =,
+                  tsrange(starts_at, ends_at, '[)') WITH &&
+              )
+              WHERE (status <> 'CANCELLED');
