@@ -14,6 +14,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -113,6 +114,17 @@ public class SlotBookingRequestRepositoryJpaAdapter implements SlotBookingReques
         }
 
         return SlotBookingRequestJpaMapper.toDomain(saved);
+    }
+
+    @Override
+    public boolean acceptIfPending(Long id, LocalDateTime decidedAt) {
+        int updatedRows = slotBookingRequestJpaRepository.acceptIfPending(
+                id,
+                decidedAt,
+                SlotBookingRequestStatus.PENDING,
+                SlotBookingRequestStatus.ACCEPTED
+        );
+        return updatedRows == 1;
     }
 
     private static boolean isPendingRequestDuplicate(DataIntegrityViolationException ex) {

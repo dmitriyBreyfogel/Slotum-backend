@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -136,6 +137,31 @@ public class AcceptSlotBookingRequestUseCaseTest {
     }
 
     @Test
+    @DisplayName("execute: throws SLOT_BOOKING_REQUEST_NOT_PENDING if atomic accept fails")
+    void throwsIfAtomicAcceptFails() {
+        SlotBookingRequestRepository slotBookingRequestRepository = mock(SlotBookingRequestRepository.class);
+        SlotRepository slotRepository = mock(SlotRepository.class);
+        AcceptSlotBookingRequestUseCase useCase = new AcceptSlotBookingRequestUseCase(
+                slotBookingRequestRepository,
+                slotRepository
+        );
+        when(slotBookingRequestRepository.findById(1L)).thenReturn(Optional.of(pendingRequest(1L, 20L)));
+        when(slotRepository.findById(5L)).thenReturn(Optional.of(freeSlot()));
+        when(slotRepository.bookIfFree(5L, 10L, 20L)).thenReturn(true);
+        when(slotBookingRequestRepository.acceptIfPending(eq(1L), any(LocalDateTime.class))).thenReturn(false);
+
+        AppException ex = assertThrows(AppException.class, () -> useCase.execute(1L, 10L));
+
+        assertEquals(ErrorCode.SLOT_BOOKING_REQUEST_NOT_PENDING, ex.getCode());
+        assertEquals(1L, ex.getDetails().get("id"));
+        verify(slotBookingRequestRepository).findById(1L);
+        verify(slotRepository).findById(5L);
+        verify(slotRepository).bookIfFree(5L, 10L, 20L);
+        verify(slotBookingRequestRepository).acceptIfPending(eq(1L), any(LocalDateTime.class));
+        verifyNoMoreInteractions(slotBookingRequestRepository, slotRepository);
+    }
+
+    @Test
     @DisplayName("execute: books slot, accepts request and rejects other pending requests")
     void acceptsRequestBooksSlotAndRejectsOthers() {
         SlotBookingRequestRepository slotBookingRequestRepository = mock(SlotBookingRequestRepository.class);
@@ -149,6 +175,7 @@ public class AcceptSlotBookingRequestUseCaseTest {
         when(slotBookingRequestRepository.findById(1L)).thenReturn(Optional.of(targetRequest));
         when(slotRepository.findById(5L)).thenReturn(Optional.of(freeSlot()));
         when(slotRepository.bookIfFree(5L, 10L, 20L)).thenReturn(true);
+        when(slotBookingRequestRepository.acceptIfPending(eq(1L), any(LocalDateTime.class))).thenReturn(true);
         when(slotBookingRequestRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         when(slotBookingRequestRepository.findPendingBySlotId(5L)).thenReturn(List.of(targetRequest, otherRequest));
 
@@ -158,15 +185,15 @@ public class AcceptSlotBookingRequestUseCaseTest {
         assertNotNull(result.getDecidedAt());
 
         ArgumentCaptor<SlotBookingRequest> requestCaptor = ArgumentCaptor.forClass(SlotBookingRequest.class);
-        verify(slotBookingRequestRepository, org.mockito.Mockito.times(2)).save(requestCaptor.capture());
+        verify(slotBookingRequestRepository).save(requestCaptor.capture());
         List<SlotBookingRequest> savedRequests = requestCaptor.getAllValues();
-        assertEquals(SlotBookingRequestStatus.ACCEPTED, savedRequests.get(0).getStatus());
-        assertEquals(SlotBookingRequestStatus.REJECTED, savedRequests.get(1).getStatus());
-        assertEquals(2L, savedRequests.get(1).getId());
+        assertEquals(SlotBookingRequestStatus.REJECTED, savedRequests.get(0).getStatus());
+        assertEquals(2L, savedRequests.get(0).getId());
 
         verify(slotBookingRequestRepository).findById(1L);
         verify(slotRepository).findById(5L);
         verify(slotRepository).bookIfFree(5L, 10L, 20L);
+        verify(slotBookingRequestRepository).acceptIfPending(eq(1L), any(LocalDateTime.class));
         verify(slotBookingRequestRepository).findPendingBySlotId(5L);
         verifyNoMoreInteractions(slotBookingRequestRepository, slotRepository);
     }

@@ -3,7 +3,11 @@ package io.slotum.backend.infrastructure.jpa.repositories.slotBookingRequest;
 import io.slotum.backend.domain.slotBookingRequest.SlotBookingRequestStatus;
 import io.slotum.backend.infrastructure.jpa.entities.SlotBookingRequestJpa;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SlotBookingRequestJpaRepository extends JpaRepository<SlotBookingRequestJpa, Long> {
@@ -22,5 +26,20 @@ public interface SlotBookingRequestJpaRepository extends JpaRepository<SlotBooki
             Long slotId,
             Long customerId,
             SlotBookingRequestStatus status
+    );
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("""
+            update SlotBookingRequestJpa request
+            set request.status = :acceptedStatus,
+                request.decidedAt = :decidedAt
+            where request.id = :id
+              and request.status = :pendingStatus
+            """)
+    int acceptIfPending(
+            @Param("id") Long id,
+            @Param("decidedAt") LocalDateTime decidedAt,
+            @Param("pendingStatus") SlotBookingRequestStatus pendingStatus,
+            @Param("acceptedStatus") SlotBookingRequestStatus acceptedStatus
     );
 }

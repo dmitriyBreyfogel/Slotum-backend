@@ -54,15 +54,25 @@ public class AcceptSlotBookingRequestUseCase {
             );
         }
 
-        SlotBookingRequest savedSlotBookingRequest =
-                slotBookingRequestRepository.save(acceptedSlotBookingRequest);
+        boolean accepted = slotBookingRequestRepository.acceptIfPending(
+                slotBookingRequest.getId(),
+                decidedAt
+        );
+
+        if (!accepted) {
+            throw AppException.build(
+                    ErrorCode.SLOT_BOOKING_REQUEST_NOT_PENDING,
+                    "Slot request is not pending",
+                    Map.of("id", slotBookingRequest.getId())
+            );
+        }
 
         slotBookingRequestRepository.findPendingBySlotId(slot.getId()).stream()
                 .filter(otherRequest -> !Objects.equals(otherRequest.getId(), slotBookingRequest.getId()))
                 .map(otherRequest -> otherRequest.reject(decidedAt))
                 .forEach(slotBookingRequestRepository::save);
 
-        return savedSlotBookingRequest;
+        return acceptedSlotBookingRequest;
     }
 
     private SlotBookingRequest findSlotBookingRequest(Long slotBookingRequestId) {

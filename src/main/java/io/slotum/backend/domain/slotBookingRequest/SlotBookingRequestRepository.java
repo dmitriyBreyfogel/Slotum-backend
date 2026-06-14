@@ -1,5 +1,6 @@
 package io.slotum.backend.domain.slotBookingRequest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,4 +20,6 @@ public interface SlotBookingRequestRepository {
     boolean existsPendingBySlotIdAndCustomerId(Long slotId, Long customerId);
 
     SlotBookingRequest save(SlotBookingRequest slotBookingRequest);
+
+    boolean acceptIfPending(Long id, LocalDateTime decidedAt);
 }
