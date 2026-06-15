@@ -12,6 +12,7 @@ databaseChangeLog:
                   autoIncrement: true
                   constraints:
                     primaryKey: true
+                    primaryKeyName: pk_organizations
                     nullable: false
               - column:
                   name: name
@@ -42,6 +43,7 @@ databaseChangeLog:
                   autoIncrement: true
                   constraints:
                     primaryKey: true
+                    primaryKeyName: pk_users
                     nullable: false
               - column:
                   name: surname
@@ -86,6 +88,7 @@ databaseChangeLog:
                   type: bigint
                   constraints:
                     primaryKey: true
+                    primaryKeyName: pk_specialists
                     nullable: false
               - column:
                   name: grade
@@ -150,6 +153,7 @@ databaseChangeLog:
                   autoIncrement: true
                   constraints:
                     primaryKey: true
+                    primaryKeyName: pk_slots
                     nullable: false
               - column:
                   name: starts_at

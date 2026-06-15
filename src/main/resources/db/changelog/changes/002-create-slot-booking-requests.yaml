@@ -21,6 +21,7 @@ databaseChangeLog:
                   autoIncrement: true
                   constraints:
                     primaryKey: true
+                    primaryKeyName: pk_slot_booking_requests
                     nullable: false
               - column:
                   name: slot_id
