@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: 011-add-slots-domain-check-constraints
+      author: dmitriyBreyfogel
+      changes:
+        - sql:
+            dbms: postgresql
+            sql: |
+              ALTER TABLE slots
+              ADD CONSTRAINT chk_slots_time_range
+              CHECK (ends_at > starts_at);
+              
+              ALTER TABLE slots
+              ADD CONSTRAINT chk_slots_status
+              CHECK (status IN ('FREE', 'BOOKED', 'CANCELLED'));
+              
+              ALTER TABLE slots
+              ADD CONSTRAINT chk_slots_booked_with_customer
+              CHECK (status <> 'BOOKED' OR customer_id IS NOT NULL);
+              
+              ALTER TABLE slots
+              ADD CONSTRAINT chk_slots_free_without_customer
+              CHECK (status <> 'FREE' OR customer_id IS NULL);
+
+  - changeSet:
+      id: 012-add-slot-booking-requests-domain-check-constraints
+      author: dmitriyBreyfogel
+      changes:
+        - sql:
+            dbms: postgresql
+            sql: |
+              ALTER TABLE slot_booking_requests
+              ADD CONSTRAINT chk_slot_booking_requests_status
+              CHECK (status IN ('PENDING', 'ACCEPTED', 'REJECTED', 'CANCELLED'));
+              
+              ALTER TABLE slot_booking_requests
+              ADD CONSTRAINT chk_slot_booking_requests_pending_without_decision
+              CHECK (status <> 'PENDING' OR decided_at IS NULL);
+              
+              ALTER TABLE slot_booking_requests
+              ADD CONSTRAINT chk_slot_booking_requests_finished_with_decision
+              CHECK (status = 'PENDING' OR decided_at IS NOT NULL);
