@@ -13,6 +13,58 @@ public record DatabaseErrorDetails(
         String detail,
         String hint
 ) {
+    public static DatabaseErrorDetails empty() {
+        return new DatabaseErrorDetails(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    public DatabaseErrorDetails merge(final DatabaseErrorDetails other) {
+        if (other == null) {
+            return this;
+        }
+
+        return new DatabaseErrorDetails(
+                firstNonBlank(message, other.message),
+                firstNonBlank(sqlState, other.sqlState),
+                firstNonNull(vendorCode, other.vendorCode),
+                firstNonBlank(constraintName, other.constraintName),
+                firstNonBlank(schemaName, other.schemaName),
+                firstNonBlank(tableName, other.tableName),
+                firstNonBlank(columnName, other.columnName),
+                firstNonBlank(detail, other.detail),
+                firstNonBlank(hint, other.hint)
+        );
+    }
+
+    private String firstNonBlank(final String first, final String second) {
+        if (first != null && !first.isBlank()) {
+            return first;
+        }
+
+        if (second != null && !second.isBlank()) {
+            return second;
+        }
+
+        return first;
+    }
+
+    private Integer firstNonNull(final Integer first, final Integer second) {
+        if (first == null) {
+            return second;
+        }
+
+        return first;
+    }
+
     public Optional<String> messageOptional() {
         return optional(message);
     }
