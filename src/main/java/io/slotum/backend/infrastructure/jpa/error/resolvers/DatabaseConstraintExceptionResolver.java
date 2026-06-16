@@ -1,6 +1,9 @@
-package io.slotum.backend.infrastructure.jpa.error;
+package io.slotum.backend.infrastructure.jpa.error.resolvers;
 
 import io.slotum.backend.error.AppException;
+import io.slotum.backend.infrastructure.jpa.error.extractors.DatabaseErrorDetails;
+import io.slotum.backend.infrastructure.jpa.error.extractors.DatabaseErrorExtractor;
+import io.slotum.backend.infrastructure.jpa.error.mapping.DatabaseConstraintErrorMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

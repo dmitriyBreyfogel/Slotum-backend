@@ -1,4 +1,4 @@
-package io.slotum.backend.infrastructure.jpa.error;
+package io.slotum.backend.infrastructure.jpa.error.extractors;
 
 import org.hibernate.JDBCException;
 import org.hibernate.exception.ConstraintViolationException;

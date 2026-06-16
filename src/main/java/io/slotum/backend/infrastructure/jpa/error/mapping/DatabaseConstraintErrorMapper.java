@@ -1,4 +1,4 @@
-package io.slotum.backend.infrastructure.jpa.error;
+package io.slotum.backend.infrastructure.jpa.error.mapping;
 
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;

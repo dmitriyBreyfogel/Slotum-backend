@@ -3,15 +3,12 @@ package io.slotum.backend.infrastructure.jpa.repositories.slotBookingRequest;
 import io.slotum.backend.domain.slotBookingRequest.SlotBookingRequest;
 import io.slotum.backend.domain.slotBookingRequest.SlotBookingRequestRepository;
 import io.slotum.backend.domain.slotBookingRequest.SlotBookingRequestStatus;
-import io.slotum.backend.error.AppException;
-import io.slotum.backend.error.ErrorCode;
 import io.slotum.backend.infrastructure.jpa.entities.SlotJpa;
 import io.slotum.backend.infrastructure.jpa.entities.SlotBookingRequestJpa;
 import io.slotum.backend.infrastructure.jpa.entities.UserJpa;
-import io.slotum.backend.infrastructure.jpa.error.DatabaseConstraintExceptionResolver;
+import io.slotum.backend.infrastructure.jpa.error.resolvers.DatabaseConstraintExceptionResolver;
 import io.slotum.backend.infrastructure.jpa.mappers.SlotBookingRequestJpaMapper;
 import jakarta.persistence.EntityManager;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 

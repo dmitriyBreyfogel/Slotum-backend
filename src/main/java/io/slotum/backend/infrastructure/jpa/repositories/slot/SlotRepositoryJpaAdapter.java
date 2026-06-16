@@ -3,16 +3,13 @@ package io.slotum.backend.infrastructure.jpa.repositories.slot;
 import io.slotum.backend.domain.slot.Slot;
 import io.slotum.backend.domain.slot.SlotRepository;
 import io.slotum.backend.domain.slot.SlotStatus;
-import io.slotum.backend.error.AppException;
-import io.slotum.backend.error.ErrorCode;
 import io.slotum.backend.infrastructure.jpa.entities.SlotJpa;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationJpa;
 import io.slotum.backend.infrastructure.jpa.entities.SpecialistJpa;
 import io.slotum.backend.infrastructure.jpa.entities.UserJpa;
-import io.slotum.backend.infrastructure.jpa.error.DatabaseConstraintExceptionResolver;
+import io.slotum.backend.infrastructure.jpa.error.resolvers.DatabaseConstraintExceptionResolver;
 import io.slotum.backend.infrastructure.jpa.mappers.SlotJpaMapper;
 import jakarta.persistence.EntityManager;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 

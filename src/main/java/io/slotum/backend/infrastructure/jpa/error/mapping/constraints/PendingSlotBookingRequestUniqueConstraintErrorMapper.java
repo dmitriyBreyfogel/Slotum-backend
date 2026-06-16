@@ -1,7 +1,8 @@
-package io.slotum.backend.infrastructure.jpa.error;
+package io.slotum.backend.infrastructure.jpa.error.mapping.constraints;
 
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
+import io.slotum.backend.infrastructure.jpa.error.mapping.DatabaseConstraintErrorMapper;
 
 import java.util.Map;
 
