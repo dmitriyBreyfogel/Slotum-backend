@@ -5,7 +5,7 @@ import io.slotum.backend.error.ErrorCode;
 
 import java.util.Map;
 
-public class SlotNoOverlapConstraintErrorMapper implements DatabaseConstraintErrorMapper{
+public final class SlotNoOverlapConstraintErrorMapper implements DatabaseConstraintErrorMapper{
     private static final String SLOTS_NO_OVERLAP_CONSTRAINT = "ex_slots_no_overlap";
 
     @Override
