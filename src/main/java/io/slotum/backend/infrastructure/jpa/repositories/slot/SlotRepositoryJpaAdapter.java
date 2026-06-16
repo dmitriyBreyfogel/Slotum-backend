@@ -9,6 +9,7 @@ import io.slotum.backend.infrastructure.jpa.entities.SlotJpa;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationJpa;
 import io.slotum.backend.infrastructure.jpa.entities.SpecialistJpa;
 import io.slotum.backend.infrastructure.jpa.entities.UserJpa;
+import io.slotum.backend.infrastructure.jpa.error.DatabaseConstraintExceptionResolver;
 import io.slotum.backend.infrastructure.jpa.mappers.SlotJpaMapper;
 import jakarta.persistence.EntityManager;
 import org.hibernate.exception.ConstraintViolationException;
@@ -27,10 +28,16 @@ public class SlotRepositoryJpaAdapter implements SlotRepository {
 
     private final SlotJpaRepository slotJpaRepository;
     private final EntityManager entityManager;
+    private final DatabaseConstraintExceptionResolver databaseConstraintExceptionResolver;
 
-    public SlotRepositoryJpaAdapter(SlotJpaRepository slotJpaRepository, EntityManager entityManager) {
+    public SlotRepositoryJpaAdapter(
+            SlotJpaRepository slotJpaRepository,
+            EntityManager entityManager,
+            DatabaseConstraintExceptionResolver databaseConstraintExceptionResolver
+    ) {
         this.slotJpaRepository = slotJpaRepository;
         this.entityManager = entityManager;
+        this.databaseConstraintExceptionResolver = databaseConstraintExceptionResolver;
     }
 
     @Override
@@ -74,18 +81,14 @@ public class SlotRepositoryJpaAdapter implements SlotRepository {
                     )
             );
         } catch (DataIntegrityViolationException ex) {
-            if (isOverlappingSlot(ex)) {
-                throw AppException.build(
-                        ErrorCode.SLOT_OVERLAPPING,
-                        "Slot overlapping",
-                        Map.of(
-                                "specialistUserId", slot.getSpecialistUserId(),
-                                "startsAt", slot.getStartsAt(),
-                                "endsAt", slot.getEndsAt()
-                        )
-                );
-            }
-            throw ex;
+            throw databaseConstraintExceptionResolver
+                    .resolve(ex, Map.of(
+                            "specialistUserId", slot.getSpecialistUserId(),
+                            "organizationId", slot.getOrganizationId(),
+                            "startsAt", slot.getStartsAt(),
+                            "endsAt", slot.getEndsAt()
+                    ))
+                    .orElseThrow(() -> ex);
         }
     }
 
@@ -103,23 +106,5 @@ public class SlotRepositoryJpaAdapter implements SlotRepository {
     public boolean bookIfFree(Long slotId, Long specialistUserId, Long customerId) {
         int updatedRows = slotJpaRepository.bookIfFree(slotId, specialistUserId, customerId);
         return updatedRows == 1;
-    }
-
-    private static boolean isOverlappingSlot(DataIntegrityViolationException ex) {
-        Throwable cause = ex;
-        while (cause != null) {
-            if (cause instanceof ConstraintViolationException constraintViolation
-                    && SLOTS_NO_OVERLAP_CONSTRAINT.equals(constraintViolation.getConstraintName())) {
-                return true;
-            }
-
-            String message = cause.getMessage();
-            if (message != null && message.contains(SLOTS_NO_OVERLAP_CONSTRAINT)) {
-                return true;
-            }
-
-            cause = cause.getCause();
-        }
-        return false;
     }
 }
