@@ -15,22 +15,6 @@
       }
     ]
   },
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "exec": []
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "exec": []
-      }
-    }
-  ],
   "variable": [
     {
       "key": "baseUrl",
@@ -716,7 +700,7 @@
       "name": "Slots",
       "item": [
         {
-          "name": "Create free slot slot",
+          "name": "Create free slot",
           "request": {
             "method": "POST",
             "header": [
