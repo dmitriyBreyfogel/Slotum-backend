@@ -2,6 +2,9 @@ package io.slotum.backend.infrastructure.jpa.entities;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(
         name = "users",
@@ -31,6 +34,14 @@ public class UserJpa {
 
     @Column
     private String phone;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<RoleJpa> roles = new HashSet<>();
 
     protected UserJpa() {}
 

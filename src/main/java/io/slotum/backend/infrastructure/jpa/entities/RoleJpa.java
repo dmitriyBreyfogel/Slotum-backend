@@ -2,6 +2,10 @@ package io.slotum.backend.infrastructure.jpa.entities;
 
 import jakarta.persistence.*;
 
+import java.security.Permission;
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(
         name = "roles",
@@ -20,4 +24,15 @@ public class RoleJpa {
 
     @Column(name = "description")
     private String description;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "role_permissions",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id")
+    )
+    private Set<PermissionJpa> permissions = new HashSet<>();
+
+    @ManyToMany(mappedBy = "roles")
+    private Set<UserJpa> users = new HashSet<>();
 }

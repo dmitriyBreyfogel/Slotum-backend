@@ -2,6 +2,9 @@ package io.slotum.backend.infrastructure.jpa.entities;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(
         name = "permissions",
@@ -20,4 +23,7 @@ public class PermissionJpa {
 
     @Column(name = "description")
     private String description;
+
+    @ManyToMany(mappedBy = "permissions")
+    private Set<RoleJpa> roles = new HashSet<>();
 }
