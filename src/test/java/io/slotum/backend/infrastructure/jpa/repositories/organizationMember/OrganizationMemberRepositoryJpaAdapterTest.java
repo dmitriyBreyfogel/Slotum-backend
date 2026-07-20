@@ -1,4 +1,4 @@
-package io.slotum.backend.infrastructure.jpa.repositories.organization;
+package io.slotum.backend.infrastructure.jpa.repositories.organizationMember;
 
 import io.slotum.backend.domain.organization.Organization;
 import io.slotum.backend.domain.organizationMember.OrganizationMember;
@@ -6,8 +6,6 @@ import io.slotum.backend.domain.specialist.Specialist;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationJpa;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationMemberJpa;
 import io.slotum.backend.infrastructure.jpa.entities.SpecialistJpa;
-import io.slotum.backend.infrastructure.jpa.repositories.organizationMember.OrganizationMemberJpaRepository;
-import io.slotum.backend.infrastructure.jpa.repositories.organizationMember.OrganizationMemberRepositoryJpaAdapter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
