@@ -1,4 +1,4 @@
-package io.slotum.backend.domain.organization;
+package io.slotum.backend.domain.organizationMember;
 
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;

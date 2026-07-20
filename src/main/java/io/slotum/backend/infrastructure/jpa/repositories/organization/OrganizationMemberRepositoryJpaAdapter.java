@@ -1,8 +1,8 @@
 package io.slotum.backend.infrastructure.jpa.repositories.organization;
 
 import io.slotum.backend.domain.organization.Organization;
-import io.slotum.backend.domain.organization.OrganizationMember;
-import io.slotum.backend.domain.organization.OrganizationMemberRepository;
+import io.slotum.backend.domain.organizationMember.OrganizationMember;
+import io.slotum.backend.domain.organizationMember.OrganizationMemberRepository;
 import io.slotum.backend.domain.specialist.Specialist;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationMemberJpa;
 import io.slotum.backend.infrastructure.jpa.mappers.OrganizationJpaMapper;

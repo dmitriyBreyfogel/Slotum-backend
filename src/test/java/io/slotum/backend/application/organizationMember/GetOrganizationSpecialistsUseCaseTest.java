@@ -1,7 +1,7 @@
 package io.slotum.backend.application.organizationMember;
 
 import io.slotum.backend.domain.organization.Organization;
-import io.slotum.backend.domain.organization.OrganizationMemberRepository;
+import io.slotum.backend.domain.organizationMember.OrganizationMemberRepository;
 import io.slotum.backend.domain.organization.OrganizationRepository;
 import io.slotum.backend.domain.specialist.Specialist;
 import io.slotum.backend.error.AppException;

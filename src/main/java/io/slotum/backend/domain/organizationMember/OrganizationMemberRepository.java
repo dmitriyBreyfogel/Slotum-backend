@@ -1,5 +1,6 @@
-package io.slotum.backend.domain.organization;
+package io.slotum.backend.domain.organizationMember;
 
+import io.slotum.backend.domain.organization.Organization;
 import io.slotum.backend.domain.specialist.Specialist;
 
 import java.util.List;

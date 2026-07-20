@@ -1,6 +1,6 @@
 package io.slotum.backend.infrastructure.jpa.mappers;
 
-import io.slotum.backend.domain.organization.OrganizationMember;
+import io.slotum.backend.domain.organizationMember.OrganizationMember;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationMemberJpa;
 
 public final class OrganizationMemberJpaMapper {

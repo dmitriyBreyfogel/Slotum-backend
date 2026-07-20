@@ -5,7 +5,7 @@ import io.slotum.backend.application.organizationMember.AddSpecialistToOrganizat
 import io.slotum.backend.application.organizationMember.GetOrganizationSpecialistsUseCase;
 import io.slotum.backend.application.organizationMember.RemoveSpecialistFromOrganizationUseCase;
 import io.slotum.backend.domain.organization.Organization;
-import io.slotum.backend.domain.organization.OrganizationMember;
+import io.slotum.backend.domain.organizationMember.OrganizationMember;
 import io.slotum.backend.domain.specialist.Specialist;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
