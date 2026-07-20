@@ -11,3 +11,5 @@ databaseChangeLog:
       file: db/changelog/changes/005-add-domain-check-constraints.yaml
   - include:
       file: db/changelog/changes/006-add-admin-user.yaml
+  - include:
+      file: db/changelog/changes/007-create-acl-tables.sql
