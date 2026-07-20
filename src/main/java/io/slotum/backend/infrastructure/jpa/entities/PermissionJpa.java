@@ -26,4 +26,12 @@ public class PermissionJpa {
 
     @ManyToMany(mappedBy = "permissions")
     private Set<RoleJpa> roles = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "permission_resources",
+            joinColumns = @JoinColumn(name = "permission_id"),
+            inverseJoinColumns = @JoinColumn(name = "resource_id")
+    )
+    private Set<ResourceJpa> resources = new HashSet<>();
 }
