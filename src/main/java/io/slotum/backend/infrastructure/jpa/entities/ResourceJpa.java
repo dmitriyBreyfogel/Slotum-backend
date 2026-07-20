@@ -1,0 +1,21 @@
+package io.slotum.backend.infrastructure.jpa.entities;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "resources")
+public class ResourceJpa {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
+
+    @Column(name = "http_method", length = 10, nullable = false)
+    private String httpMethod;
+
+    @Column(name = "url_pattern", nullable = false)
+    private String urlPattern;
+
+    @Column(name = "description")
+    private String description;
+}
