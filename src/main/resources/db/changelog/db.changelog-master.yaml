@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/changes/004-add-slots-no-overlap-exclusion-constraint.yaml
   - include:
       file: db/changelog/changes/005-add-domain-check-constraints.yaml
+  - include:
+      file: db/changelog/changes/006-add-admin-user.yaml

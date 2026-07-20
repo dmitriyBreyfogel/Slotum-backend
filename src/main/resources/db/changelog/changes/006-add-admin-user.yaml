@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 013-add-admin-user
+      author: dmitriyBreyfogel
+      changes:
+        - sql:
+            dbms: postgresql
+            sql: |
+              INSERT INTO users (surname, first_name, second_name, email, password, phone)
+              VALUES('Admin', 'Admin', 'Admin', 'admin@slotum.com', 'jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=', '89999999999');
