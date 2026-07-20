@@ -2,7 +2,6 @@ package io.slotum.backend.infrastructure.jpa.entities;
 
 import jakarta.persistence.*;
 
-import java.security.Permission;
 import java.util.HashSet;
 import java.util.Set;
 
