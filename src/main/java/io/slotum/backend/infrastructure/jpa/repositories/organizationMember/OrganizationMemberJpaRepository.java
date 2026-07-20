@@ -1,4 +1,4 @@
-package io.slotum.backend.infrastructure.jpa.repositories.organization;
+package io.slotum.backend.infrastructure.jpa.repositories.organizationMember;
 
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationMemberJpa;
 import org.springframework.data.jpa.repository.JpaRepository;

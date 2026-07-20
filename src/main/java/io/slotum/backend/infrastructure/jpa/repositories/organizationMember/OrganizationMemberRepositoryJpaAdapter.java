@@ -1,4 +1,4 @@
-package io.slotum.backend.infrastructure.jpa.repositories.organization;
+package io.slotum.backend.infrastructure.jpa.repositories.organizationMember;
 
 import io.slotum.backend.domain.organization.Organization;
 import io.slotum.backend.domain.organizationMember.OrganizationMember;

@@ -6,6 +6,8 @@ import io.slotum.backend.domain.specialist.Specialist;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationJpa;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationMemberJpa;
 import io.slotum.backend.infrastructure.jpa.entities.SpecialistJpa;
+import io.slotum.backend.infrastructure.jpa.repositories.organizationMember.OrganizationMemberJpaRepository;
+import io.slotum.backend.infrastructure.jpa.repositories.organizationMember.OrganizationMemberRepositoryJpaAdapter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
