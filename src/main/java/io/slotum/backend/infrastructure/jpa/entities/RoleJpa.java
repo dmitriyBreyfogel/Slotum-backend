@@ -34,4 +34,34 @@ public class RoleJpa {
 
     @ManyToMany(mappedBy = "roles")
     private Set<UserJpa> users = new HashSet<>();
+
+    protected RoleJpa() {}
+
+    public RoleJpa(String name, String description, Set<PermissionJpa> permissions, Set<UserJpa> users) {
+        this.name = name;
+        this.description = description;
+        this.permissions = permissions;
+        this.users = users;
+    }
+
+    // Getters
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Set<PermissionJpa> getPermissions() {
+        return permissions;
+    }
+
+    public Set<UserJpa> getUsers() {
+        return users;
+    }
 }

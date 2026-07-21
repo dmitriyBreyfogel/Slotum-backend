@@ -34,4 +34,35 @@ public class PermissionJpa {
             inverseJoinColumns = @JoinColumn(name = "resource_id")
     )
     private Set<ResourceJpa> resources = new HashSet<>();
+
+    protected PermissionJpa() {}
+
+    public PermissionJpa(Long id, String code, String description, Set<RoleJpa> roles, Set<ResourceJpa> resources) {
+        this.id = id;
+        this.code = code;
+        this.description = description;
+        this.roles = roles;
+        this.resources = resources;
+    }
+
+    // Getters
+    public Long getId() {
+        return id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Set<RoleJpa> getRoles() {
+        return roles;
+    }
+
+    public Set<ResourceJpa> getResources() {
+        return resources;
+    }
 }

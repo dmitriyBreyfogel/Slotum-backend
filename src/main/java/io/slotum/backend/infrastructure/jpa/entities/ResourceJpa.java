@@ -24,4 +24,34 @@ public class ResourceJpa {
 
     @ManyToMany(mappedBy = "resources")
     private Set<PermissionJpa> permissions = new HashSet<>();
+
+    protected ResourceJpa() {}
+
+    public ResourceJpa(String httpMethod, String urlPattern, String description, Set<PermissionJpa> permissions) {
+        this.httpMethod = httpMethod;
+        this.urlPattern = urlPattern;
+        this.description = description;
+        this.permissions = permissions;
+    }
+
+    // Getters
+    public Long getId() {
+        return id;
+    }
+
+    public String getHttpMethod() {
+        return httpMethod;
+    }
+
+    public String getUrlPattern() {
+        return urlPattern;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Set<PermissionJpa> getPermissions() {
+        return permissions;
+    }
 }
