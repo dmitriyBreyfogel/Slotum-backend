@@ -17,10 +17,22 @@ public final class OrganizationMember {
         this.specialistUserId = specialistUserId;
     }
 
+    /**
+     * Создание члена организации
+     * @param organizationId идентификатор организации
+     * @param specialistUserId идентификатор пользователя этой организации
+     * @return созданный член организации
+     * @throws AppException с кодом:
+     *      <ul>
+     *          <li>{@code INVALID_ORGANIZATION_ID} — идентификатор организации null или не положительный</li>
+     *          <li>{@code INVALID_SPECIALIST_USER_ID} — идентификатор пользователя null или не положительный</li>
+     *      </ul>
+     */
     public static OrganizationMember create(Long organizationId, Long specialistUserId) {
         return new OrganizationMember(organizationId, specialistUserId);
     }
 
+    /* Getters */
     public Long getOrganizationId() {
         return organizationId;
     }
@@ -29,34 +41,22 @@ public final class OrganizationMember {
         return specialistUserId;
     }
 
+    /* Validation */
     private static void validateOrganizationId(Long id) {
-        if (!validateId(id)) {
+        if (id == null || id <= 0) {
             throw AppException.build(
                     ErrorCode.INVALID_ORGANIZATION_ID,
-                    "Invalid organization id",
-                    idDetails("organizationId", id)
+                    "Invalid organization id"
             );
         }
     }
 
     private static void validateSpecialistUserId(Long id) {
-        if (!validateId(id)) {
+        if (id == null || id <= 0) {
             throw AppException.build(
                     ErrorCode.INVALID_SPECIALIST_USER_ID,
-                    "Invalid specialist userId",
-                    idDetails("specialistUserId", id)
+                    "Invalid specialist userId"
             );
         }
-    }
-
-    private static boolean validateId(Long id) {
-        return id != null && id > 0;
-    }
-
-    private static Map<String, Object> idDetails(String field, Long id) {
-        if (id == null) {
-            return Map.of("field", field);
-        }
-        return Map.of(field, id);
     }
 }
