@@ -64,14 +64,14 @@ public final class Permission {
      *      </ul>
      */
     public static Permission restore(Long id, String code, String description) {
-        String normalizeCode = StringUtils.normalize(code);
-        String normalizeDescription = StringUtils.normalize(description);
+        String normalizedCode = StringUtils.normalize(code);
+        String normalizedDescription = StringUtils.normalize(description);
 
         validateId(id);
-        validateCode(normalizeCode);
-        validateDescription(normalizeDescription);
+        validateCode(normalizedCode);
+        validateDescription(normalizedDescription);
 
-        return new Permission(id, normalizeCode, normalizeDescription);
+        return new Permission(id, normalizedCode, normalizedDescription);
     }
 
     /* Getters */
