@@ -31,7 +31,7 @@ public final class Role {
     }
 
     private static void validateId(Long id) {
-        if (id != null && id < 0) {
+        if (id != null && id <= 0) {
             throw AppException.build(
                     ErrorCode.INVALID_ROLE_ID,
                     "Invalid role id",
