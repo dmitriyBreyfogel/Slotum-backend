@@ -19,10 +19,61 @@ public final class Resource {
         this.description = description;
     }
 
+    /**
+     * Создание ресурса без описания
+     * @param httpMethod метод запроса http
+     * @param urlPattern url составляющая запроса
+     * @return созданный ресурс с {@code null} описанием
+     * @throws AppException с кодом:
+     *      <ul>
+     *          <li>{@code EMPTY_RESOURCE_HTTP_METHOD} - метод запроса http пуст</li>
+     *          <li>{@code TOO_LONG_RESOURCE_HTTP_METHOD} - метод запроса http больше 10 символов</li>
+     *          <li>{@code EMPTY_RESOURCE_URL_PATTERN} - url составляющая запроса пуста</li>
+     *          <li>{@code TOO_LONG_RESOURCE_URL_PATTERN} - url составляющая запроса больше 255 символов</li>
+     *      </ul>
+     */
+    public static Resource create(String httpMethod, String urlPattern) {
+        return restore(null, httpMethod, urlPattern, null);
+    }
+
+    /**
+     * Создание ресурса
+     * @param httpMethod метод запроса http
+     * @param urlPattern url составляющая запроса
+     * @param description описание запроса
+     * @return созданный ресурс
+     * @throws AppException с кодом:
+     *      <ul>
+     *          <li>{@code EMPTY_RESOURCE_HTTP_METHOD} - метод запроса http пуст</li>
+     *          <li>{@code TOO_LONG_RESOURCE_HTTP_METHOD} - метод запроса http больше 10 символов</li>
+     *          <li>{@code EMPTY_RESOURCE_URL_PATTERN} - url составляющая запроса пуста</li>
+     *          <li>{@code TOO_LONG_RESOURCE_URL_PATTERN} - url составляющая запроса больше 255 символов</li>
+     *          <li>{@code TOO_LONG_RESOURCE_DESCRIPTION} - описание ресурса больше 255 символов</li>
+     *      </ul>
+     */
     public static Resource create(String httpMethod, String urlPattern, String description) {
         return restore(null, httpMethod, urlPattern, description);
     }
 
+    /**
+     * Создаёт объект ресурса с явно указанным идентификатором.
+     * Используется, когда идентификатор известен заранее (например, при маппинге из БД).
+     * В отличие от {@link #create}, не предполагает, что ресурс новый.
+     * @param id идентификатор ресурса
+     * @param httpMethod метод запроса http
+     * @param urlPattern url составляющая запроса
+     * @param description описание ресурса
+     * @return созданный объект ресурса по заданным параметрам
+     * @throws AppException с кодом:
+     *      <ul>
+     *          <li>{@code INVALID_RESOURCE_ID} - идентификатор ресурса не положительный</li>
+     *          <li>{@code EMPTY_RESOURCE_HTTP_METHOD} - метод запроса http пуст</li>
+     *          <li>{@code TOO_LONG_RESOURCE_HTTP_METHOD} - метод запроса http больше 10 символов</li>
+     *          <li>{@code EMPTY_RESOURCE_URL_PATTERN} - url составляющая запроса пуста</li>
+     *          <li>{@code TOO_LONG_RESOURCE_URL_PATTERN} - url составляющая запроса больше 255 символов</li>
+     *          <li>{@code TOO_LONG_RESOURCE_DESCRIPTION} - описание ресурса больше 255 символов</li>
+     *      </ul>
+     */
     public static Resource restore(Long id, String httpMethod, String urlPattern, String description) {
         String normalizeHttpMethod = StringUtils.normalize(httpMethod);
         String normalizeUrlPattern = StringUtils.normalize(urlPattern);
@@ -36,6 +87,24 @@ public final class Resource {
         return new Resource(id, normalizeHttpMethod, normalizeUrlPattern, normalizeDescription);
     }
 
+    /* Getters */
+    public Long getId() {
+        return id;
+    }
+
+    public String getHttpMethod() {
+        return httpMethod;
+    }
+
+    public String getUrlPattern() {
+        return urlPattern;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    /* Validation */
     private static void validateId(Long id) {
         if (id != null && id <= 0) {
             throw AppException.build(
