@@ -31,6 +31,15 @@ public final class Role {
         return new Role(id, name, normalizeDescription);
     }
 
+    private static String normalizeDescription(String description) {
+        if (description == null) {
+            return null;
+        }
+
+        String trimmed = description.trim();
+        return trimmed.isEmpty() ? null : trimmed;
+    }
+
     private static void validateId(Long id) {
         if (id != null && id <= 0) {
             throw AppException.build(
@@ -61,14 +70,5 @@ public final class Role {
                     )
             );
         }
-    }
-
-    private static String normalizeDescription(String description) {
-        if (description == null) {
-            return null;
-        }
-
-        String trimmed = description.trim();
-        return trimmed.isEmpty() ? null : trimmed;
     }
 }
