@@ -4,6 +4,7 @@ import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 
 import java.util.Map;
+import java.util.Objects;
 
 public final class Role {
     private final Long id;
@@ -21,13 +22,13 @@ public final class Role {
     }
 
     public static Role restore(Long id, RoleNames name, String description) {
-        String trimmedDescription = description == null ? null : description.trim();
+        String normalizeDescription = normalizeDescription(description);
 
         validateId(id);
         validateName(name);
-        validateDescription(trimmedDescription);
+        validateDescription(normalizeDescription);
 
-        return new Role(id, name, trimmedDescription);
+        return new Role(id, name, normalizeDescription);
     }
 
     private static void validateId(Long id) {
@@ -60,5 +61,14 @@ public final class Role {
                     )
             );
         }
+    }
+
+    private static String normalizeDescription(String description) {
+        if (description == null) {
+            return null;
+        }
+
+        String trimmed = description.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 }
