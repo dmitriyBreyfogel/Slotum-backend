@@ -17,10 +17,49 @@ public final class Role {
         this.description = description;
     }
 
+    /**
+     * Создание роли без описания
+     * @param name название роли
+     * @return созданная роль с {@code null} описанием
+     * @throws AppException с кодом:
+     *      <ul>
+     *          <li>{@code EMPTY_ROLE_NAME} - название роли пустое</li>
+     *      </ul>
+     */
+    public static Role create(RoleNames name) {
+        return restore(null, name, null);
+    }
+
+    /**
+     * Создание роли
+     * @param name название роли
+     * @param description описание роли
+     * @return созданная роль
+     * @throws AppException с кодом:
+     *      <ul>
+     *          <li>{@code EMPTY_ROLE_NAME} - название роли пустое</li>
+     *          <li>{@code TOO_LONG_ROLE_DESCRIPTION} - описание роли более 255 символов</li>
+     *      </ul>
+     */
     public static Role create(RoleNames name, String description) {
         return restore(null, name, description);
     }
 
+    /**
+     * Создаёт объект роли с явно указанным идентификатором.
+     * Используется, когда идентификатор известен заранее (например, при маппинге из БД).
+     * В отличие от {@link #create}, не предполагает, что роль новая.
+     * @param id идентификатор роли
+     * @param name название роли
+     * @param description описание роли
+     * @return созданный объект роли по заданным параметрам
+     * @throws AppException с кодом:
+     *      <ul>
+     *          <li>{@code INVALID_ROLE_ID} - идентификатор роли не положительный</li>
+     *          <li>{@code EMPTY_ROLE_NAME} - название роли пустое</li>
+     *          <li>{@code TOO_LONG_ROLE_DESCRIPTION} - описание роли более 255 символов</li>
+     *      </ul>
+     */
     public static Role restore(Long id, RoleNames name, String description) {
         String normalizeDescription = StringUtils.normalize(description);
 
@@ -31,6 +70,20 @@ public final class Role {
         return new Role(id, name, normalizeDescription);
     }
 
+    /* Getters */
+    public Long getId() {
+        return id;
+    }
+
+    public RoleNames getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    /* Validation */
     private static void validateId(Long id) {
         if (id != null && id <= 0) {
             throw AppException.build(
