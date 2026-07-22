@@ -60,7 +60,7 @@ public final class Role {
     }
 
     private static void validateDescription(String description) {
-        if (description != null && (description.length() > 255)) {
+        if (description != null && description.length() > 255) {
             throw AppException.build(
                     ErrorCode.TOO_LONG_ROLE_DESCRIPTION,
                     "Too long role description",
