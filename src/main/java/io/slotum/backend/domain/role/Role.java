@@ -1,10 +1,10 @@
 package io.slotum.backend.domain.role;
 
+import io.slotum.backend.domain.utils.StringUtils;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 
 import java.util.Map;
-import java.util.Objects;
 
 public final class Role {
     private final Long id;
@@ -22,22 +22,13 @@ public final class Role {
     }
 
     public static Role restore(Long id, RoleNames name, String description) {
-        String normalizeDescription = normalizeDescription(description);
+        String normalizeDescription = StringUtils.normalize(description);
 
         validateId(id);
         validateName(name);
         validateDescription(normalizeDescription);
 
         return new Role(id, name, normalizeDescription);
-    }
-
-    private static String normalizeDescription(String description) {
-        if (description == null) {
-            return null;
-        }
-
-        String trimmed = description.trim();
-        return trimmed.isEmpty() ? null : trimmed;
     }
 
     private static void validateId(Long id) {
