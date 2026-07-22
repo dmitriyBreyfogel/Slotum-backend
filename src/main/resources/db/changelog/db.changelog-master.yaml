@@ -13,3 +13,5 @@ databaseChangeLog:
       file: db/changelog/changes/006-add-admin-user.yaml
   - include:
       file: db/changelog/changes/007-create-acl-tables.sql
+  - include:
+      file: db/changelog/changes/008-insert-api-resources.sql
