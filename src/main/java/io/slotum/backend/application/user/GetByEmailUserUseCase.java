@@ -26,7 +26,7 @@ public class GetByEmailUserUseCase {
             );
         }
 
-        Email emailObj = new Email(email);
+        Email emailObj = Email.of(Of(email);
 
         if (!userRepository.existsByEmail(email)) {
             throw AppException.build(

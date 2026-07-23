@@ -1,5 +1,6 @@
 package io.slotum.backend.domain.user.vo;
 
+import io.slotum.backend.domain.utils.StringUtils;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
 
@@ -7,33 +8,50 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public final class Email {
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9_]+@[A-Za-z]+\\.[A-Za-z]{2,63}$");
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
     private final String email;
 
-    public Email(String email) {
-        String normalized = normalize(email);
-        if (!validate(normalized)) {
+    private Email(String email) {
+        this.email = email;
+    }
+
+    /**
+     * Создание объекта email почты
+     * @param email строка названия почты
+     * @return созданный объект email почты
+     * @throws AppException с кодом:
+     *      <ul>
+     *          <li>{@code INVALID_USER_EMAIL} - если строка названия почты невалидна или равна {@code null}</li>
+     *      </ul>
+     */
+    public static Email of(String email) {
+        String normalizedEmail = StringUtils.normalize(email);
+
+        if (normalizedEmail == null) {
+            throw AppException.build(
+                    ErrorCode.INVALID_USER_EMAIL,
+                    "Empty user email"
+            );
+        }
+
+        normalizedEmail = normalizedEmail.toLowerCase();
+
+        if (!validate(normalizedEmail)) {
             throw AppException.build(
                     ErrorCode.INVALID_USER_EMAIL,
                     "Invalid email format",
                     Map.of("email", email)
             );
         }
-        this.email = normalized;
+
+        return new Email(normalizedEmail);
     }
 
     public static boolean validate(String email) {
-        return email != null && EMAIL_PATTERN.matcher(email).matches();
+        return EMAIL_PATTERN.matcher(email).matches();
     }
 
     public String value() {
         return email;
-    }
-
-    private static String normalize(String email) {
-        if (email == null) {
-            return null;
-        }
-        return email.trim().toLowerCase();
     }
 }
