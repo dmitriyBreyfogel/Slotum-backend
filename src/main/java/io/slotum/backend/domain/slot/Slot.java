@@ -33,6 +33,26 @@ public final class Slot {
         this.organizationId = organizationId;
     }
 
+    /**
+     * Создание слота
+     * @param startsAt время начала слота
+     * @param endsAt время окончания слота
+     * @param status статус слота
+     * @param specialistUserId идентификатор пользователя специалиста, создавшего слот
+     * @param customerId идентификатор пользователя, записавшегося на слот
+     * @param organizationId идентификатор организации, которой принадлежит слот
+     * @return созданный слот по заданным параметрам
+     * @throws AppException с кодом:
+     *      <ul>
+     *          <li>{@code INVALID_SLOT_STARTS_AT} - время начала слота равно {@code null}</li>
+     *          <li>{@code INVALID_SLOT_ENDS_AT} - время окончания слота равно {@code null}</li>
+     *          <li>{@code INVALID_SLOT_TIME_RANGE} - время окончания раньше времени начала слота</li>
+     *          <li>{@code INVALID_SLOT_STATUS} - статус слота {@code null}</li>
+     *          <li>{@code INVALID_SLOT_SPECIALIST_ID} - идентификатор пользователя специалиста не положительный</li>
+     *          <li>{@code INVALID_SLOT_CUSTOMER_ID} - идентификатор пользователя не положительный</li>
+     *          <li>{@code INVALID_SLOT_ORGANIZATION_ID} - идентификатор организации не положительный</li>
+     *      </ul>
+     */
     public static Slot create(
             LocalDateTime startsAt,
             LocalDateTime endsAt,
@@ -52,6 +72,30 @@ public final class Slot {
         );
     }
 
+    /**
+     * Создаёт объект слота с явно указанным идентификатором.
+     * Используется, когда идентификатор известен заранее (например, при маппинге из БД).
+     * В отличие от {@link #create}, не предполагает, что слот новый.
+     * @param id идентификатор слота
+     * @param startsAt начало назначенного слота
+     * @param endsAt конец назначенного слота
+     * @param status статус слота
+     * @param specialistUserId идентификатор пользователя специалиста, создающего слот
+     * @param customerId идентификатор пользователя, который записывается на данный слот
+     * @param organizationId идентификатор организации, которой принадлежит данный слот
+     * @return созданный объект слота по заданным параметрам
+     * @throws AppException с кодом:
+     *      <ul>
+     *          <li>{@code INVALID_SLOT_ID} - идентификатор слота не положительный</li>
+     *          <li>{@code INVALID_SLOT_STARTS_AT} - время начала слота равно {@code null}</li>
+     *          <li>{@code INVALID_SLOT_ENDS_AT} - время окончания слота равно {@code null}</li>
+     *          <li>{@code INVALID_SLOT_TIME_RANGE} - время окончания раньше времени начала слота</li>
+     *          <li>{@code INVALID_SLOT_STATUS} - статус слота {@code null}</li>
+     *          <li>{@code INVALID_SLOT_SPECIALIST_ID} - идентификатор пользователя специалиста не положительный</li>
+     *          <li>{@code INVALID_SLOT_CUSTOMER_ID} - идентификатор пользователя не положительный</li>
+     *          <li>{@code INVALID_SLOT_ORGANIZATION_ID} - идентификатор организации не положительный</li>
+     *      </ul>
+     */
     public static Slot restore(
             Long id,
             LocalDateTime startsAt,
@@ -62,22 +106,35 @@ public final class Slot {
             Long organizationId
     ) {
         validateId(id);
-        LocalDateTime normalizedStartsAt = validateStartsAt(startsAt);
-        LocalDateTime normalizedEndsAt = validateEndsAt(endsAt);
-        SlotStatus normalizedStatus = validateStatus(status);
-        validateTimeRange(normalizedStartsAt, normalizedEndsAt);
+        validateStartsAt(startsAt);
+        validateEndsAt(endsAt);
+        validateTimeRange(startsAt, endsAt);
+        validateStatus(status);
+        validateSpecialistUserId(specialistUserId);
+        validateCustomerId(customerId, status);
+        validateOrganizationId(organizationId);
 
         return new Slot(
                 id,
-                normalizedStartsAt,
-                normalizedEndsAt,
-                normalizedStatus,
-                validateSpecialistUserId(specialistUserId),
-                validateCustomerId(customerId, normalizedStatus),
-                validateOrganizationId(organizationId)
+                startsAt,
+                endsAt,
+                status,
+                specialistUserId,
+                customerId,
+                organizationId
         );
     }
 
+    /**
+     * Создаёт новый слот со статусом {@code BOOKED} на основе текущего.
+     * Текущий объект остаётся неизменным.
+     * @param customerId идентификатор пользователя, забронировавшего данный слот
+     * @return забронированный слот
+     * @throws AppException с кодом:
+     *      <ul>
+     *          <li>{@code INVALID_SLOT_CUSTOMER_ID} - идентификатор пользователя не положительный</li>
+     *      </ul>
+     */
     public Slot book(Long customerId) {
         return restore(
                 id,
@@ -90,6 +147,7 @@ public final class Slot {
         );
     }
 
+    /* Getters */
     public Long getId() {
         return id;
     }
@@ -118,6 +176,7 @@ public final class Slot {
         return organizationId;
     }
 
+    /* Validation */
     private static void validateId(Long id) {
         if (id != null && id <= 0) {
             throw AppException.build(
@@ -128,24 +187,22 @@ public final class Slot {
         }
     }
 
-    private static LocalDateTime validateStartsAt(LocalDateTime startsAt) {
+    private static void validateStartsAt(LocalDateTime startsAt) {
         if (startsAt == null) {
             throw AppException.build(
                     ErrorCode.INVALID_SLOT_STARTS_AT,
                     "Slot startsAt is null"
             );
         }
-        return startsAt;
     }
 
-    private static LocalDateTime validateEndsAt(LocalDateTime endsAt) {
+    private static void validateEndsAt(LocalDateTime endsAt) {
         if (endsAt == null) {
             throw AppException.build(
                     ErrorCode.INVALID_SLOT_ENDS_AT,
                     "Slot endsAt is null"
             );
         }
-        return endsAt;
     }
 
     private static void validateTimeRange(LocalDateTime startsAt, LocalDateTime endsAt) {
@@ -153,22 +210,24 @@ public final class Slot {
             throw AppException.build(
                     ErrorCode.INVALID_SLOT_TIME_RANGE,
                     "Slot endsAt must be after startsAt",
-                    Map.of("startsAt", startsAt, "endsAt", endsAt)
+                    Map.of(
+                            "startsAt", startsAt,
+                            "endsAt", endsAt
+                    )
             );
         }
     }
 
-    private static SlotStatus validateStatus(SlotStatus status) {
+    private static void validateStatus(SlotStatus status) {
         if (status == null) {
             throw AppException.build(
                     ErrorCode.INVALID_SLOT_STATUS,
                     "Slot status is null"
             );
         }
-        return status;
     }
 
-    private static Long validateSpecialistUserId(Long specialistUserId) {
+    private static void validateSpecialistUserId(Long specialistUserId) {
         if (specialistUserId == null || specialistUserId <= 0) {
             Map<String, Object> details = (specialistUserId == null)
                     ? Map.of()
@@ -179,29 +238,9 @@ public final class Slot {
                     details
             );
         }
-        return specialistUserId;
     }
 
-    private static Long validateCustomerId(Long customerId, SlotStatus status) {
-        if (status == SlotStatus.FREE) {
-            if (customerId != null) {
-                throw AppException.build(
-                        ErrorCode.INVALID_SLOT_CUSTOMER_ID,
-                        "Free slot must not have customerId",
-                        Map.of("customerId", customerId)
-                );
-            }
-            return null;
-        }
-
-        if (status == SlotStatus.BOOKED && customerId == null) {
-            throw AppException.build(
-                    ErrorCode.INVALID_SLOT_CUSTOMER_ID,
-                    "Invalid slot customerId",
-                    Map.of()
-            );
-        }
-
+    private static void validateCustomerId(Long customerId, SlotStatus status) {
         if (customerId != null && customerId <= 0) {
             throw AppException.build(
                     ErrorCode.INVALID_SLOT_CUSTOMER_ID,
@@ -210,10 +249,23 @@ public final class Slot {
             );
         }
 
-        return customerId;
+        if (status == SlotStatus.FREE && customerId != null) {
+            throw AppException.build(
+                    ErrorCode.INVALID_SLOT_CUSTOMER_ID,
+                    "Free slot must not have customerId",
+                    Map.of("customerId", customerId)
+            );
+        }
+
+        if (status == SlotStatus.BOOKED && customerId == null) {
+            throw AppException.build(
+                    ErrorCode.INVALID_SLOT_CUSTOMER_ID,
+                    "Booked slot must have customerId"
+            );
+        }
     }
 
-    private static Long validateOrganizationId(Long organizationId) {
+    private static void validateOrganizationId(Long organizationId) {
         if (organizationId == null || organizationId <= 0) {
             Map<String, Object> details = (organizationId == null)
                     ? Map.of()
@@ -224,6 +276,5 @@ public final class Slot {
                     details
             );
         }
-        return organizationId;
     }
 }
