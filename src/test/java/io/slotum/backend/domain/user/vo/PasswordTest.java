@@ -12,7 +12,7 @@ public class PasswordTest {
     @Test
     @DisplayName("Корректное создание валидного пароля (хэшируется и не равен raw)")
     void createsPasswordHashFromValidRaw() {
-        Password password = fromRaw("P@ssw0rd!");
+        Password password = Password.fromRaw("P@ssw0rd!");
         assertNotNull(password.value());
         assertFalse(password.value().isBlank());
         assertNotEquals("P@ssw0rd!", password.value());
@@ -21,85 +21,85 @@ public class PasswordTest {
     @Test
     @DisplayName("Проверка совпадения пароля проходит для корректного raw")
     void matchesReturnsTrueForCorrectRaw() {
-        Password password = fromRaw("P@ssw0rd!");
+        Password password = Password.fromRaw("P@ssw0rd!");
         assertTrue(password.matches("P@ssw0rd!"));
     }
 
     @Test
     @DisplayName("Проверка совпадения пароля не проходит для некорректного raw")
     void matchesReturnsFalseForWrongRaw() {
-        Password password = fromRaw("P@ssw0rd!");
+        Password password = Password.fromRaw("P@ssw0rd!");
         assertFalse(password.matches("P@ssw0rd?"));
     }
 
     @Test
     @DisplayName("matches возвращает false для null")
     void matchesReturnsFalseForNull() {
-        Password password = fromRaw("P@ssw0rd!");
+        Password password = Password.fromRaw("P@ssw0rd!");
         assertFalse(password.matches(null));
     }
 
     @Test
     @DisplayName("matches возвращает false для пустой строки")
     void matchesReturnsFalseForEmptyString() {
-        Password password = fromRaw("P@ssw0rd!");
+        Password password = Password.fromRaw("P@ssw0rd!");
         assertFalse(password.matches(""));
     }
 
     @Test
     @DisplayName("matches возвращает false для строки из пробелов")
     void matchesReturnsFalseForBlankString() {
-        Password password = fromRaw("P@ssw0rd!");
+        Password password = Password.fromRaw("P@ssw0rd!");
         assertFalse(password.matches("   "));
     }
 
     @Test
     @DisplayName("Пустой raw пароль недопустим")
     void rejectsEmptyRawPassword() {
-        AppException ex = assertThrows(AppException.class, () -> fromRaw(""));
+        AppException ex = assertThrows(AppException.class, () -> Password.fromRaw(""));
         assertEquals(ErrorCode.INVALID_USER_PASSWORD, ex.getCode());
     }
 
     @Test
     @DisplayName("Null raw пароль недопустим")
     void rejectsNullRawPassword() {
-        AppException ex = assertThrows(AppException.class, () -> fromRaw(null));
+        AppException ex = assertThrows(AppException.class, () -> Password.fromRaw(null));
         assertEquals(ErrorCode.INVALID_USER_PASSWORD, ex.getCode());
     }
 
     @Test
     @DisplayName("Пробелы в raw пароле недопустимы")
     void rejectsRawPasswordWithSpace() {
-        AppException ex = assertThrows(AppException.class, () -> fromRaw("pass word"));
+        AppException ex = assertThrows(AppException.class, () -> Password.fromRaw("pass word"));
         assertEquals(ErrorCode.INVALID_USER_PASSWORD, ex.getCode());
     }
 
     @Test
     @DisplayName("Перевод строки в raw пароле недопустим")
     void rejectsRawPasswordWithNewLine() {
-        AppException ex = assertThrows(AppException.class, () -> fromRaw("pass\nword"));
+        AppException ex = assertThrows(AppException.class, () -> Password.fromRaw("pass\nword"));
         assertEquals(ErrorCode.INVALID_USER_PASSWORD, ex.getCode());
     }
 
     @Test
     @DisplayName("Табуляция в raw пароле недопустима")
     void rejectsRawPasswordWithTab() {
-        AppException ex = assertThrows(AppException.class, () -> fromRaw("pass\tword"));
+        AppException ex = assertThrows(AppException.class, () -> Password.fromRaw("pass\tword"));
         assertEquals(ErrorCode.INVALID_USER_PASSWORD, ex.getCode());
     }
 
     @Test
     @DisplayName("Русские символы в raw пароле недопустимы")
     void rejectsRawPasswordWithNonAscii() {
-        AppException ex = assertThrows(AppException.class, () -> fromRaw("пароль"));
+        AppException ex = assertThrows(AppException.class, () -> Password.fromRaw("пароль"));
         assertEquals(ErrorCode.INVALID_USER_PASSWORD, ex.getCode());
     }
 
     @Test
     @DisplayName("Граничные ASCII символы '!' и '~' допустимы")
     void allowsAsciiRangeBoundaries() {
-        assertDoesNotThrow(() -> fromRaw("!"));
-        assertDoesNotThrow(() -> fromRaw("~"));
+        assertDoesNotThrow(() -> Password.fromRaw("!"));
+        assertDoesNotThrow(() -> Password.fromRaw("~"));
     }
 
     @Test
@@ -118,7 +118,7 @@ public class PasswordTest {
     @Test
     @DisplayName("fromHash создаёт пароль из хэша (с trim) и matches работает")
     void fromHashTrimsAndMatches() {
-        Password original = fromRaw("P@ssw0rd!");
+        Password original = Password.fromRaw("P@ssw0rd!");
         String hash = original.value();
 
         Password restored = Password.fromHash("  " + hash + "  ");

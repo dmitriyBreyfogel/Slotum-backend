@@ -52,7 +52,7 @@ public class UserTest {
     @Test
     @DisplayName("ID может быть положительным при восстановлении")
     void allowsPositiveIdOnRestore() {
-        String hash = fromRaw("P@ssw0rd!").value();
+        String hash = Password.fromRaw("P@ssw0rd!").value();
         User user = User.restore(
                 1L,
                 "Ivanov",
@@ -260,7 +260,7 @@ public class UserTest {
     @Test
     @DisplayName("Восстановление пользователя из хэша пароля (fromHash) работает")
     void restoresUserFromPasswordHashAndMatches() {
-        Password original = fromRaw("P@ssw0rd!");
+        Password original = Password.fromRaw("P@ssw0rd!");
         User user = User.restore(
                 10L,
                 "Ivanov",
