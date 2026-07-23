@@ -1,5 +1,6 @@
 package io.slotum.backend.infrastructure.jpa.entities;
 
+import io.slotum.backend.domain.role.RoleNames;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -19,7 +20,7 @@ public class RoleJpa {
     private Long id;
 
     @Column(name = "name", length = 50, nullable = false, unique = true)
-    private String name;
+    private RoleNames name;
 
     @Column(name = "description")
     private String description;
@@ -37,7 +38,7 @@ public class RoleJpa {
 
     protected RoleJpa() {}
 
-    public RoleJpa(String name, String description, Set<PermissionJpa> permissions, Set<UserJpa> users) {
+    public RoleJpa(RoleNames name, String description, Set<PermissionJpa> permissions, Set<UserJpa> users) {
         this.name = name;
         this.description = description;
         this.permissions = permissions;
@@ -49,7 +50,7 @@ public class RoleJpa {
         return id;
     }
 
-    public String getName() {
+    public RoleNames getName() {
         return name;
     }
 
