@@ -35,7 +35,7 @@ public final class User {
                 validateRequiredName(firstName, ErrorCode.INVALID_USER_FIRSTNAME, "firstName"),
                 normalizeOptional(secondName),
                 Email.of(email),
-                new Password(password),
+                fromRaw(password),
                 new Phone(phone)
         );
     }
