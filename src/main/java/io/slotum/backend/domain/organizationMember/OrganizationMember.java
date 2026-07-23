@@ -44,18 +44,30 @@ public final class OrganizationMember {
     /* Validation */
     private static void validateOrganizationId(Long id) {
         if (id == null || id <= 0) {
+            Map<String, Object> details =
+                    id == null
+                    ? Map.of()
+                    : Map.of("organizationId", id);
+
             throw AppException.build(
                     ErrorCode.INVALID_ORGANIZATION_ID,
-                    "Invalid organization id"
+                    "Invalid organization id",
+                    details
             );
         }
     }
 
     private static void validateSpecialistUserId(Long id) {
         if (id == null || id <= 0) {
+            Map<String, Object> details =
+                    id == null
+                    ? Map.of()
+                    : Map.of("specialistUserId", id);
+
             throw AppException.build(
                     ErrorCode.INVALID_SPECIALIST_USER_ID,
-                    "Invalid specialist userId"
+                    "Invalid specialist userId",
+                    details
             );
         }
     }
