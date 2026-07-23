@@ -36,7 +36,7 @@ public final class User {
                 normalizeOptional(secondName),
                 Email.of(email),
                 Password.fromRaw(password),
-                new Phone(phone)
+                Phone.of(phone)
         );
     }
 
@@ -49,7 +49,7 @@ public final class User {
                 normalizeOptional(secondName),
                 Email.of(email),
                 Password.fromHash(passwordHash),
-                new Phone(phone)
+                Phone.of(phone)
         );
     }
 
