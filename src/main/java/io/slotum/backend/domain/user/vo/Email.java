@@ -36,7 +36,7 @@ public final class Email {
 
         normalizedEmail = normalizedEmail.toLowerCase();
 
-        if (!validate(normalizedEmail)) {
+        if (!isValid(normalizedEmail)) {
             throw AppException.build(
                     ErrorCode.INVALID_USER_EMAIL,
                     "Invalid email format",
@@ -47,7 +47,7 @@ public final class Email {
         return new Email(normalizedEmail);
     }
 
-    public static boolean validate(String email) {
+    public static boolean isValid(String email) {
         return EMAIL_PATTERN.matcher(email).matches();
     }
 
