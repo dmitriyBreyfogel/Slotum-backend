@@ -34,7 +34,7 @@ public final class User {
                 validateRequiredName(surname, ErrorCode.INVALID_USER_SURNAME, "surname"),
                 validateRequiredName(firstName, ErrorCode.INVALID_USER_FIRSTNAME, "firstName"),
                 normalizeOptional(secondName),
-                Email.of(Of(email),
+                Email.of(email),
                 new Password(password),
                 new Phone(phone)
         );
@@ -47,7 +47,7 @@ public final class User {
                 validateRequiredName(surname, ErrorCode.INVALID_USER_SURNAME, "surname"),
                 validateRequiredName(firstName, ErrorCode.INVALID_USER_FIRSTNAME, "firstName"),
                 normalizeOptional(secondName),
-                Email.of(Of(email),
+                Email.of(email),
                 Password.fromHash(passwordHash),
                 new Phone(phone)
         );

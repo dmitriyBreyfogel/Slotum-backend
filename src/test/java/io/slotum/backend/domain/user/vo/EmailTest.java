@@ -14,14 +14,14 @@ public class EmailTest {
     @DisplayName("Корректное создание валидного email")
     void createsValidEmail() {
         String expected = "slotum@gmail.com";
-        String actual = Email.of(Of("slotum@gmail.com").value();
+        String actual = Email.of("slotum@gmail.com").value();
         assertEquals(expected, actual);
     }
 
     @Test
     @DisplayName("Отсутствует домен верхнего уровня, но точка присутствует")
     void rejectsMissingTopLevelDomainAfterDot() {
-        AppException ex = assertThrows(AppException.class, () -> Email.of(Of("slotum@gmail."));
+        AppException ex = assertThrows(AppException.class, () -> Email.of("slotum@gmail."));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@gmail.", ex.getDetails().get("email"));
     }
@@ -29,7 +29,7 @@ public class EmailTest {
     @Test
     @DisplayName("Отсутствует домен верхнего уровня и точки нет")
     void rejectsMissingTopLevelDomainWithoutDot() {
-        AppException ex = assertThrows(AppException.class, () -> Email.of(Of("slotum@gmail"));
+        AppException ex = assertThrows(AppException.class, () -> Email.of("slotum@gmail"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@gmail", ex.getDetails().get("email"));
     }
@@ -37,7 +37,7 @@ public class EmailTest {
     @Test
     @DisplayName("Отсутствует название почтового сервиса, но присутствует домен с точкой")
     void rejectsMissingServiceNameButHasDomain() {
-        AppException ex = assertThrows(AppException.class, () -> Email.of(Of("slotum@.com"));
+        AppException ex = assertThrows(AppException.class, () -> Email.of("slotum@.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@.com", ex.getDetails().get("email"));
     }
@@ -45,7 +45,7 @@ public class EmailTest {
     @Test
     @DisplayName("Отсутствует название почтового сервися и домен верхнего уровня")
     void rejectsMissingDomain() {
-        AppException ex = assertThrows(AppException.class, () -> Email.of(Of("slotum@"));
+        AppException ex = assertThrows(AppException.class, () -> Email.of("slotum@"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotum@", ex.getDetails().get("email"));
     }
@@ -53,7 +53,7 @@ public class EmailTest {
     @Test
     @DisplayName("Символ @ находится в конце почты")
     void rejectsAtAtEnd() {
-        AppException ex = assertThrows(AppException.class, () -> Email.of(Of("slotumgmail.com@"));
+        AppException ex = assertThrows(AppException.class, () -> Email.of("slotumgmail.com@"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotumgmail.com@", ex.getDetails().get("email"));
     }
@@ -61,7 +61,7 @@ public class EmailTest {
     @Test
     @DisplayName("Символ @ находится по соседству с точкой домена (справа от неё)")
     void rejectsAtImmediatelyAfterDot() {
-        AppException ex = assertThrows(AppException.class, () -> Email.of(Of("slotumgmail.@com"));
+        AppException ex = assertThrows(AppException.class, () -> Email.of("slotumgmail.@com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotumgmail.@com", ex.getDetails().get("email"));
     }
@@ -69,7 +69,7 @@ public class EmailTest {
     @Test
     @DisplayName("Символ @ находится по соседству с точкой домена (слева от неё)")
     void rejectsAtImmediatelyBeforeDot() {
-        AppException ex = assertThrows(AppException.class, () -> Email.of(Of("slotumgmail@.com"));
+        AppException ex = assertThrows(AppException.class, () -> Email.of("slotumgmail@.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("slotumgmail@.com", ex.getDetails().get("email"));
     }
@@ -77,7 +77,7 @@ public class EmailTest {
     @Test
     @DisplayName("Символ @ находится в начале почты")
     void rejectsAtAtStart() {
-        AppException ex = assertThrows(AppException.class, () -> Email.of(Of("@slotumgmail.com"));
+        AppException ex = assertThrows(AppException.class, () -> Email.of("@slotumgmail.com"));
         assertEquals(ErrorCode.INVALID_USER_EMAIL, ex.getCode());
         assertEquals("@slotumgmail.com", ex.getDetails().get("email"));
     }
