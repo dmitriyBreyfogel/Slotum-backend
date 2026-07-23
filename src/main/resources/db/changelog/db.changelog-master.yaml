@@ -17,3 +17,5 @@ databaseChangeLog:
       file: db/changelog/changes/008-insert-api-resources.sql
   - include:
       file: db/changelog/changes/009-set-default-organization-grade.sql
+  - include:
+      file: db/changelog/changes/010-set-default-specialist-grade.sql
