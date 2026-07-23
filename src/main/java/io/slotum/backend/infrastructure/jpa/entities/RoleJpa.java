@@ -38,11 +38,10 @@ public class RoleJpa {
 
     protected RoleJpa() {}
 
-    public RoleJpa(RoleNames name, String description, Set<PermissionJpa> permissions, Set<UserJpa> users) {
+    public RoleJpa(Long id, RoleNames name, String description) {
+        this.id = id;
         this.name = name;
         this.description = description;
-        this.permissions = permissions;
-        this.users = users;
     }
 
     // Getters
