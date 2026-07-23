@@ -91,7 +91,16 @@ public final class Password {
         );
     }
 
-    private static String hash(String rawPassword) {
+    /**
+     * Хэширование пароля по алгоритму {@code SHA-256}.
+     * @param rawPassword пароль в исходном строковом формате
+     * @return строка получившегося хэша
+     * @throws AppException с кодом:
+     *      <ul>
+     *          <li>{@code INVALID_USER_PASSWORD} - произошёл сбой при хэшировании</li>
+     *      </ul>
+     */
+    public static String hash(String rawPassword) {
         try {
             MessageDigest digest = MessageDigest.getInstance(ALGORITHM);
             byte[] hashBytes = digest.digest(rawPassword.getBytes(StandardCharsets.UTF_8));
