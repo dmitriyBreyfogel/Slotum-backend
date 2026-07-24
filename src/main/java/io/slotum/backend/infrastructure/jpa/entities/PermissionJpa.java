@@ -37,12 +37,10 @@ public class PermissionJpa {
 
     protected PermissionJpa() {}
 
-    public PermissionJpa(Long id, String code, String description, Set<RoleJpa> roles, Set<ResourceJpa> resources) {
+    public PermissionJpa(Long id, String code, String description) {
         this.id = id;
         this.code = code;
         this.description = description;
-        this.roles = roles;
-        this.resources = resources;
     }
 
     // Getters
