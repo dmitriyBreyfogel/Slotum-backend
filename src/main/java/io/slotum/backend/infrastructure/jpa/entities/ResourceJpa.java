@@ -27,11 +27,10 @@ public class ResourceJpa {
 
     protected ResourceJpa() {}
 
-    public ResourceJpa(String httpMethod, String urlPattern, String description, Set<PermissionJpa> permissions) {
+    public ResourceJpa(String httpMethod, String urlPattern, String description) {
         this.httpMethod = httpMethod;
         this.urlPattern = urlPattern;
         this.description = description;
-        this.permissions = permissions;
     }
 
     // Getters
