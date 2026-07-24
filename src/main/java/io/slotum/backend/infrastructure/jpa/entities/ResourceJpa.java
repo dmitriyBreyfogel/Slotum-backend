@@ -27,7 +27,8 @@ public class ResourceJpa {
 
     protected ResourceJpa() {}
 
-    public ResourceJpa(String httpMethod, String urlPattern, String description) {
+    public ResourceJpa(Long id, String httpMethod, String urlPattern, String description) {
+        this.id = id;
         this.httpMethod = httpMethod;
         this.urlPattern = urlPattern;
         this.description = description;
