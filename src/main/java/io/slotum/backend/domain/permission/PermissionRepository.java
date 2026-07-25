@@ -7,7 +7,7 @@ public interface PermissionRepository {
 
     /**
      * Поиск разрешения по идентификатору
-     * @param id идентификатор разрешения
+     * @param id идентификатор разрешения. Обязан быть не {@code null}
      * @return объект разрешения, если найти удалось.
      * {@code Optional#empty} если найти не удалось
      */
@@ -15,7 +15,7 @@ public interface PermissionRepository {
 
     /**
      * Поиск разрешения по коду
-     * @param code код разрешения
+     * @param code код разрешения. Обязан быть не {@code null}
      * @return объект разрешения, если найти удалось. {@code Optional#empty} если найти не удалось
      */
     Optional<Permission> findByCode(String code);
