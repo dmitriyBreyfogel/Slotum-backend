@@ -71,6 +71,7 @@ public enum ErrorCode {
     INVALID_ROLE_ID(HttpStatus.BAD_REQUEST),
     EMPTY_ROLE_NAME(HttpStatus.BAD_REQUEST),
     TOO_LONG_ROLE_DESCRIPTION(HttpStatus.BAD_REQUEST),
+    ROLE_NOT_FOUND(HttpStatus.NOT_FOUND),
 
     // Permission
     INVALID_PERMISSION_ID(HttpStatus.BAD_REQUEST),
