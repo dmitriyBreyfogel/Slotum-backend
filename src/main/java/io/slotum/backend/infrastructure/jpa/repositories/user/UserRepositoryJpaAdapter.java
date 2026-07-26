@@ -2,10 +2,9 @@ package io.slotum.backend.infrastructure.jpa.repositories.user;
 
 import io.slotum.backend.domain.user.User;
 import io.slotum.backend.domain.user.UserRepository;
-import io.slotum.backend.infrastructure.jpa.entities.SpecialistJpa;
 import io.slotum.backend.infrastructure.jpa.entities.UserJpa;
-import io.slotum.backend.infrastructure.jpa.mappers.SpecialistJpaMapper;
 import io.slotum.backend.infrastructure.jpa.mappers.UserJpaMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -49,13 +48,18 @@ public class UserRepositoryJpaAdapter implements UserRepository {
     }
 
     @Override
-    public User deleteById(Long id) {
-        Optional<UserJpa> deleted = userJpaRepository.findById(id);
-        if (deleted.isPresent()) {
-            userJpaRepository.deleteById(id);
-            return UserJpaMapper.toDomain(deleted.get());
+    @Transactional
+    public Optional<User> deleteById(Long id) {
+        Optional<UserJpa> userJpa = userJpaRepository.findById(id);
+
+        if (userJpa.isEmpty()) {
+            return Optional.empty();
         }
-        return null;
+
+        User user = UserJpaMapper.toDomain(userJpa.get());
+        userJpaRepository.delete(userJpa.get());
+
+        return Optional.of(user);
     }
 
     @Override
