@@ -10,10 +10,10 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class GetPermissionByCodeUseCase {
+public class GetByCodePermissionUseCase {
     private final PermissionRepository permissionRepository;
 
-    public GetPermissionByCodeUseCase(PermissionRepository permissionRepository) {
+    public GetByCodePermissionUseCase(PermissionRepository permissionRepository) {
         this.permissionRepository = permissionRepository;
     }
 
