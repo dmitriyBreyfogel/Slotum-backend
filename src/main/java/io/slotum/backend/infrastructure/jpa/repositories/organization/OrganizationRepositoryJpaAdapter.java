@@ -4,6 +4,7 @@ import io.slotum.backend.domain.organization.Organization;
 import io.slotum.backend.domain.organization.OrganizationRepository;
 import io.slotum.backend.infrastructure.jpa.entities.OrganizationJpa;
 import io.slotum.backend.infrastructure.jpa.mappers.OrganizationJpaMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -42,13 +43,18 @@ public class OrganizationRepositoryJpaAdapter implements OrganizationRepository 
     }
 
     @Override
-    public Organization deleteById(Long id) {
-        Optional<OrganizationJpa> deleted = organizationJpaRepository.findById(id);
-        if (deleted.isPresent()) {
-            organizationJpaRepository.deleteById(id);
-            return OrganizationJpaMapper.toDomain(deleted.get());
+    @Transactional
+    public Optional<Organization> deleteById(Long id) {
+        Optional<OrganizationJpa> organizationJpa = organizationJpaRepository.findById(id);
+
+        if (organizationJpa.isEmpty()) {
+            return Optional.empty();
         }
-        return null;
+
+        Organization organization = OrganizationJpaMapper.toDomain(organizationJpa.get());
+        organizationJpaRepository.delete(organizationJpa.get());
+
+        return Optional.of(organization);
     }
 
     @Override
