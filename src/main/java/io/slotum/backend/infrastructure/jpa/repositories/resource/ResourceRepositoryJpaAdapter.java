@@ -1,10 +1,10 @@
 package io.slotum.backend.infrastructure.jpa.repositories.resource;
 
-import io.slotum.backend.domain.permission.Permission;
 import io.slotum.backend.domain.resource.Resource;
 import io.slotum.backend.domain.resource.ResourceRepository;
 import io.slotum.backend.infrastructure.jpa.entities.ResourceJpa;
 import io.slotum.backend.infrastructure.jpa.mappers.ResourceJpaMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -36,15 +36,18 @@ public class ResourceRepositoryJpaAdapter implements ResourceRepository {
     }
 
     @Override
-    public Resource deleteById(Long id) {
-        Optional<ResourceJpa> deleted = resourceJpaRepository.findById(id);
+    @Transactional
+    public Optional<Resource> deleteById(Long id) {
+        Optional<ResourceJpa> resourceJpa = resourceJpaRepository.findById(id);
 
-        if (deleted.isPresent()) {
-            resourceJpaRepository.deleteById(id);
-            return ResourceJpaMapper.toDomain(deleted.get());
+        if (resourceJpa.isEmpty()) {
+            return Optional.empty();
         }
 
-        return null;
+        Resource resource = ResourceJpaMapper.toDomain(resourceJpa.get());
+        resourceJpaRepository.delete(resourceJpa.get());
+
+        return Optional.of(resource);
     }
 
     @Override

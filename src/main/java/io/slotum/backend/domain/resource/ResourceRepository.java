@@ -1,7 +1,5 @@
 package io.slotum.backend.domain.resource;
 
-import io.slotum.backend.domain.permission.Permission;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -9,8 +7,8 @@ public interface ResourceRepository {
 
     /**
      * Поиск ресурса по идентификатору
-     * @param id идентификатор разрешения. Обязан быть не {@code null}
-     * @return объект ресурса, если найден. {@code Optional#empty} если не найден
+     * @param id идентификатор ресурса. Обязан быть не {@code null}
+     * @return объект ресурса, если найден. {@code Optional.empty()}, если не найден
      */
     Optional<Resource> findById(Long id);
 
@@ -31,9 +29,10 @@ public interface ResourceRepository {
     /**
      * Удаление ресурса по идентификатору
      * @param id идентификатор ресурса. Обязан быть не {@code null}
-     * @return удалённый объект ресурса. Если объект не найден - вернётся {@code null}
+     * @return объект удалённого ресурса. Если ресурс по идентификатору найти не удалось -
+     * метод вернёт {@code Optional.empty()}
      */
-    Resource deleteById(Long id);
+    Optional<Resource> deleteById(Long id);
 
     /**
      * Удаление всех имеющихся ресурсов.
