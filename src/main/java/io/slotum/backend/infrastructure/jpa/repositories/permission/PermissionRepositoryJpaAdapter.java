@@ -4,6 +4,7 @@ import io.slotum.backend.domain.permission.Permission;
 import io.slotum.backend.domain.permission.PermissionRepository;
 import io.slotum.backend.infrastructure.jpa.entities.PermissionJpa;
 import io.slotum.backend.infrastructure.jpa.mappers.PermissionJpaMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -40,14 +41,18 @@ public class PermissionRepositoryJpaAdapter implements PermissionRepository {
     }
 
     @Override
-    public Permission deleteById(Long id) {
-        Optional<PermissionJpa> deleted = permissionJpaRepository.findById(id);
-        if (deleted.isPresent()) {
-            permissionJpaRepository.deleteById(id);
-            return PermissionJpaMapper.toDomain(deleted.get());
+    @Transactional
+    public Optional<Permission> deleteById(Long id) {
+        Optional<PermissionJpa> permissionJpa = permissionJpaRepository.findById(id);
+
+        if (permissionJpa.isEmpty()) {
+            return Optional.empty();
         }
 
-        return null;
+        Permission permission = PermissionJpaMapper.toDomain(permissionJpa.get());
+        permissionJpaRepository.delete(permissionJpa.get());
+
+        return Optional.of(permission);
     }
 
     @Override

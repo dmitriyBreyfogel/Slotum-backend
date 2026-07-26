@@ -9,14 +9,14 @@ public interface PermissionRepository {
      * Поиск разрешения по идентификатору
      * @param id идентификатор разрешения. Обязан быть не {@code null}
      * @return объект разрешения, если найти удалось.
-     * {@code Optional#empty} если найти не удалось
+     * {@code Optional.empty()}, если найти не удалось
      */
     Optional<Permission> findById(Long id);
 
     /**
      * Поиск разрешения по коду
      * @param code код разрешения. Обязан быть не {@code null}
-     * @return объект разрешения, если найти удалось. {@code Optional#empty} если найти не удалось
+     * @return объект разрешения, если найти удалось. {@code Optional.empty()}, если найти не удалось
      */
     Optional<Permission> findByCode(String code);
 
@@ -37,9 +37,10 @@ public interface PermissionRepository {
     /**
      * Удаление разрешения по идентификатору
      * @param id идентификатор разрешения. Обязан быть не {@code null}
-     * @return удалённое разрешение. Если запись отсутствует в бд, то метод вернёт {@code null}
+     * @return объект удалённого разрешения. Если разрешение по идентификатору найти не удалось -
+     * метод вернёт {@code Optional.empty()}
      */
-    Permission deleteById(Long id);
+    Optional<Permission> deleteById(Long id);
 
     /**
      * Удаление всех имеющихся разрешений.
