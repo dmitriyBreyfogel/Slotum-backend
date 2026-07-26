@@ -86,6 +86,7 @@ public enum ErrorCode {
     EMPTY_RESOURCE_URL_PATTERN(HttpStatus.BAD_REQUEST),
     TOO_LONG_RESOURCE_URL_PATTERN(HttpStatus.BAD_REQUEST),
     TOO_LONG_RESOURCE_DESCRIPTION(HttpStatus.BAD_REQUEST),
+    RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND),
     ;
 
     private final HttpStatus httpStatus;
