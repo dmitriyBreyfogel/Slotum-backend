@@ -8,6 +8,7 @@ import io.slotum.backend.infrastructure.jpa.entities.OrganizationMemberJpa;
 import io.slotum.backend.infrastructure.jpa.mappers.OrganizationJpaMapper;
 import io.slotum.backend.infrastructure.jpa.mappers.OrganizationMemberJpaMapper;
 import io.slotum.backend.infrastructure.jpa.mappers.SpecialistJpaMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -34,18 +35,21 @@ public class OrganizationMemberRepositoryJpaAdapter implements OrganizationMembe
     }
 
     @Override
-    public OrganizationMember delete(Long organizationId, Long specialistUserId) {
+    @Transactional
+    public Optional<OrganizationMember> delete(Long organizationId, Long specialistUserId) {
         OrganizationMemberJpa.OrganizationMemberId id =
                 new OrganizationMemberJpa.OrganizationMemberId(organizationId, specialistUserId);
 
-        Optional<OrganizationMemberJpa> deleted = organizationMemberJpaRepository.findById(id);
+        Optional<OrganizationMemberJpa> organizationMemberJpa = organizationMemberJpaRepository.findById(id);
 
-        if (deleted.isPresent()) {
-            organizationMemberJpaRepository.deleteById(id);
-            return OrganizationMemberJpaMapper.toDomain(deleted.get());
+        if (organizationMemberJpa.isEmpty()) {
+            return Optional.empty();
         }
 
-        return null;
+        OrganizationMember organizationMember = OrganizationMemberJpaMapper.toDomain(organizationMemberJpa.get());
+        organizationMemberJpaRepository.delete(organizationMemberJpa.get());
+
+        return Optional.of(organizationMember);
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -65,29 +65,31 @@ public class OrganizationMemberRepositoryJpaAdapterTest {
         OrganizationMemberRepositoryJpaAdapter adapter = new OrganizationMemberRepositoryJpaAdapter(jpaRepository);
         OrganizationMemberJpa.OrganizationMemberId id = new OrganizationMemberJpa.OrganizationMemberId(1L, 10L);
 
-        when(jpaRepository.findById(id)).thenReturn(Optional.of(new OrganizationMemberJpa(1L, 10L)));
+        OrganizationMemberJpa organizationMemberJpa = new OrganizationMemberJpa(1L, 10L);
+        when(jpaRepository.findById(id)).thenReturn(Optional.of(organizationMemberJpa));
 
-        OrganizationMember result = adapter.delete(1L, 10L);
+        Optional<OrganizationMember> result = adapter.delete(1L, 10L);
 
-        assertEquals(1L, result.getOrganizationId());
-        assertEquals(10L, result.getSpecialistUserId());
+        assertTrue(result.isPresent());
+        assertEquals(1L, result.get().getOrganizationId());
+        assertEquals(10L, result.get().getSpecialistUserId());
         verify(jpaRepository).findById(id);
-        verify(jpaRepository).deleteById(id);
+        verify(jpaRepository).delete(organizationMemberJpa);
         verifyNoMoreInteractions(jpaRepository);
     }
 
     @Test
-    @DisplayName("delete возвращает null, если связь не найдена")
-    void deleteReturnsNullWhenMembershipNotFound() {
+    @DisplayName("delete возвращает Optional.empty(), если связь не найдена")
+    void deleteReturnsEmptyOptionalWhenMembershipNotFound() {
         OrganizationMemberJpaRepository jpaRepository = mock(OrganizationMemberJpaRepository.class);
         OrganizationMemberRepositoryJpaAdapter adapter = new OrganizationMemberRepositoryJpaAdapter(jpaRepository);
         OrganizationMemberJpa.OrganizationMemberId id = new OrganizationMemberJpa.OrganizationMemberId(1L, 10L);
 
         when(jpaRepository.findById(id)).thenReturn(Optional.empty());
 
-        OrganizationMember result = adapter.delete(1L, 10L);
+        Optional<OrganizationMember> result = adapter.delete(1L, 10L);
 
-        assertNull(result);
+        assertTrue(result.isEmpty());
         verify(jpaRepository).findById(id);
         verifyNoMoreInteractions(jpaRepository);
     }

@@ -120,7 +120,7 @@ public class RemoveSpecialistFromOrganizationUseCaseTest {
 
     @Test
     @DisplayName("Бросает ORGANIZATION_MEMBERSHIP_NOT_FOUND, если связь исчезла перед удалением")
-    void throwsIfDeleteReturnsNull() {
+    void throwsIfDeleteReturnsEmptyOptional() {
         OrganizationMemberRepository organizationMemberRepository = mock(OrganizationMemberRepository.class);
         OrganizationRepository organizationRepository = mock(OrganizationRepository.class);
         SpecialistRepository specialistRepository = mock(SpecialistRepository.class);
@@ -133,7 +133,7 @@ public class RemoveSpecialistFromOrganizationUseCaseTest {
         when(organizationRepository.findById(1L)).thenReturn(Optional.of(mock(Organization.class)));
         when(specialistRepository.findSpecialistByUserId(10L)).thenReturn(Optional.of(mock(Specialist.class)));
         when(organizationMemberRepository.exists(1L, 10L)).thenReturn(true);
-        when(organizationMemberRepository.delete(1L, 10L)).thenReturn(null);
+        when(organizationMemberRepository.delete(1L, 10L)).thenReturn(Optional.empty());
 
         AppException ex = assertThrows(AppException.class, () -> useCase.execute(1L, 10L));
 
@@ -161,7 +161,8 @@ public class RemoveSpecialistFromOrganizationUseCaseTest {
         when(organizationRepository.findById(1L)).thenReturn(Optional.of(mock(Organization.class)));
         when(specialistRepository.findSpecialistByUserId(10L)).thenReturn(Optional.of(mock(Specialist.class)));
         when(organizationMemberRepository.exists(1L, 10L)).thenReturn(true);
-        when(organizationMemberRepository.delete(1L, 10L)).thenReturn(OrganizationMember.create(1L, 10L));
+        when(organizationMemberRepository.delete(1L, 10L))
+                .thenReturn(Optional.of(OrganizationMember.create(1L, 10L)));
 
         OrganizationMember result = useCase.execute(1L, 10L);
 

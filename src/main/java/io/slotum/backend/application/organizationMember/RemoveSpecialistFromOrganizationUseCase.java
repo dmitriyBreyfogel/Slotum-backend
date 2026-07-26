@@ -54,12 +54,8 @@ public class RemoveSpecialistFromOrganizationUseCase {
             throw membershipNotFound(organizationId, specialistUserId);
         }
 
-        OrganizationMember deleted = organizationMemberRepository.delete(organizationId, specialistUserId);
-        if (deleted == null) {
-            throw membershipNotFound(organizationId, specialistUserId);
-        }
-
-        return deleted;
+        return organizationMemberRepository.delete(organizationId, specialistUserId)
+                .orElseThrow(() -> membershipNotFound(organizationId, specialistUserId));
     }
 
     private static AppException membershipNotFound(Long organizationId, Long specialistUserId) {
