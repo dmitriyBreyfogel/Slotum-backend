@@ -1,4 +1,4 @@
-package io.slotum.backend.api.http.user;
+package io.slotum.backend.api.controllers.user;
 
 import io.slotum.backend.application.user.*;
 import io.slotum.backend.domain.user.User;

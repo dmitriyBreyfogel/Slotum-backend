@@ -1,4 +1,4 @@
-package io.slotum.backend.api.http;
+package io.slotum.backend.api.controllers;
 
 import io.slotum.backend.error.AppException;
 import org.slf4j.Logger;

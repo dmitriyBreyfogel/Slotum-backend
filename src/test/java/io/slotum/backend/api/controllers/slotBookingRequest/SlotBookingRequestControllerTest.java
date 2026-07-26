@@ -1,4 +1,4 @@
-package io.slotum.backend.api.http.slotBookingRequest;
+package io.slotum.backend.api.controllers.slotBookingRequest;
 
 import io.slotum.backend.application.slotBookingRequest.AcceptSlotBookingRequestUseCase;
 import io.slotum.backend.application.slotBookingRequest.CancelSlotBookingRequestUseCase;

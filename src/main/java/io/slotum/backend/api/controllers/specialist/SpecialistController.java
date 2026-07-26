@@ -1,4 +1,4 @@
-package io.slotum.backend.api.http.specialist;
+package io.slotum.backend.api.controllers.specialist;
 
 import io.slotum.backend.application.organizationMember.GetSpecialistOrganizationsUseCase;
 import io.slotum.backend.application.specialist.*;

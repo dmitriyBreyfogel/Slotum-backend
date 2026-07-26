@@ -1,6 +1,5 @@
 package io.slotum.backend.application.specialist;
 
-import io.slotum.backend.api.http.specialist.SpecialistController;
 import io.slotum.backend.domain.specialist.Specialist;
 import io.slotum.backend.domain.specialist.SpecialistRepository;
 import io.slotum.backend.error.AppException;

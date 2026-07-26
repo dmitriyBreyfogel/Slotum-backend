@@ -1,6 +1,6 @@
-package io.slotum.backend.api.http.organization;
+package io.slotum.backend.api.controllers.organization;
 
-import io.slotum.backend.api.http.GlobalExceptionHandler;
+import io.slotum.backend.api.controllers.GlobalExceptionHandler;
 import io.slotum.backend.application.organization.CreateOrganizationUseCase;
 import io.slotum.backend.application.organization.DeleteAllOrganizationUseCase;
 import io.slotum.backend.application.organization.DeleteByIdOrganizationUseCase;
