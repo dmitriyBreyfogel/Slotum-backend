@@ -16,7 +16,7 @@ public class GetPermissionUseCase {
     public GetPermissionUseCase(PermissionRepository permissionRepository) {
         this.permissionRepository = permissionRepository;
     }
-    
+
     public Permission execute(Long permissionId) {
         Optional<Permission> permission = permissionRepository.findById(permissionId);
 
