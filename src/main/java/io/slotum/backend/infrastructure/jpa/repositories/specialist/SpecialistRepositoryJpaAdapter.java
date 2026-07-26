@@ -4,6 +4,7 @@ import io.slotum.backend.domain.specialist.Specialist;
 import io.slotum.backend.domain.specialist.SpecialistRepository;
 import io.slotum.backend.infrastructure.jpa.entities.SpecialistJpa;
 import io.slotum.backend.infrastructure.jpa.mappers.SpecialistJpaMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -40,13 +41,18 @@ public class SpecialistRepositoryJpaAdapter implements SpecialistRepository {
     }
 
     @Override
-    public Specialist deleteById(Long id){
-        Optional<SpecialistJpa> deleted = specialistJpaRepository.findById(id);
-        if (deleted.isPresent()) {
-            specialistJpaRepository.deleteById(id);
-            return SpecialistJpaMapper.toDomain(deleted.get());
+    @Transactional
+    public Optional<Specialist> deleteById(Long id) {
+        Optional<SpecialistJpa> specialistJpa = specialistJpaRepository.findById(id);
+
+        if (specialistJpa.isEmpty()) {
+            return Optional.empty();
         }
-        return null;
+
+        Specialist specialist = SpecialistJpaMapper.toDomain(specialistJpa.get());
+        specialistJpaRepository.delete(specialistJpa.get());
+
+        return Optional.of(specialist);
     }
 
     @Override
