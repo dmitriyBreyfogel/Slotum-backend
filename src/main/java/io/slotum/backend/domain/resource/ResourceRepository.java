@@ -15,18 +15,18 @@ public interface ResourceRepository {
     Optional<Resource> findById(Long id);
 
     /**
-     * Сохранение ресурса в базу данных
-     * @param resource объект сохраняемого ресурса. Обязан быть не {@code null}
-     * @return сохранённый объект ресурса. Никогда не будет {@code null}
-     */
-    Resource save(Resource resource);
-
-    /**
      * Получение всех имеющихся ресурсов
      * @return список имеющихся ресурсов. Если они отсутствуют - вернётся пустой список.
      * Никогда не {@code null}
      */
     List<Resource> findAll();
+
+    /**
+     * Сохранение ресурса в базу данных
+     * @param resource объект сохраняемого ресурса. Обязан быть не {@code null}
+     * @return сохранённый объект ресурса. Никогда не будет {@code null}
+     */
+    Resource save(Resource resource);
 
     /**
      * Удаление ресурса по идентификатору

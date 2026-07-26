@@ -21,18 +21,18 @@ public interface PermissionRepository {
     Optional<Permission> findByCode(String code);
 
     /**
-     * Сохранение разрешения в базу данных
-     * @param permission объект сохраняемого разрешения. Обязан быть не {@code null}
-     * @return сохранённый объект разрешения. Никогда не будет {@code null}
-     */
-    Permission save(Permission permission);
-
-    /**
      * Получение всех имеющихся разрешений
      * @return список всех найденных разрешений, если разрешений нет - вернёт пустой список.
      * Никогда не {@code null}
      */
     List<Permission> findAll();
+
+    /**
+     * Сохранение разрешения в базу данных
+     * @param permission объект сохраняемого разрешения. Обязан быть не {@code null}
+     * @return сохранённый объект разрешения. Никогда не будет {@code null}
+     */
+    Permission save(Permission permission);
 
     /**
      * Удаление разрешения по идентификатору
