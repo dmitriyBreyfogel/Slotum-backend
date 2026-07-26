@@ -19,6 +19,7 @@ public class RoleJpa {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "name", length = 50, nullable = false, unique = true)
     private RoleNames name;
 
