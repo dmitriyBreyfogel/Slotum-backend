@@ -7,7 +7,6 @@ import io.slotum.backend.error.ErrorCode;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class DeleteByIdSlotUseCase {
@@ -18,16 +17,10 @@ public class DeleteByIdSlotUseCase {
     }
 
     public Slot execute(Long id) {
-        Optional<Slot> slot = slotRepository.findById(id);
-
-        if (slot.isEmpty()) {
-            throw AppException.build(
-                    ErrorCode.SLOT_NOT_FOUND,
-                    "Slot not found",
-                    Map.of("id", id)
-            );
-        }
-
-        return slotRepository.deleteById(id);
+        return slotRepository.deleteById(id).orElseThrow(() -> AppException.build(
+                ErrorCode.SLOT_NOT_FOUND,
+                "Slot not found",
+                Map.of("id", id)
+        ));
     }
 }

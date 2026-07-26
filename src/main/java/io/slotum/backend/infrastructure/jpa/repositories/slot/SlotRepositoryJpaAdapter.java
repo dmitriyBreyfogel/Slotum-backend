@@ -10,6 +10,7 @@ import io.slotum.backend.infrastructure.jpa.entities.UserJpa;
 import io.slotum.backend.infrastructure.jpa.error.resolvers.DatabaseConstraintExceptionResolver;
 import io.slotum.backend.infrastructure.jpa.mappers.SlotJpaMapper;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
@@ -49,13 +50,18 @@ public class SlotRepositoryJpaAdapter implements SlotRepository {
     }
 
     @Override
-    public Slot deleteById(Long id) {
-        Optional<SlotJpa> deleted = slotJpaRepository.findById(id);
-        if (deleted.isPresent()) {
-            slotJpaRepository.deleteById(id);
-            return SlotJpaMapper.toDomain(deleted.get());
+    @Transactional
+    public Optional<Slot> deleteById(Long id) {
+        Optional<SlotJpa> slotJpa = slotJpaRepository.findById(id);
+
+        if (slotJpa.isEmpty()) {
+            return Optional.empty();
         }
-        return null;
+
+        Slot slot = SlotJpaMapper.toDomain(slotJpa.get());
+        slotJpaRepository.delete(slotJpa.get());
+
+        return Optional.of(slot);
     }
 
     @Override
