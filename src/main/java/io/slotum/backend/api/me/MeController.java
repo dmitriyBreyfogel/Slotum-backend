@@ -1,5 +1,10 @@
 package io.slotum.backend.api.me;
 
+import io.slotum.backend.api.me.dto.CreateOrganizationRequest;
+import io.slotum.backend.api.me.dto.CreateSpecialistRequest;
+import io.slotum.backend.api.me.dto.OrganizationDto;
+import io.slotum.backend.api.me.dto.OrganizationMemberDto;
+import io.slotum.backend.api.me.dto.SpecialistDto;
 import io.slotum.backend.application.organization.CreateMyOrganizationUseCase;
 import io.slotum.backend.application.organizationMember.GetSpecialistOrganizationsUseCase;
 import io.slotum.backend.application.organizationMember.RemoveSpecialistFromOrganizationUseCase;
@@ -10,14 +15,12 @@ import io.slotum.backend.domain.specialist.Specialist;
 import io.slotum.backend.infrastructure.security.AuthenticatedUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/me")
-public class MeController {
+public class MeController implements MeApi {
     private final CreateSpecialistUseCase createSpecialistUseCase;
     private final CreateMyOrganizationUseCase createMyOrganizationUseCase;
     private final GetSpecialistOrganizationsUseCase getSpecialistOrganizationsUseCase;
@@ -35,10 +38,10 @@ public class MeController {
         this.removeSpecialistFromOrganizationUseCase = removeSpecialistFromOrganizationUseCase;
     }
 
-    @PostMapping("/specialist")
+    @Override
     public ResponseEntity<SpecialistDto> createSpecialistFromMe(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @RequestBody CreateSpecialistRequest request
+            AuthenticatedUser currentUser,
+            CreateSpecialistRequest request
     ) {
           Specialist result = createSpecialistUseCase.execute(
                   new CreateSpecialistUseCase.Command(
@@ -57,10 +60,10 @@ public class MeController {
         );
     }
 
-    @PostMapping("/organizations")
+    @Override
     public ResponseEntity<OrganizationDto> createMyOrganization(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @RequestBody CreateOrganizationRequest request
+            AuthenticatedUser currentUser,
+            CreateOrganizationRequest request
     ) {
         Organization result = createMyOrganizationUseCase.execute(
                 new CreateMyOrganizationUseCase.Command(
@@ -80,10 +83,8 @@ public class MeController {
         );
     }
 
-    @GetMapping("/organizations")
-    public ResponseEntity<List<OrganizationDto>> getMyOrganizations(
-            @AuthenticationPrincipal AuthenticatedUser currentUser
-    ) {
+    @Override
+    public ResponseEntity<List<OrganizationDto>> getMyOrganizations(AuthenticatedUser currentUser) {
         List<Organization> result = getSpecialistOrganizationsUseCase.execute(currentUser.userId());
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -96,10 +97,10 @@ public class MeController {
         );
     }
 
-    @DeleteMapping("/organizations/{organizationId}")
+    @Override
     public ResponseEntity<OrganizationMemberDto> removeMeFromOrganization(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @PathVariable("organizationId") Long organizationId
+            AuthenticatedUser currentUser,
+            Long organizationId
     ) {
         OrganizationMember result = removeSpecialistFromOrganizationUseCase.execute(organizationId, currentUser.userId());
 
@@ -111,31 +112,4 @@ public class MeController {
         );
     }
 
-    public record CreateSpecialistRequest(
-            String description,
-            Double grade
-    ) {}
-
-    public record CreateOrganizationRequest(
-            String name,
-            String description
-    ) {}
-
-    public record SpecialistDto(
-            Long userId,
-            String description,
-            Double grade
-    ) {}
-
-    public record OrganizationDto(
-            Long id,
-            String name,
-            String description,
-            Double grade
-    ) {}
-
-    public record OrganizationMemberDto(
-            Long organizationId,
-            Long specialistUserId
-    ) {}
 }
