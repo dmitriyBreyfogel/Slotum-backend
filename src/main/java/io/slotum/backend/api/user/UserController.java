@@ -1,17 +1,18 @@
 package io.slotum.backend.api.user;
 
+import io.slotum.backend.api.user.dto.CreateUserRequest;
+import io.slotum.backend.api.user.dto.UserDto;
 import io.slotum.backend.application.user.*;
 import io.slotum.backend.domain.user.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/v1/users")
-public class UserController {
+public class UserController implements UserApi {
     private final CreateUserUseCase createUserUseCase;
     private final GetUserUseCase getUserUseCase;
     private final GetAllUsersUseCase getAllUsersUseCase;
@@ -35,8 +36,8 @@ public class UserController {
         this.getByEmailUserUseCase = getByEmailUserUseCase;
     }
 
-    @PostMapping
-    public ResponseEntity<UserDto> create(@RequestBody CreateUserRequest request) {
+    @Override
+    public ResponseEntity<UserDto> create(CreateUserRequest request) {
         User result = createUserUseCase.execute(
                 new CreateUserUseCase.Command(
                         request.surname(),
@@ -60,8 +61,8 @@ public class UserController {
         );
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable("id") long id) {
+    @Override
+    public ResponseEntity<UserDto> getUser(long id) {
         User result =  getUserUseCase.execute(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -76,7 +77,7 @@ public class UserController {
         );
     }
 
-    @GetMapping()
+    @Override
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<User> result = getAllUsersUseCase.execute();
 
@@ -92,8 +93,8 @@ public class UserController {
         );
     }
 
-    @GetMapping("/by-email")
-    public ResponseEntity<UserDto> getByEmail(@RequestParam String email) {
+    @Override
+    public ResponseEntity<UserDto> getByEmail(String email) {
         User result = getByEmailUserUseCase.execute(email);
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -108,8 +109,8 @@ public class UserController {
         );
     }
     
-    @DeleteMapping("/{id}")
-    public ResponseEntity<UserDto> deleteUser(@PathVariable("id") Long id) {
+    @Override
+    public ResponseEntity<UserDto> deleteUser(Long id) {
         User result = deleteByIdUserUseCase.execute(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -124,29 +125,9 @@ public class UserController {
         );
     }
 
-    @DeleteMapping()
+    @Override
     public ResponseEntity<Void> deleteAllUsers() {
         deleteAllUserUseCase.execute();
         return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    public record CreateUserRequest(
-            String surname,
-            String firstName,
-            String secondName,
-            String email,
-            String password,
-            String phone
-    ) {
-    }
-
-    public record UserDto(
-            Long userId,
-            String surname,
-            String firstName,
-            String secondName,
-            String email,
-            String phone
-    ) {
     }
 }
