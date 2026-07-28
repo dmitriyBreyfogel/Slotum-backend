@@ -1,5 +1,9 @@
 package io.slotum.backend.api.organization;
 
+import io.slotum.backend.api.organization.dto.CreateOrganizationRequest;
+import io.slotum.backend.api.organization.dto.OrganizationDto;
+import io.slotum.backend.api.organization.dto.OrganizationMemberDto;
+import io.slotum.backend.api.organization.dto.SpecialistDto;
 import io.slotum.backend.application.organization.*;
 import io.slotum.backend.application.organizationMember.AddSpecialistToOrganizationUseCase;
 import io.slotum.backend.application.organizationMember.GetOrganizationSpecialistsUseCase;
@@ -9,13 +13,12 @@ import io.slotum.backend.domain.organizationMember.OrganizationMember;
 import io.slotum.backend.domain.specialist.Specialist;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/organizations")
-public class OrganizationController {
+public class OrganizationController implements OrganizationApi {
     private final CreateOrganizationUseCase createOrganizationUseCase;
     private final GetOrganizationUseCase getOrganizationUseCase;
     private final GetAllOrganizationsUseCase getAllOrganizationsUseCase;
@@ -45,12 +48,12 @@ public class OrganizationController {
         this.removeSpecialistFromOrganizationUseCase = removeSpecialistFromOrganizationUseCase;
     }
 
-    @PostMapping
-    public ResponseEntity<OrganizationDto> create(@RequestBody CreateOrganizationRequest request) {
+    @Override
+    public ResponseEntity<OrganizationDto> create(CreateOrganizationRequest request) {
         Organization result = createOrganizationUseCase.execute(
                 new CreateOrganizationUseCase.Command(
-                        request.name,
-                        request.description
+                        request.name(),
+                        request.description()
                 )
         );
 
@@ -64,10 +67,10 @@ public class OrganizationController {
         );
     }
 
-    @PostMapping("/{organizationId}/specialists/{specialistUserId}")
+    @Override
     public ResponseEntity<OrganizationMemberDto> createOrganizationMember(
-            @PathVariable("organizationId") Long organizationId,
-            @PathVariable("specialistUserId") Long specialistUserId
+            Long organizationId,
+            Long specialistUserId
     ) {
         OrganizationMember result = addSpecialistToOrganizationUseCase.execute(organizationId, specialistUserId);
 
@@ -79,8 +82,8 @@ public class OrganizationController {
         );
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<OrganizationDto> getOrganization(@PathVariable("id") Long id) {
+    @Override
+    public ResponseEntity<OrganizationDto> getOrganization(Long id) {
         Organization result = getOrganizationUseCase.execute(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -93,7 +96,7 @@ public class OrganizationController {
         );
     }
 
-    @GetMapping()
+    @Override
     public ResponseEntity<List<OrganizationDto>> getAllOrganizations() {
         List<Organization> result = getAllOrganizationsUseCase.execute();
 
@@ -107,8 +110,8 @@ public class OrganizationController {
         );
     }
 
-    @GetMapping("/{organizationId}/specialists")
-    public ResponseEntity<List<SpecialistDto>> getOrganizationSpecialists(@PathVariable("organizationId") Long organizationId) {
+    @Override
+    public ResponseEntity<List<SpecialistDto>> getOrganizationSpecialists(Long organizationId) {
         List<Specialist> result = getOrganizationSpecialistsUseCase.execute(organizationId);
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -120,8 +123,8 @@ public class OrganizationController {
         );
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<OrganizationDto> deleteOrganization(@PathVariable("id") Long id) {
+    @Override
+    public ResponseEntity<OrganizationDto> deleteOrganization(Long id) {
         Organization result = deleteByIdOrganizationUseCase.execute(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -134,10 +137,10 @@ public class OrganizationController {
         );
     }
 
-    @DeleteMapping("/{organizationId}/specialists/{specialistUserId}")
+    @Override
     public ResponseEntity<OrganizationMemberDto> deleteSpecialistFromOrganization(
-            @PathVariable("organizationId") Long organizationId,
-            @PathVariable("specialistUserId") Long specialistUserId
+            Long organizationId,
+            Long specialistUserId
     ) {
         OrganizationMember result = removeSpecialistFromOrganizationUseCase.execute(organizationId, specialistUserId);
 
@@ -149,32 +152,9 @@ public class OrganizationController {
         );
     }
 
-    @DeleteMapping()
+    @Override
     public ResponseEntity<Void> deleteAllOrganizations() {
         deleteAllOrganizationUseCase.execute();
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-    public record CreateOrganizationRequest(
-            String name,
-            String description
-    ) {}
-
-    public record OrganizationDto(
-            Long id,
-            String name,
-            String description,
-            Double grade
-    ) {}
-
-    public record OrganizationMemberDto(
-            Long organizationId,
-            Long specialistUserId
-    ) {}
-
-    public record SpecialistDto(
-            Long userId,
-            String description,
-            Double grade
-    ) {}
 }
