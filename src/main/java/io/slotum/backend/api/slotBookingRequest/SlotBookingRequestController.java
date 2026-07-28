@@ -1,5 +1,7 @@
 package io.slotum.backend.api.slotBookingRequest;
 
+import io.slotum.backend.api.slotBookingRequest.dto.CreateSlotBookingRequest;
+import io.slotum.backend.api.slotBookingRequest.dto.SlotBookingRequestDto;
 import io.slotum.backend.application.slotBookingRequest.AcceptSlotBookingRequestUseCase;
 import io.slotum.backend.application.slotBookingRequest.CancelSlotBookingRequestUseCase;
 import io.slotum.backend.application.slotBookingRequest.CreateSlotBookingRequestUseCase;
@@ -9,24 +11,15 @@ import io.slotum.backend.application.slotBookingRequest.GetIncomingSlotBookingRe
 import io.slotum.backend.application.slotBookingRequest.GetMySlotBookingRequestsUseCase;
 import io.slotum.backend.application.slotBookingRequest.RejectSlotBookingRequestUseCase;
 import io.slotum.backend.domain.slotBookingRequest.SlotBookingRequest;
-import io.slotum.backend.domain.slotBookingRequest.SlotBookingRequestStatus;
 import io.slotum.backend.infrastructure.security.AuthenticatedUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/slot-booking-requests")
-public class SlotBookingRequestController {
+public class SlotBookingRequestController implements SlotBookingRequestApi {
     private final CreateSlotBookingRequestUseCase createSlotBookingRequestUseCase;
     private final GetSlotBookingRequestUseCase getSlotBookingRequestUseCase;
     private final GetMySlotBookingRequestsUseCase getMySlotBookingRequestsUseCase;
@@ -56,10 +49,10 @@ public class SlotBookingRequestController {
         this.cancelSlotBookingRequestUseCase = cancelSlotBookingRequestUseCase;
     }
 
-    @PostMapping
+    @Override
     public ResponseEntity<SlotBookingRequestDto> create(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @RequestBody CreateSlotBookingRequest request
+            AuthenticatedUser currentUser,
+            CreateSlotBookingRequest request
     ) {
         SlotBookingRequest result = createSlotBookingRequestUseCase.execute(
                 new CreateSlotBookingRequestUseCase.Command(
@@ -72,15 +65,13 @@ public class SlotBookingRequestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(toDto(result));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<SlotBookingRequestDto> getById(@PathVariable("id") Long id) {
+    @Override
+    public ResponseEntity<SlotBookingRequestDto> getById(Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(toDto(getSlotBookingRequestUseCase.execute(id)));
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<List<SlotBookingRequestDto>> getMy(
-            @AuthenticationPrincipal AuthenticatedUser currentUser
-    ) {
+    @Override
+    public ResponseEntity<List<SlotBookingRequestDto>> getMy(AuthenticatedUser currentUser) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 getMySlotBookingRequestsUseCase.execute(currentUser.userId()).stream()
                         .map(SlotBookingRequestController::toDto)
@@ -88,10 +79,8 @@ public class SlotBookingRequestController {
         );
     }
 
-    @GetMapping("/incoming")
-    public ResponseEntity<List<SlotBookingRequestDto>> getIncoming(
-            @AuthenticationPrincipal AuthenticatedUser currentUser
-    ) {
+    @Override
+    public ResponseEntity<List<SlotBookingRequestDto>> getIncoming(AuthenticatedUser currentUser) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 getIncomingSlotBookingRequestsUseCase.execute(currentUser.userId()).stream()
                         .map(SlotBookingRequestController::toDto)
@@ -99,10 +88,10 @@ public class SlotBookingRequestController {
         );
     }
 
-    @GetMapping("/slots/{slotId}")
+    @Override
     public ResponseEntity<List<SlotBookingRequestDto>> getBySlot(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @PathVariable("slotId") Long slotId
+            AuthenticatedUser currentUser,
+            Long slotId
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 getSlotBookingRequestsBySlotUseCase.execute(slotId, currentUser.userId()).stream()
@@ -111,30 +100,30 @@ public class SlotBookingRequestController {
         );
     }
 
-    @PostMapping("/{id}/accept")
+    @Override
     public ResponseEntity<SlotBookingRequestDto> accept(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @PathVariable("id") Long id
+            AuthenticatedUser currentUser,
+            Long id
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 toDto(acceptSlotBookingRequestUseCase.execute(id, currentUser.userId()))
         );
     }
 
-    @PostMapping("/{id}/reject")
+    @Override
     public ResponseEntity<SlotBookingRequestDto> reject(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @PathVariable("id") Long id
+            AuthenticatedUser currentUser,
+            Long id
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 toDto(rejectSlotBookingRequestUseCase.execute(id, currentUser.userId()))
         );
     }
 
-    @PostMapping("/{id}/cancel")
+    @Override
     public ResponseEntity<SlotBookingRequestDto> cancel(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @PathVariable("id") Long id
+            AuthenticatedUser currentUser,
+            Long id
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 toDto(cancelSlotBookingRequestUseCase.execute(id, currentUser.userId()))
@@ -153,18 +142,4 @@ public class SlotBookingRequestController {
         );
     }
 
-    public record CreateSlotBookingRequest(
-            Long slotId,
-            String message
-    ) {}
-
-    public record SlotBookingRequestDto(
-            Long id,
-            Long slotId,
-            Long customerId,
-            SlotBookingRequestStatus status,
-            String message,
-            LocalDateTime createdAt,
-            LocalDateTime decidedAt
-    ) {}
 }
