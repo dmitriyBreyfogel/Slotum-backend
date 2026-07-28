@@ -1,4 +1,4 @@
-package io.slotum.backend.api.controllers.auth;
+package io.slotum.backend.api.auth;
 
 import io.slotum.backend.application.auth.LoginUseCase;
 import org.springframework.http.HttpStatus;

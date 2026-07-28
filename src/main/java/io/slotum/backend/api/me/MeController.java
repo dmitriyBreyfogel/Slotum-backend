@@ -1,4 +1,4 @@
-package io.slotum.backend.api.controllers.me;
+package io.slotum.backend.api.me;
 
 import io.slotum.backend.application.organization.CreateMyOrganizationUseCase;
 import io.slotum.backend.application.organizationMember.GetSpecialistOrganizationsUseCase;

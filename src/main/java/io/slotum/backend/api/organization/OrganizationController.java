@@ -1,4 +1,4 @@
-package io.slotum.backend.api.controllers.organization;
+package io.slotum.backend.api.organization;
 
 import io.slotum.backend.application.organization.*;
 import io.slotum.backend.application.organizationMember.AddSpecialistToOrganizationUseCase;

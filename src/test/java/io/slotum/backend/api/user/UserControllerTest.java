@@ -1,6 +1,6 @@
-package io.slotum.backend.api.controllers.user;
+package io.slotum.backend.api.user;
 
-import io.slotum.backend.api.controllers.GlobalExceptionHandler;
+import io.slotum.backend.api.GlobalExceptionHandler;
 import io.slotum.backend.application.user.CreateUserUseCase;
 import io.slotum.backend.application.user.DeleteAllUserUseCase;
 import io.slotum.backend.application.user.DeleteByIdUserUseCase;

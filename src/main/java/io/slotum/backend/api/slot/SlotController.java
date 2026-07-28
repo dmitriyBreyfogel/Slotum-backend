@@ -1,4 +1,4 @@
-package io.slotum.backend.api.controllers.slot;
+package io.slotum.backend.api.slot;
 
 import io.slotum.backend.application.slot.*;
 import io.slotum.backend.domain.slot.Slot;
