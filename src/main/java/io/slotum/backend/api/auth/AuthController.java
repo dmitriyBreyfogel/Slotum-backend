@@ -1,24 +1,22 @@
 package io.slotum.backend.api.auth;
 
+import io.slotum.backend.api.auth.dto.LoginRequest;
+import io.slotum.backend.api.auth.dto.LoginResponse;
 import io.slotum.backend.application.auth.LoginUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/auth")
-public class AuthController {
+public class AuthController implements AuthApi {
     private final LoginUseCase loginUseCase;
 
     public AuthController(LoginUseCase loginUseCase) {
         this.loginUseCase = loginUseCase;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    @Override
+    public ResponseEntity<LoginResponse> login(LoginRequest request) {
         LoginUseCase.Result result = loginUseCase.execute(
                 new LoginUseCase.Command(request.email(), request.password())
         );
@@ -27,11 +25,4 @@ public class AuthController {
                 new LoginResponse(result.accessToken(), result.tokenType())
         );
     }
-
-    public record LoginRequest(String email, String password) {
-    }
-
-    public record LoginResponse(String accessToken, String tokenType) {
-    }
 }
-
