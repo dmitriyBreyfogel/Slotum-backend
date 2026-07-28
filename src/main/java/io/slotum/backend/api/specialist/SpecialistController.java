@@ -1,18 +1,20 @@
 package io.slotum.backend.api.specialist;
 
+import io.slotum.backend.api.specialist.dto.CreateSpecialistRequest;
+import io.slotum.backend.api.specialist.dto.OrganizationDto;
+import io.slotum.backend.api.specialist.dto.SpecialistDto;
 import io.slotum.backend.application.organizationMember.GetSpecialistOrganizationsUseCase;
 import io.slotum.backend.application.specialist.*;
 import io.slotum.backend.domain.organization.Organization;
 import io.slotum.backend.domain.specialist.Specialist;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/specialists")
-public class SpecialistController {
+public class SpecialistController implements SpecialistApi {
     private final CreateSpecialistUseCase createSpecialistUseCase;
     private final GetSpecialistUseCase getSpecialistUseCase;
     private final GetAllSpecialistsUseCase getAllSpecialistsUseCase;
@@ -36,13 +38,13 @@ public class SpecialistController {
         this.getSpecialistOrganizationsUseCase = getSpecialistOrganizationsUseCase;
     }
 
-    @PostMapping
-    public ResponseEntity<SpecialistDto> createSpecialist(@RequestBody RequestCreateSpecialist specialist) {
+    @Override
+    public ResponseEntity<SpecialistDto> createSpecialist(CreateSpecialistRequest request) {
         Specialist result = createSpecialistUseCase.execute(
                 new CreateSpecialistUseCase.Command(
-                    specialist.userId,
-                    specialist.description,
-                    specialist.grade
+                    request.userId(),
+                    request.description(),
+                    request.grade()
                 )
         );
 
@@ -55,8 +57,8 @@ public class SpecialistController {
         );
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<SpecialistDto> getSpecialist(@PathVariable("id") long id) {
+    @Override
+    public ResponseEntity<SpecialistDto> getSpecialist(long id) {
         Specialist result = getSpecialistUseCase.execute(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -68,10 +70,8 @@ public class SpecialistController {
         );
     }
 
-    @GetMapping("/{specialistUserId}/organizations")
-    public ResponseEntity<List<OrganizationDto>> getSpecialistOrganizations(
-            @PathVariable("specialistUserId") Long specialistUserId
-    ) {
+    @Override
+    public ResponseEntity<List<OrganizationDto>> getSpecialistOrganizations(Long specialistUserId) {
         List<Organization> result = getSpecialistOrganizationsUseCase.execute(specialistUserId);
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -84,7 +84,7 @@ public class SpecialistController {
         );
     }
 
-    @GetMapping()
+    @Override
     public ResponseEntity<List<SpecialistDto>> getSpecialists() {
         List<Specialist> result = getAllSpecialistsUseCase.execute();
 
@@ -97,8 +97,8 @@ public class SpecialistController {
         );
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<SpecialistDto> deleteSpecialist(@PathVariable("id") Long id) {
+    @Override
+    public ResponseEntity<SpecialistDto> deleteSpecialist(Long id) {
         Specialist result = deleteByIdSpecialistUseCase.execute(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -110,28 +110,9 @@ public class SpecialistController {
         );
     }
 
-    @DeleteMapping()
+    @Override
     public ResponseEntity<Void> deleteAllSpecialists() {
         deleteAllSpecialistUseCase.execute();
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-    public record RequestCreateSpecialist(
-            Long userId,
-            String description,
-            Double grade
-    ) {}
-
-    public record SpecialistDto(
-            Long userId,
-            String description,
-            Double grade
-    ) {}
-
-    public record OrganizationDto(
-            Long id,
-            String name,
-            String description,
-            Double grade
-    ) {}
 }
