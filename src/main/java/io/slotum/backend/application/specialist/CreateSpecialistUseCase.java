@@ -38,7 +38,7 @@ public class CreateSpecialistUseCase {
         }
 
         Optional<Specialist> existingSpecialist = specialistRepository.findSpecialistByUserId(command.userId);
-        if (existingSpecialist != null && existingSpecialist.isPresent()) {
+        if (existingSpecialist.isPresent()) {
             throw AppException.build(
                     ErrorCode.SPECIALIST_ALREADY_EXISTS,
                     "Specialist with this userId already exists",
