@@ -18,7 +18,7 @@ public class DeleteByIdRoleUseCase {
     }
 
     public Role execute(Long id) {
-        Optional<Role> role = roleRepository.findById(id);
+        Optional<Role> role = roleRepository.deleteById(id);
 
         if (role.isEmpty()) {
             throw AppException.build(
@@ -28,7 +28,6 @@ public class DeleteByIdRoleUseCase {
             );
         }
 
-        roleRepository.deleteById(id);
         return role.get();
     }
 }
