@@ -39,7 +39,7 @@ public class CreateMyOrganizationUseCase {
 
         String normalizedOrganizationName = organizationToSave.getName();
         Optional<Organization> existingOrganization = organizationRepository.findByName(normalizedOrganizationName);
-        if (existingOrganization != null && existingOrganization.isPresent()) {
+        if (existingOrganization.isPresent()) {
             throw AppException.build(
                     ErrorCode.ORGANIZATION_ALREADY_EXISTS,
                     "Organization already exists",
@@ -48,7 +48,7 @@ public class CreateMyOrganizationUseCase {
         }
 
         Optional<Specialist> specialist = specialistRepository.findSpecialistByUserId(command.specialistUserId);
-        if (specialist == null || specialist.isEmpty()) {
+        if (specialist.isEmpty()) {
             throw AppException.build(
                     ErrorCode.SPECIALIST_NOT_FOUND,
                     "Specialist not found",

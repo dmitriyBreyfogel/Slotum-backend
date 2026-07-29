@@ -25,7 +25,7 @@ public class CreateOrganizationUseCase {
 
         String normalizedOrganizationName = organizationToSave.getName();
         Optional<Organization> existingOrganization = organizationRepository.findByName(normalizedOrganizationName);
-        if (existingOrganization != null && existingOrganization.isPresent()) {
+        if (existingOrganization.isPresent()) {
             throw AppException.build(
                     ErrorCode.ORGANIZATION_ALREADY_EXISTS,
                     "Organization already exists",
