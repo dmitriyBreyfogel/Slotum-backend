@@ -18,7 +18,7 @@ public class DeleteByIdPermissionUseCase {
     }
 
     public Permission execute(Long id) {
-        Optional<Permission> permission = permissionRepository.findById(id);
+        Optional<Permission> permission = permissionRepository.deleteById(id);
 
         if (permission.isEmpty()) {
             throw AppException.build(
@@ -28,7 +28,6 @@ public class DeleteByIdPermissionUseCase {
             );
         }
 
-        permissionRepository.deleteById(id);
         return permission.get();
     }
 }
