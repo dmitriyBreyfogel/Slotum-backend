@@ -27,7 +27,7 @@ public class GetOrganizationSpecialistsUseCase {
 
     public List<Specialist> execute(Long organizationId) {
         Optional<Organization> organization = organizationRepository.findById(organizationId);
-        if (organization == null || organization.isEmpty()) {
+        if (organization.isEmpty()) {
             throw AppException.build(
                     ErrorCode.ORGANIZATION_NOT_FOUND,
                     "Organization not found",

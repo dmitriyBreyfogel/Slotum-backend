@@ -33,7 +33,7 @@ public class RemoveSpecialistFromOrganizationUseCase {
         OrganizationMember.create(organizationId, specialistUserId);
 
         Optional<Organization> organization = organizationRepository.findById(organizationId);
-        if (organization == null || organization.isEmpty()) {
+        if (organization.isEmpty()) {
             throw AppException.build(
                     ErrorCode.ORGANIZATION_NOT_FOUND,
                     "Organization not found",
@@ -42,16 +42,12 @@ public class RemoveSpecialistFromOrganizationUseCase {
         }
 
         Optional<Specialist> specialist = specialistRepository.findSpecialistByUserId(specialistUserId);
-        if (specialist == null || specialist.isEmpty()) {
+        if (specialist.isEmpty()) {
             throw AppException.build(
                     ErrorCode.SPECIALIST_NOT_FOUND,
                     "Specialist not found",
                     Map.of("specialistUserId", specialistUserId)
             );
-        }
-
-        if (!organizationMemberRepository.exists(organizationId, specialistUserId)) {
-            throw membershipNotFound(organizationId, specialistUserId);
         }
 
         return organizationMemberRepository.delete(organizationId, specialistUserId)

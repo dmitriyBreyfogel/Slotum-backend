@@ -33,7 +33,7 @@ public class AddSpecialistToOrganizationUseCase {
         OrganizationMember organizationMember = OrganizationMember.create(organizationId, specialistUserId);
 
         Optional<Organization> organization = organizationRepository.findById(organizationId);
-        if (organization == null || organization.isEmpty()) {
+        if (organization.isEmpty()) {
             throw AppException.build(
                     ErrorCode.ORGANIZATION_NOT_FOUND,
                     "Organization not found",
@@ -42,7 +42,7 @@ public class AddSpecialistToOrganizationUseCase {
         }
 
         Optional<Specialist> specialist = specialistRepository.findSpecialistByUserId(specialistUserId);
-        if (specialist == null || specialist.isEmpty()) {
+        if (specialist.isEmpty()) {
             throw AppException.build(
                     ErrorCode.SPECIALIST_NOT_FOUND,
                     "Specialist not found",

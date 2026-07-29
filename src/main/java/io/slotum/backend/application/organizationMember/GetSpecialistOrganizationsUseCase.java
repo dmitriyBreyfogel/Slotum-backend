@@ -27,7 +27,7 @@ public class GetSpecialistOrganizationsUseCase {
 
     public List<Organization> execute(Long specialistUserId) {
         Optional<Specialist> specialist = specialistRepository.findSpecialistByUserId(specialistUserId);
-        if (specialist == null || specialist.isEmpty()) {
+        if (specialist.isEmpty()) {
             throw AppException.build(
                     ErrorCode.SPECIALIST_NOT_FOUND,
                     "Specialist not found",
