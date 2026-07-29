@@ -33,7 +33,6 @@ public class CreateMyOrganizationUseCase {
     @Transactional
     public Organization execute(Command command) {
         Organization organizationToSave = Organization.create(
-                null,
                 command.name,
                 command.description
         );
