@@ -18,7 +18,7 @@ public class DeleteByIdResourceUseCase {
     }
 
     public Resource execute(Long id) {
-        Optional<Resource> resource = resourceRepository.findById(id);
+        Optional<Resource> resource = resourceRepository.deleteById(id);
 
         if (resource.isEmpty()) {
             throw AppException.build(
@@ -28,7 +28,6 @@ public class DeleteByIdResourceUseCase {
             );
         }
 
-        resourceRepository.deleteById(id);
         return resource.get();
     }
 }
