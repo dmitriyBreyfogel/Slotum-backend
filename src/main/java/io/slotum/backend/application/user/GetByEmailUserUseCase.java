@@ -19,23 +19,17 @@ public class GetByEmailUserUseCase {
     }
 
     public User execute(String email) {
-        if (email == null) {
-            throw AppException.build(
-                    ErrorCode.INVALID_USER_EMAIL,
-                    "User email is null"
-            );
-        }
-
         Email emailObj = Email.of(email);
+        Optional<User> user = userRepository.findByEmail(emailObj.value());
 
-        if (!userRepository.existsByEmail(email)) {
+        if (user.isEmpty()) {
             throw AppException.build(
                     ErrorCode.USER_NOT_FOUND,
                     "User not found",
-                    Map.of("email", email)
+                    Map.of("email", emailObj.value())
             );
         }
 
-        return userRepository.findByEmail(email).get();
+        return user.get();
     }
 }
