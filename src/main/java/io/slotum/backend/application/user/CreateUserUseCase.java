@@ -18,7 +18,6 @@ public class CreateUserUseCase {
 
     public User execute(Command command) {
         User userToSave = User.create(
-                null,
                 command.surname(),
                 command.firstName(),
                 command.secondName(),
