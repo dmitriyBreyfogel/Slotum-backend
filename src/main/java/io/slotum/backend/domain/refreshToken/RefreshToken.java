@@ -96,6 +96,32 @@ public final class RefreshToken {
         return !revoked && Instant.now().isBefore(expiresAt);
     }
 
+    /* Getters */
+    public Long getId() {
+        return id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public String getTokenHash() {
+        return tokenHash;
+    }
+
+    public Instant getIssuedAt() {
+        return issuedAt;
+    }
+
+    public Instant getExpiresAt() {
+        return expiresAt;
+    }
+    
+    public boolean getRevoked() {
+        return revoked;
+    }
+
+    /* Validation */
     private static void validateId(Long id) {
         if (id != null && id <= 0) {
             throw AppException.build(
