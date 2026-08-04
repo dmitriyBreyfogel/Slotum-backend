@@ -3,7 +3,6 @@ package io.slotum.backend.api.auth;
 import io.slotum.backend.api.auth.dto.LoginRequest;
 import io.slotum.backend.api.auth.dto.LoginResponse;
 import io.slotum.backend.application.auth.LoginUseCase;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
