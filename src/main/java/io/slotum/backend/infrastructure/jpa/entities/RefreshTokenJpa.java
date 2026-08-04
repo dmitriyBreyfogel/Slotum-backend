@@ -30,7 +30,8 @@ public class RefreshTokenJpa {
     /* Constructors */
     protected RefreshTokenJpa() {}
 
-    public RefreshTokenJpa(Long userId, String tokenHash, Instant issuedAt, Instant expiresAt, boolean revoked) {
+    public RefreshTokenJpa(Long id, Long userId, String tokenHash, Instant issuedAt, Instant expiresAt, boolean revoked) {
+        this.id = id;
         this.userId = userId;
         this.tokenHash = tokenHash;
         this.issuedAt = issuedAt;
