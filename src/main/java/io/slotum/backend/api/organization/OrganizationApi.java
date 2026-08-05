@@ -4,7 +4,9 @@ import io.slotum.backend.api.organization.dto.CreateOrganizationRequest;
 import io.slotum.backend.api.organization.dto.OrganizationDto;
 import io.slotum.backend.api.organization.dto.OrganizationMemberDto;
 import io.slotum.backend.api.organization.dto.SpecialistDto;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +19,7 @@ import java.util.List;
 /**
  * HTTP-контракт управления организациями и их специалистами.
  */
+@Validated
 @RequestMapping("/api/v1/organizations")
 public interface OrganizationApi {
 
@@ -41,7 +44,7 @@ public interface OrganizationApi {
      * @return ответ с созданной организацией
      */
     @PostMapping
-    ResponseEntity<OrganizationDto> create(@RequestBody CreateOrganizationRequest request);
+    ResponseEntity<OrganizationDto> create(@Valid @RequestBody CreateOrganizationRequest request);
 
     /**
      * Добавляет специалиста в организацию.
