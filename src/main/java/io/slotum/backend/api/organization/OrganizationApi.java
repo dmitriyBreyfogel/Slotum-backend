@@ -5,6 +5,8 @@ import io.slotum.backend.api.organization.dto.OrganizationDto;
 import io.slotum.backend.api.organization.dto.OrganizationMemberDto;
 import io.slotum.backend.api.organization.dto.SpecialistDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,7 +46,11 @@ public interface OrganizationApi {
      * @return ответ с созданной организацией
      */
     @PostMapping
-    ResponseEntity<OrganizationDto> create(@Valid @RequestBody CreateOrganizationRequest request);
+    ResponseEntity<OrganizationDto> create(
+            @Valid
+            @RequestBody
+            CreateOrganizationRequest request
+    );
 
     /**
      * Добавляет специалиста в организацию.
@@ -70,8 +76,15 @@ public interface OrganizationApi {
      */
     @PostMapping("/{organizationId}/specialists/{specialistUserId}")
     ResponseEntity<OrganizationMemberDto> createOrganizationMember(
-            @PathVariable("organizationId") Long organizationId,
-            @PathVariable("specialistUserId") Long specialistUserId
+            @NotNull(message = "OrganizationId is null")
+            @Positive(message = "OrganizationId is not positive")
+            @PathVariable("organizationId")
+            Long organizationId,
+
+            @NotNull(message = "SpecialistUserId is null")
+            @Positive(message = "SpecialistUserId is not positive")
+            @PathVariable("specialistUserId")
+            Long specialistUserId
     );
 
     /**
@@ -90,7 +103,12 @@ public interface OrganizationApi {
      * @return ответ с найденной организацией
      */
     @GetMapping("/{id}")
-    ResponseEntity<OrganizationDto> getOrganization(@PathVariable("id") Long id);
+    ResponseEntity<OrganizationDto> getOrganization(
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
+    );
 
     /**
      * Возвращает все организации.
@@ -124,7 +142,10 @@ public interface OrganizationApi {
      */
     @GetMapping("/{organizationId}/specialists")
     ResponseEntity<List<SpecialistDto>> getOrganizationSpecialists(
-            @PathVariable("organizationId") Long organizationId
+            @NotNull(message = "OrganizationId is null")
+            @Positive(message = "OrganizationId is not positive")
+            @PathVariable("organizationId")
+            Long organizationId
     );
 
     /**
@@ -143,7 +164,12 @@ public interface OrganizationApi {
      * @return ответ с удалённой организацией
      */
     @DeleteMapping("/{id}")
-    ResponseEntity<OrganizationDto> deleteOrganization(@PathVariable("id") Long id);
+    ResponseEntity<OrganizationDto> deleteOrganization(
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
+    );
 
     /**
      * Удаляет специалиста из организации.
@@ -169,8 +195,15 @@ public interface OrganizationApi {
      */
     @DeleteMapping("/{organizationId}/specialists/{specialistUserId}")
     ResponseEntity<OrganizationMemberDto> deleteSpecialistFromOrganization(
-            @PathVariable("organizationId") Long organizationId,
-            @PathVariable("specialistUserId") Long specialistUserId
+            @NotNull(message = "OrganizationId is null")
+            @Positive(message = "OrganizationId is not positive")
+            @PathVariable("organizationId")
+            Long organizationId,
+
+            @NotNull(message = "SpecialistUserId is null")
+            @Positive(message = "SpecialistUserId is not positive")
+            @PathVariable("specialistUserId")
+            Long specialistUserId
     );
 
     /**

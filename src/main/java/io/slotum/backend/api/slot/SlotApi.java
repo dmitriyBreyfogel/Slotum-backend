@@ -3,6 +3,8 @@ package io.slotum.backend.api.slot;
 import io.slotum.backend.api.slot.dto.CreateSlotRequest;
 import io.slotum.backend.api.slot.dto.SlotDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,7 +52,11 @@ public interface SlotApi {
      * @return ответ с созданным слотом
      */
     @PostMapping
-    ResponseEntity<SlotDto> create(@Valid @RequestBody CreateSlotRequest request);
+    ResponseEntity<SlotDto> create(
+            @Valid
+            @RequestBody
+            CreateSlotRequest request
+    );
 
     /**
      * Возвращает слот по идентификатору.
@@ -68,7 +74,12 @@ public interface SlotApi {
      * @return ответ с найденным слотом
      */
     @GetMapping("/{id}")
-    ResponseEntity<SlotDto> getSlot(@PathVariable("id") Long id);
+    ResponseEntity<SlotDto> getSlot(
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
+    );
 
     /**
      * Возвращает все слоты.
@@ -101,7 +112,12 @@ public interface SlotApi {
      * @return ответ с удалённым слотом
      */
     @DeleteMapping("/{id}")
-    ResponseEntity<SlotDto> deleteSlot(@PathVariable("id") Long id);
+    ResponseEntity<SlotDto> deleteSlot(
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
+    );
 
     /**
      * Удаляет все слоты.

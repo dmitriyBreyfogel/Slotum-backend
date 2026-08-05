@@ -3,6 +3,10 @@ package io.slotum.backend.api.permission;
 import io.slotum.backend.api.permission.dto.CreatePermissionRequest;
 import io.slotum.backend.api.permission.dto.PermissionDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,7 +45,11 @@ public interface PermissionApi {
      * @return ответ с созданным разрешением
      */
     @PostMapping
-    ResponseEntity<PermissionDto> create(@Valid @RequestBody CreatePermissionRequest request);
+    ResponseEntity<PermissionDto> create(
+            @Valid
+            @RequestBody
+            CreatePermissionRequest request
+    );
 
     /**
      * Возвращает разрешение по идентификатору.
@@ -59,7 +67,12 @@ public interface PermissionApi {
      * @return ответ с найденным разрешением
      */
     @GetMapping("/{id}")
-    ResponseEntity<PermissionDto> getPermission(@PathVariable("id") Long id);
+    ResponseEntity<PermissionDto> getPermission(
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
+    );
 
     /**
      * Возвращает разрешение по коду.
@@ -77,7 +90,12 @@ public interface PermissionApi {
      * @return ответ с найденным разрешением
      */
     @GetMapping("/by-code")
-    ResponseEntity<PermissionDto> getByCode(@RequestParam String code);
+    ResponseEntity<PermissionDto> getByCode(
+            @NotBlank(message = "Code is blank")
+            @Size(max = 100, message = "Too long code")
+            @RequestParam
+            String code
+    );
 
     /**
      * Возвращает все разрешения.
@@ -110,7 +128,12 @@ public interface PermissionApi {
      * @return ответ с удалённым разрешением
      */
     @DeleteMapping("/{id}")
-    ResponseEntity<PermissionDto> deletePermission(@PathVariable("id") Long id);
+    ResponseEntity<PermissionDto> deletePermission(
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
+    );
 
     /**
      * Удаляет все разрешения.

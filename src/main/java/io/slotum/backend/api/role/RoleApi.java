@@ -4,6 +4,8 @@ import io.slotum.backend.api.role.dto.CreateRoleRequest;
 import io.slotum.backend.api.role.dto.RoleDto;
 import io.slotum.backend.domain.role.RoleNames;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,7 +43,11 @@ public interface RoleApi {
      * @return ответ с созданной ролью
      */
     @PostMapping
-    ResponseEntity<RoleDto> create(@Valid @RequestBody CreateRoleRequest request);
+    ResponseEntity<RoleDto> create(
+            @Valid
+            @RequestBody
+            CreateRoleRequest request
+    );
 
     /**
      * Возвращает роль по идентификатору.
@@ -59,7 +65,12 @@ public interface RoleApi {
      * @return ответ с найденной ролью
      */
     @GetMapping("/{id}")
-    ResponseEntity<RoleDto> getRole(@PathVariable("id") Long id);
+    ResponseEntity<RoleDto> getRole(
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
+    );
 
     /**
      * Возвращает роль по названию.
@@ -77,7 +88,11 @@ public interface RoleApi {
      * @return ответ с найденной ролью
      */
     @GetMapping("/by-name")
-    ResponseEntity<RoleDto> getByName(@RequestParam RoleNames name);
+    ResponseEntity<RoleDto> getByName(
+            @NotNull(message = "Name is null")
+            @RequestParam
+            RoleNames name
+    );
 
     /**
      * Возвращает все роли.
@@ -110,7 +125,12 @@ public interface RoleApi {
      * @return ответ с удалённой ролью
      */
     @DeleteMapping("/{id}")
-    ResponseEntity<RoleDto> deleteRole(@PathVariable("id") Long id);
+    ResponseEntity<RoleDto> deleteRole(
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
+    );
 
     /**
      * Удаляет все роли.

@@ -4,6 +4,8 @@ import io.slotum.backend.api.specialist.dto.CreateSpecialistRequest;
 import io.slotum.backend.api.specialist.dto.OrganizationDto;
 import io.slotum.backend.api.specialist.dto.SpecialistDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,7 +47,11 @@ public interface SpecialistApi {
      * @return ответ с созданным специалистом
      */
     @PostMapping
-    ResponseEntity<SpecialistDto> createSpecialist(@Valid @RequestBody CreateSpecialistRequest request);
+    ResponseEntity<SpecialistDto> createSpecialist(
+            @Valid
+            @RequestBody
+            CreateSpecialistRequest request
+    );
 
     /**
      * Возвращает специалиста по идентификатору пользователя.
@@ -63,7 +69,12 @@ public interface SpecialistApi {
      * @return ответ с найденным специалистом
      */
     @GetMapping("/{id}")
-    ResponseEntity<SpecialistDto> getSpecialist(@PathVariable("id") long id);
+    ResponseEntity<SpecialistDto> getSpecialist(
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            long id
+    );
 
     /**
      * Возвращает организации специалиста.
@@ -82,7 +93,10 @@ public interface SpecialistApi {
      */
     @GetMapping("/{specialistUserId}/organizations")
     ResponseEntity<List<OrganizationDto>> getSpecialistOrganizations(
-            @PathVariable("specialistUserId") Long specialistUserId
+            @NotNull(message = "SpecialistUserId is null")
+            @Positive(message = "SpecialistUserId is not positive")
+            @PathVariable("specialistUserId")
+            Long specialistUserId
     );
 
     /**
@@ -116,7 +130,12 @@ public interface SpecialistApi {
      * @return ответ с удалённым специалистом
      */
     @DeleteMapping("/{id}")
-    ResponseEntity<SpecialistDto> deleteSpecialist(@PathVariable("id") Long id);
+    ResponseEntity<SpecialistDto> deleteSpecialist(
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
+    );
 
     /**
      * Удаляет всех специалистов.

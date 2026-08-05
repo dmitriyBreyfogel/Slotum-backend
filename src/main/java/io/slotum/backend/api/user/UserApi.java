@@ -3,6 +3,7 @@ package io.slotum.backend.api.user;
 import io.slotum.backend.api.user.dto.CreateUserRequest;
 import io.slotum.backend.api.user.dto.UserDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,7 +43,11 @@ public interface UserApi {
      * @return ответ с созданным пользователем
      */
     @PostMapping
-    ResponseEntity<UserDto> create(@Valid @RequestBody CreateUserRequest request);
+    ResponseEntity<UserDto> create(
+            @Valid
+            @RequestBody
+            CreateUserRequest request
+    );
 
     /**
      * Возвращает пользователя по идентификатору.
@@ -60,7 +65,12 @@ public interface UserApi {
      * @return ответ с найденным пользователем
      */
     @GetMapping("/{id}")
-    ResponseEntity<UserDto> getUser(@PathVariable("id") long id);
+    ResponseEntity<UserDto> getUser(
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            long id
+    );
 
     /**
      * Возвращает всех пользователей.
@@ -95,7 +105,13 @@ public interface UserApi {
      * @return ответ с найденным пользователем
      */
     @GetMapping("/by-email")
-    ResponseEntity<UserDto> getByEmail(@RequestParam String email);
+    ResponseEntity<UserDto> getByEmail(
+            @NotBlank(message = "Email is blank")
+            @Email(message = "Invalid email format")
+            @Size(max = 255, message = "Too long email")
+            @RequestParam
+            String email
+    );
 
     /**
      * Удаляет пользователя по идентификатору.
@@ -113,7 +129,12 @@ public interface UserApi {
      * @return ответ с удалённым пользователем
      */
     @DeleteMapping("/{id}")
-    ResponseEntity<UserDto> deleteUser(@PathVariable("id") Long id);
+    ResponseEntity<UserDto> deleteUser(
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
+    );
 
     /**
      * Удаляет всех пользователей.

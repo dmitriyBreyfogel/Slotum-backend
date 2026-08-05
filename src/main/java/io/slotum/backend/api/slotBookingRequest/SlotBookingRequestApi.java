@@ -4,6 +4,8 @@ import io.slotum.backend.api.slotBookingRequest.dto.CreateSlotBookingRequest;
 import io.slotum.backend.api.slotBookingRequest.dto.SlotBookingRequestDto;
 import io.slotum.backend.infrastructure.security.AuthenticatedUser;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -52,8 +54,12 @@ public interface SlotBookingRequestApi {
      */
     @PostMapping
     ResponseEntity<SlotBookingRequestDto> create(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @Valid @RequestBody CreateSlotBookingRequest request
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser,
+
+            @Valid
+            @RequestBody
+            CreateSlotBookingRequest request
     );
 
     /**
@@ -72,7 +78,12 @@ public interface SlotBookingRequestApi {
      * @return ответ с найденной заявкой
      */
     @GetMapping("/{id}")
-    ResponseEntity<SlotBookingRequestDto> getById(@PathVariable("id") Long id);
+    ResponseEntity<SlotBookingRequestDto> getById(
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
+    );
 
     /**
      * Возвращает заявки текущего пользователя.
@@ -91,7 +102,8 @@ public interface SlotBookingRequestApi {
      */
     @GetMapping("/me")
     ResponseEntity<List<SlotBookingRequestDto>> getMy(
-            @AuthenticationPrincipal AuthenticatedUser currentUser
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser
     );
 
     /**
@@ -111,7 +123,8 @@ public interface SlotBookingRequestApi {
      */
     @GetMapping("/incoming")
     ResponseEntity<List<SlotBookingRequestDto>> getIncoming(
-            @AuthenticationPrincipal AuthenticatedUser currentUser
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser
     );
 
     /**
@@ -134,8 +147,13 @@ public interface SlotBookingRequestApi {
      */
     @GetMapping("/slots/{slotId}")
     ResponseEntity<List<SlotBookingRequestDto>> getBySlot(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @PathVariable("slotId") Long slotId
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser,
+
+            @NotNull(message = "SlotId is null")
+            @Positive(message = "SlotId is not positive")
+            @PathVariable("slotId")
+            Long slotId
     );
 
     /**
@@ -168,8 +186,13 @@ public interface SlotBookingRequestApi {
      */
     @PostMapping("/{id}/accept")
     ResponseEntity<SlotBookingRequestDto> accept(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @PathVariable("id") Long id
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser,
+
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
     );
 
     /**
@@ -200,8 +223,13 @@ public interface SlotBookingRequestApi {
      */
     @PostMapping("/{id}/reject")
     ResponseEntity<SlotBookingRequestDto> reject(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @PathVariable("id") Long id
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser,
+
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
     );
 
     /**
@@ -230,7 +258,12 @@ public interface SlotBookingRequestApi {
      */
     @PostMapping("/{id}/cancel")
     ResponseEntity<SlotBookingRequestDto> cancel(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @PathVariable("id") Long id
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser,
+
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
     );
 }

@@ -3,6 +3,8 @@ package io.slotum.backend.api.resource;
 import io.slotum.backend.api.resource.dto.CreateResourceRequest;
 import io.slotum.backend.api.resource.dto.ResourceDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,7 +43,11 @@ public interface ResourceApi {
      * @return ответ с созданным ресурсом
      */
     @PostMapping
-    ResponseEntity<ResourceDto> create(@Valid @RequestBody CreateResourceRequest request);
+    ResponseEntity<ResourceDto> create(
+            @Valid
+            @RequestBody
+            CreateResourceRequest request
+    );
 
     /**
      * Возвращает защищаемый ресурс по идентификатору.
@@ -59,7 +65,12 @@ public interface ResourceApi {
      * @return ответ с найденным ресурсом
      */
     @GetMapping("/{id}")
-    ResponseEntity<ResourceDto> getResource(@PathVariable("id") Long id);
+    ResponseEntity<ResourceDto> getResource(
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
+    );
 
     /**
      * Возвращает все защищаемые ресурсы.
@@ -92,7 +103,12 @@ public interface ResourceApi {
      * @return ответ с удалённым ресурсом
      */
     @DeleteMapping("/{id}")
-    ResponseEntity<ResourceDto> deleteResource(@PathVariable("id") Long id);
+    ResponseEntity<ResourceDto> deleteResource(
+            @NotNull(message = "Id is null")
+            @Positive(message = "Id is not positive")
+            @PathVariable("id")
+            Long id
+    );
 
     /**
      * Удаляет все защищаемые ресурсы.

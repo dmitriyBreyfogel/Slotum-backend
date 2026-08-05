@@ -7,6 +7,8 @@ import io.slotum.backend.api.me.dto.OrganizationMemberDto;
 import io.slotum.backend.api.me.dto.SpecialistDto;
 import io.slotum.backend.infrastructure.security.AuthenticatedUser;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -51,8 +53,12 @@ public interface MeApi {
      */
     @PostMapping("/specialist")
     ResponseEntity<SpecialistDto> createSpecialistFromMe(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @Valid @RequestBody CreateSpecialistRequest request
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser,
+
+            @Valid
+            @RequestBody
+            CreateSpecialistRequest request
     );
 
     /**
@@ -81,8 +87,12 @@ public interface MeApi {
      */
     @PostMapping("/organizations")
     ResponseEntity<OrganizationDto> createMyOrganization(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @Valid @RequestBody CreateOrganizationRequest request
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser,
+
+            @Valid
+            @RequestBody
+            CreateOrganizationRequest request
     );
 
     /**
@@ -102,7 +112,8 @@ public interface MeApi {
      */
     @GetMapping("/organizations")
     ResponseEntity<List<OrganizationDto>> getMyOrganizations(
-            @AuthenticationPrincipal AuthenticatedUser currentUser
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser
     );
 
     /**
@@ -129,7 +140,12 @@ public interface MeApi {
      */
     @DeleteMapping("/organizations/{organizationId}")
     ResponseEntity<OrganizationMemberDto> removeMeFromOrganization(
-            @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @PathVariable("organizationId") Long organizationId
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser,
+
+            @NotNull(message = "OrganizationId is null")
+            @Positive(message = "OrganizationId is not positive")
+            @PathVariable("organizationId")
+            Long organizationId
     );
 }

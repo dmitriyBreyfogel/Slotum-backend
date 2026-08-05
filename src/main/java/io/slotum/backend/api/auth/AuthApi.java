@@ -31,5 +31,9 @@ public interface AuthApi {
      * @return ответ с токеном доступа и типом токена
      */
     @PostMapping("/login")
-    ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request);
+    ResponseEntity<LoginResponse> login(
+            @Valid
+            @RequestBody
+            LoginRequest request
+    );
 }
