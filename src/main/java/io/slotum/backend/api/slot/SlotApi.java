@@ -2,7 +2,9 @@ package io.slotum.backend.api.slot;
 
 import io.slotum.backend.api.slot.dto.CreateSlotRequest;
 import io.slotum.backend.api.slot.dto.SlotDto;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import java.util.List;
 /**
  * HTTP-контракт управления слотами для записи.
  */
+@Validated
 @RequestMapping("/api/v1/slots")
 public interface SlotApi {
 
@@ -47,7 +50,7 @@ public interface SlotApi {
      * @return ответ с созданным слотом
      */
     @PostMapping
-    ResponseEntity<SlotDto> create(@RequestBody CreateSlotRequest request);
+    ResponseEntity<SlotDto> create(@Valid @RequestBody CreateSlotRequest request);
 
     /**
      * Возвращает слот по идентификатору.

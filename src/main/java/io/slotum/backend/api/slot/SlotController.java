@@ -10,10 +10,12 @@ import io.slotum.backend.application.slot.GetSlotUseCase;
 import io.slotum.backend.domain.slot.Slot;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Validated
 @RestController
 public class SlotController implements SlotApi {
     private final CreateSlotUseCase createSlotUseCase;
