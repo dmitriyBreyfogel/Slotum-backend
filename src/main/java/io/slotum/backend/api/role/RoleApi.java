@@ -3,7 +3,9 @@ package io.slotum.backend.api.role;
 import io.slotum.backend.api.role.dto.CreateRoleRequest;
 import io.slotum.backend.api.role.dto.RoleDto;
 import io.slotum.backend.domain.role.RoleNames;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +19,7 @@ import java.util.List;
 /**
  * HTTP-контракт управления ролями.
  */
+@Validated
 @RequestMapping("/api/v1/roles")
 public interface RoleApi {
 
@@ -38,7 +41,7 @@ public interface RoleApi {
      * @return ответ с созданной ролью
      */
     @PostMapping
-    ResponseEntity<RoleDto> create(@RequestBody CreateRoleRequest request);
+    ResponseEntity<RoleDto> create(@Valid @RequestBody CreateRoleRequest request);
 
     /**
      * Возвращает роль по идентификатору.
