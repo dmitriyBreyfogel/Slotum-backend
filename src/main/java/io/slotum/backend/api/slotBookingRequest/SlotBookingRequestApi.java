@@ -3,8 +3,10 @@ package io.slotum.backend.api.slotBookingRequest;
 import io.slotum.backend.api.slotBookingRequest.dto.CreateSlotBookingRequest;
 import io.slotum.backend.api.slotBookingRequest.dto.SlotBookingRequestDto;
 import io.slotum.backend.infrastructure.security.AuthenticatedUser;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +18,7 @@ import java.util.List;
 /**
  * HTTP-контракт управления заявками на запись в слот.
  */
+@Validated
 @RequestMapping("/api/v1/slot-booking-requests")
 public interface SlotBookingRequestApi {
 
@@ -50,7 +53,7 @@ public interface SlotBookingRequestApi {
     @PostMapping
     ResponseEntity<SlotBookingRequestDto> create(
             @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @RequestBody CreateSlotBookingRequest request
+            @Valid @RequestBody CreateSlotBookingRequest request
     );
 
     /**
