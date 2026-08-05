@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
  * @param grade оценка специалиста, может быть {@code null}
  */
 public record CreateSpecialistRequest(
-        @Size(max = 255, message = "Too long description")
+        @Size(max = 1024, message = "Too long description")
         String description,
 
         Double grade

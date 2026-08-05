@@ -13,7 +13,7 @@ public class SpecialistJpa  {
     @Column
     private Double grade;
 
-    @Column
+    @Column(length = 1024)
     private String description;
 
     // Communications

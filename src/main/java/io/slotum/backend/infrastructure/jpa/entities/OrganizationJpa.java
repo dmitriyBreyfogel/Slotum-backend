@@ -17,7 +17,7 @@ public class OrganizationJpa {
     @Column(nullable = false)
     private String name;
 
-    @Column
+    @Column(length = 1024)
     private String description;
 
     @Column

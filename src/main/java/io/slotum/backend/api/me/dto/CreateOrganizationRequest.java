@@ -14,6 +14,6 @@ public record CreateOrganizationRequest(
         @Size(max = 255, message = "Too long name")
         String name,
 
-        @Size(max = 255, message = "Too long description")
+        @Size(max = 1024, message = "Too long description")
         String description
 ) { }
