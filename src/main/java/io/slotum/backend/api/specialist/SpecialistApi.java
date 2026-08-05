@@ -3,7 +3,9 @@ package io.slotum.backend.api.specialist;
 import io.slotum.backend.api.specialist.dto.CreateSpecialistRequest;
 import io.slotum.backend.api.specialist.dto.OrganizationDto;
 import io.slotum.backend.api.specialist.dto.SpecialistDto;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,7 @@ import java.util.List;
 /**
  * HTTP-контракт управления специалистами.
  */
+@Validated
 @RequestMapping("/api/v1/specialists")
 public interface SpecialistApi {
 
@@ -42,7 +45,7 @@ public interface SpecialistApi {
      * @return ответ с созданным специалистом
      */
     @PostMapping
-    ResponseEntity<SpecialistDto> createSpecialist(@RequestBody CreateSpecialistRequest request);
+    ResponseEntity<SpecialistDto> createSpecialist(@Valid @RequestBody CreateSpecialistRequest request);
 
     /**
      * Возвращает специалиста по идентификатору пользователя.
