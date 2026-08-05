@@ -1,7 +1,7 @@
 package io.slotum.backend.api.role.dto;
 
 import io.slotum.backend.domain.role.RoleNames;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Size;
  * @param description описание роли, может быть {@code null}
  */
 public record CreateRoleRequest(
-        @NotBlank(message = "Name is blank")
+        @NotNull(message = "Name is blank")
         @Size(max = 50, message = "Too long name")
         RoleNames name,
 
