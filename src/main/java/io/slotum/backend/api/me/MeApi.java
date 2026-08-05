@@ -6,8 +6,10 @@ import io.slotum.backend.api.me.dto.OrganizationDto;
 import io.slotum.backend.api.me.dto.OrganizationMemberDto;
 import io.slotum.backend.api.me.dto.SpecialistDto;
 import io.slotum.backend.infrastructure.security.AuthenticatedUser;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,7 @@ import java.util.List;
 /**
  * HTTP-контракт управления данными текущего пользователя.
  */
+@Validated
 @RequestMapping("/api/v1/me")
 public interface MeApi {
 
@@ -49,7 +52,7 @@ public interface MeApi {
     @PostMapping("/specialist")
     ResponseEntity<SpecialistDto> createSpecialistFromMe(
             @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @RequestBody CreateSpecialistRequest request
+            @Valid @RequestBody CreateSpecialistRequest request
     );
 
     /**
@@ -79,7 +82,7 @@ public interface MeApi {
     @PostMapping("/organizations")
     ResponseEntity<OrganizationDto> createMyOrganization(
             @AuthenticationPrincipal AuthenticatedUser currentUser,
-            @RequestBody CreateOrganizationRequest request
+            @Valid @RequestBody CreateOrganizationRequest request
     );
 
     /**

@@ -1,5 +1,7 @@
 package io.slotum.backend.api.me.dto;
 
+import jakarta.validation.constraints.Size;
+
 /**
  * Данные запроса на создание специалиста для текущего пользователя.
  *
@@ -7,7 +9,9 @@ package io.slotum.backend.api.me.dto;
  * @param grade оценка специалиста, может быть {@code null}
  */
 public record CreateSpecialistRequest(
+        @Size(max = 255)
         String description,
+
         Double grade
 ) {
 }

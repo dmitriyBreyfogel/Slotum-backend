@@ -1,5 +1,8 @@
 package io.slotum.backend.api.me.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 /**
  * Данные запроса на создание организации текущим специалистом.
  *
@@ -7,7 +10,10 @@ package io.slotum.backend.api.me.dto;
  * @param description описание организации, может быть {@code null}
  */
 public record CreateOrganizationRequest(
+        @NotBlank(message = "Name is blank")
+        @Size(max = 255)
         String name,
+
+        @Size(max = 255)
         String description
-) {
-}
+) { }
