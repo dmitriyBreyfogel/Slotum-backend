@@ -2,7 +2,9 @@ package io.slotum.backend.api.permission;
 
 import io.slotum.backend.api.permission.dto.CreatePermissionRequest;
 import io.slotum.backend.api.permission.dto.PermissionDto;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,7 @@ import java.util.List;
 /**
  * HTTP-контракт управления разрешениями.
  */
+@Validated
 @RequestMapping("/api/v1/permissions")
 public interface PermissionApi {
 
@@ -38,7 +41,7 @@ public interface PermissionApi {
      * @return ответ с созданным разрешением
      */
     @PostMapping
-    ResponseEntity<PermissionDto> create(@RequestBody CreatePermissionRequest request);
+    ResponseEntity<PermissionDto> create(@Valid @RequestBody CreatePermissionRequest request);
 
     /**
      * Возвращает разрешение по идентификатору.
