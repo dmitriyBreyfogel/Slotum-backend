@@ -2,7 +2,9 @@ package io.slotum.backend.api.user;
 
 import io.slotum.backend.api.user.dto.CreateUserRequest;
 import io.slotum.backend.api.user.dto.UserDto;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,7 @@ import java.util.List;
 /**
  * HTTP-контракт управления пользователями.
  */
+@Validated
 @RequestMapping("/api/v1/users")
 public interface UserApi {
 
@@ -39,7 +42,7 @@ public interface UserApi {
      * @return ответ с созданным пользователем
      */
     @PostMapping
-    ResponseEntity<UserDto> create(@RequestBody CreateUserRequest request);
+    ResponseEntity<UserDto> create(@Valid @RequestBody CreateUserRequest request);
 
     /**
      * Возвращает пользователя по идентификатору.

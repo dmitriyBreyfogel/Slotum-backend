@@ -6,11 +6,12 @@ import io.slotum.backend.application.user.*;
 import io.slotum.backend.domain.user.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-
+@Validated
 @RestController
 public class UserController implements UserApi {
     private final CreateUserUseCase createUserUseCase;
