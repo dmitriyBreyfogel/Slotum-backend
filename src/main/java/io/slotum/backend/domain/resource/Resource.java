@@ -69,5 +69,5 @@ public final class Resource {
 
     public String getDescription() {
         return description;
-    };
+    }
 }
