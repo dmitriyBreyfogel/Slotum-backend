@@ -34,9 +34,8 @@ public interface PermissionApi {
      *     <li>{@code 201 Created} - разрешение успешно создано</li>
      *     <li>{@code 400 Bad Request} с кодом {@code BAD_REQUEST} -
      *     тело запроса содержит некорректный JSON</li>
-     *     <li>{@code 400 Bad Request} с одним из кодов {@code EMPTY_PERMISSION_CODE},
-     *     {@code TOO_LONG_PERMISSION_CODE} или {@code TOO_LONG_PERMISSION_DESCRIPTION} -
-     *     переданы некорректные данные разрешения</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     тело запроса не прошло валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      * </ul>
@@ -57,6 +56,8 @@ public interface PermissionApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - разрешение найдено</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code PERMISSION_NOT_FOUND} -
@@ -80,6 +81,8 @@ public interface PermissionApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - разрешение найдено</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code PERMISSION_NOT_FOUND} -
@@ -118,6 +121,8 @@ public interface PermissionApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - разрешение успешно удалено</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code PERMISSION_NOT_FOUND} -
