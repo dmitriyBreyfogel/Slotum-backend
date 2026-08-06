@@ -44,13 +44,8 @@ public final class Slot {
      * @return созданный слот по заданным параметрам
      * @throws AppException с кодом:
      *      <ul>
-     *          <li>{@code INVALID_SLOT_STARTS_AT} - время начала слота равно {@code null}</li>
-     *          <li>{@code INVALID_SLOT_ENDS_AT} - время окончания слота равно {@code null}</li>
      *          <li>{@code INVALID_SLOT_TIME_RANGE} - время окончания раньше времени начала слота</li>
-     *          <li>{@code INVALID_SLOT_STATUS} - статус слота {@code null}</li>
-     *          <li>{@code INVALID_SLOT_SPECIALIST_ID} - идентификатор пользователя специалиста не положительный</li>
-     *          <li>{@code INVALID_SLOT_CUSTOMER_ID} - идентификатор пользователя не положительный</li>
-     *          <li>{@code INVALID_SLOT_ORGANIZATION_ID} - идентификатор организации не положительный</li>
+     *          <li>{@code INVALID_SLOT_CUSTOMER_ID} - слот забронирован и нет клиента или слот свободен и есть клиент</li>
      *      </ul>
      */
     public static Slot create(
@@ -86,14 +81,8 @@ public final class Slot {
      * @return созданный объект слота по заданным параметрам
      * @throws AppException с кодом:
      *      <ul>
-     *          <li>{@code INVALID_SLOT_ID} - идентификатор слота не положительный</li>
-     *          <li>{@code INVALID_SLOT_STARTS_AT} - время начала слота равно {@code null}</li>
-     *          <li>{@code INVALID_SLOT_ENDS_AT} - время окончания слота равно {@code null}</li>
      *          <li>{@code INVALID_SLOT_TIME_RANGE} - время окончания раньше времени начала слота</li>
-     *          <li>{@code INVALID_SLOT_STATUS} - статус слота {@code null}</li>
-     *          <li>{@code INVALID_SLOT_SPECIALIST_ID} - идентификатор пользователя специалиста не положительный</li>
-     *          <li>{@code INVALID_SLOT_CUSTOMER_ID} - идентификатор пользователя не положительный</li>
-     *          <li>{@code INVALID_SLOT_ORGANIZATION_ID} - идентификатор организации не положительный</li>
+     *          <li>{@code INVALID_SLOT_CUSTOMER_ID} - слот забронирован и нет клиента или слот свободен и есть клиент</li>
      *      </ul>
      */
     public static Slot restore(
@@ -105,14 +94,8 @@ public final class Slot {
             Long customerId,
             Long organizationId
     ) {
-        validateId(id);
-        validateStartsAt(startsAt);
-        validateEndsAt(endsAt);
         validateTimeRange(startsAt, endsAt);
-        validateStatus(status);
-        validateSpecialistUserId(specialistUserId);
         validateCustomerId(customerId, status);
-        validateOrganizationId(organizationId);
 
         return new Slot(
                 id,
@@ -130,10 +113,6 @@ public final class Slot {
      * Текущий объект остаётся неизменным.
      * @param customerId идентификатор пользователя, забронировавшего данный слот
      * @return забронированный слот
-     * @throws AppException с кодом:
-     *      <ul>
-     *          <li>{@code INVALID_SLOT_CUSTOMER_ID} - идентификатор пользователя не положительный</li>
-     *      </ul>
      */
     public Slot book(Long customerId) {
         return restore(
@@ -177,34 +156,6 @@ public final class Slot {
     }
 
     /* Validation */
-    private static void validateId(Long id) {
-        if (id != null && id <= 0) {
-            throw AppException.build(
-                    ErrorCode.INVALID_SLOT_ID,
-                    "Invalid slot id",
-                    Map.of("id", id)
-            );
-        }
-    }
-
-    private static void validateStartsAt(LocalDateTime startsAt) {
-        if (startsAt == null) {
-            throw AppException.build(
-                    ErrorCode.INVALID_SLOT_STARTS_AT,
-                    "Slot startsAt is null"
-            );
-        }
-    }
-
-    private static void validateEndsAt(LocalDateTime endsAt) {
-        if (endsAt == null) {
-            throw AppException.build(
-                    ErrorCode.INVALID_SLOT_ENDS_AT,
-                    "Slot endsAt is null"
-            );
-        }
-    }
-
     private static void validateTimeRange(LocalDateTime startsAt, LocalDateTime endsAt) {
         if (!endsAt.isAfter(startsAt)) {
             throw AppException.build(
@@ -218,37 +169,7 @@ public final class Slot {
         }
     }
 
-    private static void validateStatus(SlotStatus status) {
-        if (status == null) {
-            throw AppException.build(
-                    ErrorCode.INVALID_SLOT_STATUS,
-                    "Slot status is null"
-            );
-        }
-    }
-
-    private static void validateSpecialistUserId(Long specialistUserId) {
-        if (specialistUserId == null || specialistUserId <= 0) {
-            Map<String, Object> details = (specialistUserId == null)
-                    ? Map.of()
-                    : Map.of("specialistUserId", specialistUserId);
-            throw AppException.build(
-                    ErrorCode.INVALID_SLOT_SPECIALIST_ID,
-                    "Invalid slot specialistUserId",
-                    details
-            );
-        }
-    }
-
     private static void validateCustomerId(Long customerId, SlotStatus status) {
-        if (customerId != null && customerId <= 0) {
-            throw AppException.build(
-                    ErrorCode.INVALID_SLOT_CUSTOMER_ID,
-                    "Invalid slot customerId",
-                    Map.of("customerId", customerId)
-            );
-        }
-
         if (status == SlotStatus.FREE && customerId != null) {
             throw AppException.build(
                     ErrorCode.INVALID_SLOT_CUSTOMER_ID,
@@ -261,19 +182,6 @@ public final class Slot {
             throw AppException.build(
                     ErrorCode.INVALID_SLOT_CUSTOMER_ID,
                     "Booked slot must have customerId"
-            );
-        }
-    }
-
-    private static void validateOrganizationId(Long organizationId) {
-        if (organizationId == null || organizationId <= 0) {
-            Map<String, Object> details = (organizationId == null)
-                    ? Map.of()
-                    : Map.of("organizationId", organizationId);
-            throw AppException.build(
-                    ErrorCode.INVALID_SLOT_ORGANIZATION_ID,
-                    "Invalid slot organizationId",
-                    details
             );
         }
     }
