@@ -43,11 +43,6 @@ public final class SlotBookingRequest {
      * @return созданная запись на слот
      * @throws AppException с кодом:
      *      <ul>
-     *          <li>{@code INVALID_SLOT_BOOKING_REQUEST_SLOT_ID} - идентификатор слота не положительный</li>
-     *          <li>{@code INVALID_SLOT_BOOKING_REQUEST_CUSTOMER_ID} - идентификатор пользователя, забронировавшего слот, не положительный</li>
-     *          <li>{@code INVALID_SLOT_BOOKING_REQUEST_STATUS} - статус записи слота {@code null}</li>
-     *          <li>{@code INVALID_SLOT_BOOKING_REQUEST_MESSAGE} - сообщение записи слота более 1024 символов</li>
-     *          <li>{@code INVALID_SLOT_BOOKING_REQUEST_CREATED_AT} - время создания записи слота {@code null}</li>
      *          <li>{@code INVALID_SLOT_BOOKING_REQUEST_DECIDED_AT} - время принятия решения по записи слота имеется на обрабатываемом слоте или наоборот</li>
      *          <li>{@code INVALID_SLOT_BOOKING_REQUEST_TIME_RANGE} - время принятия решения записи слота раньше времени создания записи слота</li>
      *      </ul>
@@ -83,12 +78,6 @@ public final class SlotBookingRequest {
      * @return созданный объект записи слота
      * @throws AppException с кодом:
      *      <ul>
-     *          <li>{@code INVALID_SLOT_BOOKING_REQUEST_ID} - идентификатор записи слота не положительный</li>
-     *          <li>{@code INVALID_SLOT_BOOKING_REQUEST_SLOT_ID} - идентификатор слота не положительный</li>
-     *          <li>{@code INVALID_SLOT_BOOKING_REQUEST_CUSTOMER_ID} - идентификатор пользователя, забронировавшего слот, не положительный</li>
-     *          <li>{@code INVALID_SLOT_BOOKING_REQUEST_STATUS} - статус записи слота {@code null}</li>
-     *          <li>{@code INVALID_SLOT_BOOKING_REQUEST_MESSAGE} - сообщение записи слота более 1024 символов</li>
-     *          <li>{@code INVALID_SLOT_BOOKING_REQUEST_CREATED_AT} - время создания записи слота {@code null}</li>
      *          <li>{@code INVALID_SLOT_BOOKING_REQUEST_DECIDED_AT} - время принятия решения по записи слота имеется на обрабатываемом слоте или наоборот</li>
      *          <li>{@code INVALID_SLOT_BOOKING_REQUEST_TIME_RANGE} - время принятия решения записи слота раньше времени создания записи слота</li>
      *      </ul>
@@ -102,15 +91,8 @@ public final class SlotBookingRequest {
             LocalDateTime createdAt,
             LocalDateTime decidedAt
     ) {
-        validateId(id);
-        validateSlotId(slotId);
-        validateCustomerId(customerId);
-        validateStatus(status);
-
         String normalizedMessage = StringUtils.normalize(message);
-        validateMessage(normalizedMessage);
 
-        validateCreatedAt(createdAt);
         validateDecidedAt(decidedAt, status);
         validateTimeRange(createdAt, decidedAt);
 
@@ -224,75 +206,6 @@ public final class SlotBookingRequest {
     }
 
     /* Validation */
-    private static void validateId(Long id) {
-        if (id != null && id <= 0) {
-            throw AppException.build(
-                    ErrorCode.INVALID_SLOT_BOOKING_REQUEST_ID,
-                    "Invalid slot booking request id",
-                    Map.of("id", id)
-            );
-        }
-    }
-
-    private static void validateSlotId(Long slotId) {
-        if (slotId == null || slotId <= 0) {
-            Map<String, Object> details = slotId == null
-                    ? Map.of()
-                    : Map.of("slotId", slotId);
-
-            throw AppException.build(
-                    ErrorCode.INVALID_SLOT_BOOKING_REQUEST_SLOT_ID,
-                    "Invalid slot booking request slotId",
-                    details
-            );
-        }
-    }
-
-    private static void validateCustomerId(Long customerId) {
-        if (customerId == null || customerId <= 0) {
-            Map<String, Object> details = customerId == null
-                    ? Map.of()
-                    : Map.of("customerId", customerId);
-
-            throw AppException.build(
-                    ErrorCode.INVALID_SLOT_BOOKING_REQUEST_CUSTOMER_ID,
-                    "Invalid slot booking request customerId",
-                    details
-            );
-        }
-    }
-
-    private static void validateStatus(SlotBookingRequestStatus status) {
-        if (status == null) {
-            throw AppException.build(
-                    ErrorCode.INVALID_SLOT_BOOKING_REQUEST_STATUS,
-                    "Slot request status is null"
-            );
-        }
-    }
-
-    private static void validateMessage(String message) {
-        if (message != null && message.length() > 1024) {
-            throw AppException.build(
-                    ErrorCode.INVALID_SLOT_BOOKING_REQUEST_MESSAGE,
-                    "Too long slot booking request message",
-                    Map.of(
-                            "Expected max length", 1024,
-                            "Actual length", message.length()
-                    )
-            );
-        }
-    }
-
-    private static void validateCreatedAt(LocalDateTime createdAt) {
-        if (createdAt == null) {
-            throw AppException.build(
-                    ErrorCode.INVALID_SLOT_BOOKING_REQUEST_CREATED_AT,
-                    "Slot request createdAt is null"
-            );
-        }
-    }
-
     private static void validateDecidedAt(
             LocalDateTime decidedAt,
             SlotBookingRequestStatus status
@@ -314,17 +227,15 @@ public final class SlotBookingRequest {
     }
 
     private static void validateTimeRange(LocalDateTime createdAt, LocalDateTime decidedAt) {
-        if (createdAt != null && decidedAt != null) {
-            if (decidedAt.isBefore(createdAt)) {
-                throw AppException.build(
-                        ErrorCode.INVALID_SLOT_BOOKING_REQUEST_TIME_RANGE,
-                        "Invalid slot booking request time range. DecidedAt before createdAt",
-                        Map.of(
-                                "CreatedAt", createdAt.toString(),
-                                "DecidedAt", decidedAt.toString()
-                        )
-                );
-            }
+        if (decidedAt != null && decidedAt.isBefore(createdAt)) {
+            throw AppException.build(
+                    ErrorCode.INVALID_SLOT_BOOKING_REQUEST_TIME_RANGE,
+                    "Invalid slot booking request time range. DecidedAt before createdAt",
+                    Map.of(
+                            "CreatedAt", createdAt.toString(),
+                            "DecidedAt", decidedAt.toString()
+                    )
+            );
         }
     }
 }
