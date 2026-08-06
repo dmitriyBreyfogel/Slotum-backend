@@ -22,7 +22,8 @@ public interface AuthApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - пользователь успешно аутентифицирован</li>
-     *     <li>{@code 400 Bad Request} - тело запроса содержит некорректный JSON</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR}- тело запроса не прошло валидацию</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code BAD_REQUEST} - тело запроса содержит некорректный JSON</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code AUTH_INVALID_CREDENTIALS} -
      *     переданы неверные учётные данные</li>
      * </ul>
