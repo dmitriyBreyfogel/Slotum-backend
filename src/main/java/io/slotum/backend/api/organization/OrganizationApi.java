@@ -33,9 +33,8 @@ public interface OrganizationApi {
      *     <li>{@code 201 Created} - организация успешно создана</li>
      *     <li>{@code 400 Bad Request} с кодом {@code BAD_REQUEST} -
      *     тело запроса содержит некорректный JSON</li>
-     *     <li>{@code 400 Bad Request} с одним из кодов {@code EMPTY_ORGANIZATION_NAME},
-     *     {@code TOO_LONG_ORGANIZATION_NAME} или {@code TOO_LONG_ORGANIZATION_DESCRIPTION} -
-     *     переданы некорректные данные организации</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     тело запроса не прошло валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 409 Conflict} с кодом {@code ORGANIZATION_ALREADY_EXISTS} -
@@ -58,8 +57,8 @@ public interface OrganizationApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 201 Created} - специалист успешно добавлен в организацию</li>
-     *     <li>{@code 400 Bad Request} с одним из кодов {@code INVALID_ORGANIZATION_ID}
-     *     или {@code INVALID_SPECIALIST_USER_ID} - передан некорректный идентификатор</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code ORGANIZATION_NOT_FOUND} -
@@ -93,6 +92,8 @@ public interface OrganizationApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - организация найдена</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code ORGANIZATION_NOT_FOUND} -
@@ -131,6 +132,8 @@ public interface OrganizationApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - специалисты организации успешно получены</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code ORGANIZATION_NOT_FOUND} -
@@ -154,6 +157,8 @@ public interface OrganizationApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - организация успешно удалена</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code ORGANIZATION_NOT_FOUND} -
@@ -177,8 +182,8 @@ public interface OrganizationApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - специалист успешно удалён из организации</li>
-     *     <li>{@code 400 Bad Request} с одним из кодов {@code INVALID_ORGANIZATION_ID}
-     *     или {@code INVALID_SPECIALIST_USER_ID} - передан некорректный идентификатор</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code ORGANIZATION_NOT_FOUND} -
