@@ -27,9 +27,6 @@ public final class Organization {
      * @return созданная организация
      * @throws AppException с кодом:
      *      <ul>
-     *          <li>{@code EMPTY_ORGANIZATION_NAME} — имя не указано</li>
-     *          <li>{@code TOO_LONG_ORGANIZATION_NAME} — имя длиннее 255 символов</li>
-     *          <li>{@code TOO_LONG_ORGANIZATION_DESCRIPTION} — описание длиннее 1024 символов</li>
      *          <li>{@code INVALID_ORGANIZATION_GRADE} — оценка вне диапазона [0, 5]</li>
      *      </ul>
      */
@@ -42,12 +39,6 @@ public final class Organization {
      * @param name имя организации
      * @param description описание к организации
      * @return созданная организация c {@code null} оценкой
-     * @throws AppException с кодом:
-     *      <ul>
-     *          <li>{@code EMPTY_ORGANIZATION_NAME} — имя не указано</li>
-     *          <li>{@code TOO_LONG_ORGANIZATION_NAME} — имя длиннее 255 символов</li>
-     *          <li>{@code TOO_LONG_ORGANIZATION_DESCRIPTION} — описание длиннее 1024 символов</li>
-     *      </ul>
      */
     public static Organization create(String name, String description) {
         return restore(null, name, description, null);
@@ -60,8 +51,6 @@ public final class Organization {
      * @return созданная организация с {@code null} описанием
      * @throws AppException с кодом:
      *      <ul>
-     *          <li>{@code EMPTY_ORGANIZATION_NAME} — имя не указано</li>
-     *          <li>{@code TOO_LONG_ORGANIZATION_NAME} — имя длиннее 255 символов</li>
      *          <li>{@code INVALID_ORGANIZATION_GRADE} — оценка вне диапазона [0, 5]</li>
      *      </ul>
      */
@@ -73,11 +62,6 @@ public final class Organization {
      * Создание организации без оценки и её описания
      * @param name имя организации
      * @return созданная организация с {@code null} оценкой и {@code null} описанием
-     * @throws AppException с кодом:
-     *      <ul>
-     *          <li>{@code EMPTY_ORGANIZATION_NAME} — имя не указано</li>
-     *          <li>{@code TOO_LONG_ORGANIZATION_NAME} — имя длиннее 255 символов</li>
-     *      </ul>
      */
     public static Organization create(String name) {
         return restore(null, name, null, null);
@@ -95,20 +79,13 @@ public final class Organization {
      * @return организация с заданными параметрами
      * @throws AppException с кодом:
      *      <ul>
-     *          <li>{@code EMPTY_ORGANIZATION_NAME} — имя не указано</li>
-     *          <li>{@code TOO_LONG_ORGANIZATION_NAME} — имя длиннее 255 символов</li>
-     *          <li>{@code TOO_LONG_ORGANIZATION_DESCRIPTION} — описание длиннее 1024 символов</li>
      *          <li>{@code INVALID_ORGANIZATION_GRADE} — оценка вне диапазона [0, 5]</li>
-     *          <li>{@code INVALID_ORGANIZATION_ID} — идентификатор не положительный</li>
      *      </ul>
      */
     public static Organization restore(Long id, String name, String description, Double grade) {
         String normalizedName = StringUtils.normalize(name);
         String normalizedDescription = StringUtils.normalize(description);
 
-        validateId(id);
-        validateName(normalizedName);
-        validateDescription(normalizedDescription);
         validateGrade(grade);
 
         return new Organization(id, normalizedName, normalizedDescription, grade);
@@ -132,43 +109,6 @@ public final class Organization {
     }
 
     /* Validation */
-    private static void validateId(Long id) {
-        if (id != null && id <= 0) {
-            throw AppException.build(
-                    ErrorCode.INVALID_ORGANIZATION_ID,
-                    "Invalid organization id",
-                    Map.of("id", id)
-            );
-        }
-    }
-
-    private static void validateName(String name) {
-        if (name == null) {
-            throw AppException.build(
-                    ErrorCode.EMPTY_ORGANIZATION_NAME,
-                    "Empty organization name"
-            );
-        }
-
-        if (name.length() > 255) {
-            throw AppException.build(
-                    ErrorCode.TOO_LONG_ORGANIZATION_NAME,
-                    "Too long organization name: " + name.length() + " symbols",
-                    Map.of("name", name)
-            );
-        }
-    }
-
-    private static void validateDescription(String description) {
-        if (description.length() > 1024) {
-            throw AppException.build(
-                    ErrorCode.TOO_LONG_ORGANIZATION_DESCRIPTION,
-                    "Too long organization description: " + description.length() + " symbols",
-                    Map.of("description", description)
-            );
-        }
-    }
-
     private static void validateGrade(Double grade) {
         if (grade != null && (grade < 0 || grade > 5)) {
             throw AppException.build(
