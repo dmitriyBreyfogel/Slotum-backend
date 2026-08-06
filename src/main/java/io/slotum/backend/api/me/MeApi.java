@@ -36,9 +36,8 @@ public interface MeApi {
      *     <li>{@code 201 Created} - специалист успешно создан</li>
      *     <li>{@code 400 Bad Request} с кодом {@code BAD_REQUEST} -
      *     тело запроса содержит некорректный JSON</li>
-     *     <li>{@code 400 Bad Request} с одним из кодов
-     *     {@code INVALID_SPECIALIST_USER_ID}, {@code TOO_LONG_SPECIALIST_DESCRIPTION}
-     *     или {@code INVALID_SPECIALIST_GRADE} - переданы некорректные данные специалиста</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} - тело запроса не прошло валидацию</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code INVALID_SPECIALIST_GRADE} - невалидная оценка специалиста</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code USER_NOT_FOUND} -
@@ -69,10 +68,8 @@ public interface MeApi {
      *     <li>{@code 201 Created} - организация успешно создана</li>
      *     <li>{@code 400 Bad Request} с кодом {@code BAD_REQUEST} -
      *     тело запроса содержит некорректный JSON</li>
-     *     <li>{@code 400 Bad Request} с одним из кодов {@code EMPTY_ORGANIZATION_NAME},
-     *     {@code TOO_LONG_ORGANIZATION_NAME}, {@code TOO_LONG_ORGANIZATION_DESCRIPTION},
-     *     {@code INVALID_ORGANIZATION_ID} или {@code INVALID_SPECIALIST_USER_ID} -
-     *     переданы некорректные данные организации или членства</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     тело запроса не прошло валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code SPECIALIST_NOT_FOUND} -
@@ -122,8 +119,7 @@ public interface MeApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - специалист успешно удалён из организации</li>
-     *     <li>{@code 400 Bad Request} с одним из кодов {@code INVALID_ORGANIZATION_ID}
-     *     или {@code INVALID_SPECIALIST_USER_ID} - передан некорректный идентификатор</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} - данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code ORGANIZATION_NOT_FOUND} -
