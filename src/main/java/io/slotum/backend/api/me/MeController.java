@@ -48,8 +48,7 @@ public class MeController implements MeApi {
           Specialist result = createSpecialistUseCase.execute(
                   new CreateSpecialistUseCase.Command(
                           currentUser.userId(),
-                          request.description(),
-                          request.grade()
+                          request.description()
                   )
           );
 

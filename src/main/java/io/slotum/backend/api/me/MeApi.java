@@ -37,7 +37,6 @@ public interface MeApi {
      *     <li>{@code 400 Bad Request} с кодом {@code BAD_REQUEST} -
      *     тело запроса содержит некорректный JSON</li>
      *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} - тело запроса не прошло валидацию</li>
-     *     <li>{@code 400 Bad Request} с кодом {@code INVALID_SPECIALIST_GRADE} - невалидная оценка специалиста</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code USER_NOT_FOUND} -

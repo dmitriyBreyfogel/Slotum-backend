@@ -25,7 +25,7 @@ public class CreateSpecialistUseCase {
         Specialist specialistToSave = Specialist.create(
                 command.userId,
                 command.description,
-                command.grade
+                null
         );
 
         Optional<User> existingUser = userRepository.findById(command.userId);
@@ -51,8 +51,6 @@ public class CreateSpecialistUseCase {
 
     public record Command(
             Long userId,
-            String description,
-            Double grade
+            String description
     ) {}
-
 }
