@@ -32,10 +32,8 @@ public interface SlotBookingRequestApi {
      *     <li>{@code 201 Created} - заявка успешно создана</li>
      *     <li>{@code 400 Bad Request} с кодом {@code BAD_REQUEST} -
      *     тело запроса содержит некорректный JSON</li>
-     *     <li>{@code 400 Bad Request} с одним из кодов
-     *     {@code INVALID_SLOT_BOOKING_REQUEST_SLOT_ID},
-     *     {@code INVALID_SLOT_BOOKING_REQUEST_CUSTOMER_ID} или
-     *     {@code INVALID_SLOT_BOOKING_REQUEST_MESSAGE} - переданы некорректные данные заявки</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     тело запроса не прошло валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code SLOT_NOT_FOUND} -
@@ -68,6 +66,8 @@ public interface SlotBookingRequestApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - заявка найдена</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code SLOT_BOOKING_REQUEST_NOT_FOUND} -
@@ -133,6 +133,8 @@ public interface SlotBookingRequestApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - заявки на слот успешно получены</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 403 Forbidden} с кодом {@code SLOT_BOOKING_REQUEST_FORBIDDEN} -
@@ -162,6 +164,8 @@ public interface SlotBookingRequestApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - заявка успешно принята</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запросы не прошли валидацию</li>
      *     <li>{@code 400 Bad Request} с одним из кодов
      *     {@code INVALID_SLOT_BOOKING_REQUEST_DECIDED_AT} или
      *     {@code INVALID_SLOT_BOOKING_REQUEST_TIME_RANGE} -
@@ -201,6 +205,8 @@ public interface SlotBookingRequestApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - заявка успешно отклонена</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 400 Bad Request} с одним из кодов
      *     {@code INVALID_SLOT_BOOKING_REQUEST_DECIDED_AT} или
      *     {@code INVALID_SLOT_BOOKING_REQUEST_TIME_RANGE} -
@@ -238,6 +244,8 @@ public interface SlotBookingRequestApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - заявка успешно отменена</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 400 Bad Request} с одним из кодов
      *     {@code INVALID_SLOT_BOOKING_REQUEST_DECIDED_AT} или
      *     {@code INVALID_SLOT_BOOKING_REQUEST_TIME_RANGE} -
