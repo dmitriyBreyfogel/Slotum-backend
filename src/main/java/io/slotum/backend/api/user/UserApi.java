@@ -31,8 +31,9 @@ public interface UserApi {
      *     <li>{@code 201 Created} - пользователь успешно создан</li>
      *     <li>{@code 400 Bad Request} с кодом {@code BAD_REQUEST} -
      *     тело запроса содержит некорректный JSON</li>
-     *     <li>{@code 400 Bad Request} с одним из кодов {@code INVALID_USER_SURNAME},
-     *     {@code INVALID_USER_FIRSTNAME}, {@code INVALID_USER_SECONDNAME},
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     тело запроса не прошло валидацию</li>
+     *     <li>{@code 400 Bad Request} с одним из кодов
      *     {@code INVALID_USER_EMAIL}, {@code INVALID_USER_PASSWORD} или
      *     {@code INVALID_USER_PHONE} - переданы некорректные данные пользователя</li>
      *     <li>{@code 409 Conflict} с кодом {@code USER_EMAIL_ALREADY_EXISTS} -
@@ -55,6 +56,8 @@ public interface UserApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - пользователь найден</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code USER_NOT_FOUND} -
@@ -93,6 +96,8 @@ public interface UserApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - пользователь найден</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 400 Bad Request} с кодом {@code INVALID_USER_EMAIL} -
      *     передана некорректная электронная почта</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
@@ -119,6 +124,8 @@ public interface UserApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - пользователь успешно удалён</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code USER_NOT_FOUND} -
