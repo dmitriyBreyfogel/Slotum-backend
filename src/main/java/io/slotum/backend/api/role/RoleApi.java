@@ -33,8 +33,8 @@ public interface RoleApi {
      *     <li>{@code 201 Created} - роль успешно создана</li>
      *     <li>{@code 400 Bad Request} с кодом {@code BAD_REQUEST} -
      *     тело запроса содержит некорректный JSON</li>
-     *     <li>{@code 400 Bad Request} с одним из кодов {@code EMPTY_ROLE_NAME}
-     *     или {@code TOO_LONG_ROLE_DESCRIPTION} - переданы некорректные данные роли</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     тело запроса не прошло валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      * </ul>
@@ -55,6 +55,8 @@ public interface RoleApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - роль найдена</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code ROLE_NOT_FOUND} -
@@ -78,6 +80,8 @@ public interface RoleApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - роль найдена</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code ROLE_NOT_FOUND} -
@@ -115,6 +119,8 @@ public interface RoleApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - роль успешно удалена</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code ROLE_NOT_FOUND} -
