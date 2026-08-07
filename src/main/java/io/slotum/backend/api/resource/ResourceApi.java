@@ -31,10 +31,8 @@ public interface ResourceApi {
      *     <li>{@code 201 Created} - ресурс успешно создан</li>
      *     <li>{@code 400 Bad Request} с кодом {@code BAD_REQUEST} -
      *     тело запроса содержит некорректный JSON</li>
-     *     <li>{@code 400 Bad Request} с одним из кодов
-     *     {@code EMPTY_RESOURCE_HTTP_METHOD}, {@code TOO_LONG_RESOURCE_HTTP_METHOD},
-     *     {@code EMPTY_RESOURCE_URL_PATTERN}, {@code TOO_LONG_RESOURCE_URL_PATTERN}
-     *     или {@code TOO_LONG_RESOURCE_DESCRIPTION} - переданы некорректные данные ресурса</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     тело запроса не прошло валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      * </ul>
@@ -55,6 +53,8 @@ public interface ResourceApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - ресурс найден</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code RESOURCE_NOT_FOUND} -
@@ -93,6 +93,8 @@ public interface ResourceApi {
      * <p>Возможные результаты выполнения запроса:
      * <ul>
      *     <li>{@code 200 OK} - ресурс успешно удалён</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} -
+     *     данные запроса не прошли валидацию</li>
      *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
      *     аутентификация не выполнена</li>
      *     <li>{@code 404 Not Found} с кодом {@code RESOURCE_NOT_FOUND} -
