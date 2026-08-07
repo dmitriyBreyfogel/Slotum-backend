@@ -9,7 +9,6 @@ import jakarta.validation.constraints.Size;
  *
  * @param userId идентификатор пользователя
  * @param description описание специалиста, может быть {@code null}
- * @param grade оценка специалиста, может быть {@code null}
  */
 public record CreateSpecialistRequest(
         @NotNull(message = "UserId is null")
@@ -17,8 +16,6 @@ public record CreateSpecialistRequest(
         Long userId,
 
         @Size(max = 1024, message = "Too long description")
-        String description,
-
-        Double grade
+        String description
 ) {
 }

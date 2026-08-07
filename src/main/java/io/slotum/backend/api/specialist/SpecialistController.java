@@ -45,8 +45,7 @@ public class SpecialistController implements SpecialistApi {
         Specialist result = createSpecialistUseCase.execute(
                 new CreateSpecialistUseCase.Command(
                     request.userId(),
-                    request.description(),
-                    request.grade()
+                    request.description()
                 )
         );
 
