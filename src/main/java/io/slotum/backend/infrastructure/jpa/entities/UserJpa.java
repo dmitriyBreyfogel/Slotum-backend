@@ -83,4 +83,8 @@ public class UserJpa {
     public String getPhone() {
         return phone;
     }
+
+    public Set<RoleJpa> getRoles() {
+        return roles;
+    }
 }
