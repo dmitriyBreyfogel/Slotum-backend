@@ -1,5 +1,6 @@
 package io.slotum.backend.application.auth;
 
+import io.slotum.backend.domain.role.RoleNames;
 import io.slotum.backend.domain.user.User;
 import io.slotum.backend.domain.user.UserRepository;
 import io.slotum.backend.error.AppException;
@@ -8,6 +9,8 @@ import io.slotum.backend.infrastructure.security.jwt.JwtService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class LoginUseCase {
@@ -42,7 +45,12 @@ public class LoginUseCase {
             );
         }
 
-        String accessToken = jwtService.issueAccessToken(user.getId(), user.getEmail().value());
+        Set<String> roles = userRepository.findRolesById(user.getId())
+                .stream()
+                .map(RoleNames::name)
+                .collect(Collectors.toSet());
+
+        String accessToken = jwtService.issueAccessToken(user.getId(), user.getEmail().value(), roles);
         return new Result(accessToken, "Bearer");
     }
 
