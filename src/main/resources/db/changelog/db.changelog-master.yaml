@@ -29,3 +29,5 @@ databaseChangeLog:
       file: db/changelog/changes/014-add-moderator-and-user.sql
   - include:
       file: db/changelog/changes/015-update-admin-password.sql
+  - include:
+      file: db/changelog/changes/016-assign-roles.sql
