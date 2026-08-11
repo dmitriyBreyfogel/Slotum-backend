@@ -17,8 +17,10 @@ public class JwtService {
     private final SecretKey secretKey;
     private final Duration accessTtl;
 
-    public JwtService(@Value("${app.jwt.secret}") String base64Secret,
-                      @Value("${app.jwt.accessTtl}") Duration accessTtl) {
+    public JwtService(
+            @Value("${app.jwt.secret}") String base64Secret,
+            @Value("${app.jwt.accessTtl}") Duration accessTtl
+    ) {
         this.secretKey = parseKey(base64Secret);
         this.accessTtl = accessTtl;
     }
