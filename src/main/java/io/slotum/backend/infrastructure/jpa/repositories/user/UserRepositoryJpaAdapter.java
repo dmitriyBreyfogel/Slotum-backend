@@ -1,14 +1,15 @@
 package io.slotum.backend.infrastructure.jpa.repositories.user;
 
+import io.slotum.backend.domain.role.RoleNames;
 import io.slotum.backend.domain.user.User;
 import io.slotum.backend.domain.user.UserRepository;
+import io.slotum.backend.infrastructure.jpa.entities.RoleJpa;
 import io.slotum.backend.infrastructure.jpa.entities.UserJpa;
 import io.slotum.backend.infrastructure.jpa.mappers.UserJpaMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -27,6 +28,22 @@ public class UserRepositoryJpaAdapter implements UserRepository {
     @Override
     public Optional<User> findByEmail(String email) {
         return userJpaRepository.findByEmail(email).map(UserJpaMapper::toDomain);
+    }
+
+    @Override
+    public Set<RoleNames> findRolesById(Long id) {
+        Optional<UserJpa> jpa = userJpaRepository.findById(id);
+
+        if (jpa.isEmpty()) {
+            return Collections.emptySet();
+        }
+
+        Set<RoleNames> roles = new HashSet<>();
+        for(RoleJpa role : jpa.get().getRoles()) {
+            roles.add(role.getName());
+        }
+
+        return roles;
     }
 
     @Override

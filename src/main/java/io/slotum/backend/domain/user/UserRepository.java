@@ -1,7 +1,10 @@
 package io.slotum.backend.domain.user;
 
+import io.slotum.backend.domain.role.RoleNames;
+
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface UserRepository {
 
@@ -20,6 +23,13 @@ public interface UserRepository {
      * если найти не удалось
      */
     Optional<User> findByEmail(String email);
+
+    /**
+     * Поиск ролей пользователя по его идентификатору
+     * @param id идентификатор пользователя. Обязан быть не {@code null}
+     * @return множество ролей пользователя, если найти удалось. Иначе пустое множество
+     */
+    Set<RoleNames> findRolesById(Long id);
 
     /**
      * Проверка существования пользователя с указанной электронной почтой
