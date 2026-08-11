@@ -31,3 +31,5 @@ databaseChangeLog:
       file: db/changelog/changes/015-update-admin-password.sql
   - include:
       file: db/changelog/changes/016-assign-roles.sql
+  - include:
+      file: db/changelog/changes/017-insert-refresh-token-api-resources.sql
