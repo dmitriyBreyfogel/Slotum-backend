@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,6 +46,7 @@ public interface SpecialistApi {
      * @param request данные создаваемого специалиста
      * @return ответ с созданным специалистом
      */
+    @PreAuthorize("hasAuthority('CREATE_ANY_SPECIALIST')")
     @PostMapping
     ResponseEntity<SpecialistDto> createSpecialist(
             @Valid
@@ -69,6 +71,7 @@ public interface SpecialistApi {
      * @param id идентификатор пользователя специалиста
      * @return ответ с найденным специалистом
      */
+    @PreAuthorize("hasAuthority('VIEW_ANY_SPECIALIST')")
     @GetMapping("/{id}")
     ResponseEntity<SpecialistDto> getSpecialist(
             @NotNull(message = "Id is null")
@@ -94,6 +97,7 @@ public interface SpecialistApi {
      * @param specialistUserId идентификатор пользователя специалиста
      * @return ответ со списком организаций специалиста, который может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_SPECIALIST_ORGANIZATIONS')")
     @GetMapping("/{specialistUserId}/organizations")
     ResponseEntity<List<OrganizationDto>> getSpecialistOrganizations(
             @NotNull(message = "SpecialistUserId is null")
@@ -114,6 +118,7 @@ public interface SpecialistApi {
      *
      * @return ответ со списком специалистов, который может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_ANY_SPECIALIST')")
     @GetMapping
     ResponseEntity<List<SpecialistDto>> getSpecialists();
 
@@ -134,6 +139,7 @@ public interface SpecialistApi {
      * @param id идентификатор пользователя специалиста
      * @return ответ с удалённым специалистом
      */
+    @PreAuthorize("hasAuthority('DELETE_ANY_SPECIALIST')")
     @DeleteMapping("/{id}")
     ResponseEntity<SpecialistDto> deleteSpecialist(
             @NotNull(message = "Id is null")
@@ -154,6 +160,7 @@ public interface SpecialistApi {
      *
      * @return ответ без тела
      */
+    @PreAuthorize("hasAuthority('DELETE_ALL_SPECIALISTS')")
     @DeleteMapping
     ResponseEntity<Void> deleteAllSpecialists();
 }
