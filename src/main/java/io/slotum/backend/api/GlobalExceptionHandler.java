@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -79,6 +80,20 @@ public class GlobalExceptionHandler {
                         status.value(),
                         "Validation failed",
                         Map.of("fields", fieldErrors),
+                        Instant.now().toString()
+                )
+        );
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(AuthorizationDeniedException ex) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        return ResponseEntity.status(status).body(
+                new ErrorResponse(
+                        "FORBIDDEN",
+                        status.value(),
+                        "Access is denied",
+                        Collections.emptyMap(),
                         Instant.now().toString()
                 )
         );
