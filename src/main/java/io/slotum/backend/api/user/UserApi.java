@@ -5,6 +5,7 @@ import io.slotum.backend.api.user.dto.UserDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,6 +68,7 @@ public interface UserApi {
      * @param id идентификатор пользователя
      * @return ответ с найденным пользователем
      */
+    @PreAuthorize("hasAuthority('VIEW_USERS')")
     @GetMapping("/{id}")
     ResponseEntity<UserDto> getUser(
             @NotNull(message = "Id is null")
@@ -87,6 +89,7 @@ public interface UserApi {
      *
      * @return ответ со списком пользователей, который может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_USERS')")
     @GetMapping
     ResponseEntity<List<UserDto>> getAllUsers();
 
@@ -109,6 +112,7 @@ public interface UserApi {
      * @param email электронная почта пользователя
      * @return ответ с найденным пользователем
      */
+    @PreAuthorize("hasAuthority('VIEW_USERS')")
     @GetMapping("/by-email")
     ResponseEntity<UserDto> getByEmail(
             @NotBlank(message = "Email is blank")
@@ -135,6 +139,7 @@ public interface UserApi {
      * @param id идентификатор пользователя
      * @return ответ с удалённым пользователем
      */
+    @PreAuthorize("hasAuthority('MANAGE_USERS')")
     @DeleteMapping("/{id}")
     ResponseEntity<UserDto> deleteUser(
             @NotNull(message = "Id is null")
@@ -155,6 +160,7 @@ public interface UserApi {
      *
      * @return ответ без тела
      */
+    @PreAuthorize("hasAuthority('MANAGE_USERS')")
     @DeleteMapping
     ResponseEntity<Void> deleteAllUsers();
 }
