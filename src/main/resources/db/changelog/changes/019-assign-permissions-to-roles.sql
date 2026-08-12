@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset dmitriyBreyfogel:032-assign-permissions-to-roles
+-- changeset dmitriyBreyfogel:033-assign-permissions-to-roles
 
 -- ADMIN: все права
 INSERT INTO role_permissions (role_id, permission_id)

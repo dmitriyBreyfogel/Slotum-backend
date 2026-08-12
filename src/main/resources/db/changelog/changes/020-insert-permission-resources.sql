@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset dmitriyBreyfogel:033-add-permission-resources
+-- changeset dmitriyBreyfogel:034-add-permission-resources
 
 -- Me API
 INSERT INTO permission_resources (permission_id, resource_id)

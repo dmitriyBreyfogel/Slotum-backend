@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset dmitriyBreyfogel:031-insert-permissions
+-- changeset dmitriyBreyfogel:032-insert-permissions
 INSERT INTO permissions (code, description) VALUES
     ('CREATE_OWN_SPECIALIST', 'Can create own specialist profile'),
     ('CREATE_ANY_SPECIALIST', 'Can create specialist for any user'),

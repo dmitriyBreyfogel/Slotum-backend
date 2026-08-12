@@ -1,6 +1,6 @@
 -- formatted liquibase sql
 
--- changeset dmitriyBreyfogel:030-insert-refresh-token-api-resources
+-- changeset dmitriyBreyfogel:031-insert-refresh-token-api-resources
 INSERT INTO resources (http_method, url_pattern, description) VALUES
     ('GET', '/api/v1/refreshTokens/{id}', 'Get refresh token by id'),
     ('GET', '/api/v1/refreshTokens/by-hash/{hash}', 'Get refresh token by id'),
