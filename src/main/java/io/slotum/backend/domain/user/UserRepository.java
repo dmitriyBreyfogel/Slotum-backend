@@ -1,5 +1,6 @@
 package io.slotum.backend.domain.user;
 
+import io.slotum.backend.domain.permission.Permission;
 import io.slotum.backend.domain.role.RoleNames;
 
 import java.util.List;
@@ -30,6 +31,13 @@ public interface UserRepository {
      * @return множество ролей пользователя, если найти удалось. Иначе пустое множество
      */
     Set<RoleNames> findRolesById(Long id);
+
+    /**
+     * Поиск разрешений пользователя по его идентификатору
+     * @param id идентификатор пользователя. Обязан быть не {@code null}
+     * @return список разрешений пользователя, если найти удалось. Иначе пустой список
+     */
+    Set<Permission> findPermissionsById(Long id);
 
     /**
      * Проверка существования пользователя с указанной электронной почтой

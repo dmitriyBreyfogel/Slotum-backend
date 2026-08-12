@@ -1,10 +1,13 @@
 package io.slotum.backend.infrastructure.jpa.repositories.user;
 
+import io.slotum.backend.domain.permission.Permission;
 import io.slotum.backend.domain.role.RoleNames;
 import io.slotum.backend.domain.user.User;
 import io.slotum.backend.domain.user.UserRepository;
+import io.slotum.backend.infrastructure.jpa.entities.PermissionJpa;
 import io.slotum.backend.infrastructure.jpa.entities.RoleJpa;
 import io.slotum.backend.infrastructure.jpa.entities.UserJpa;
+import io.slotum.backend.infrastructure.jpa.mappers.PermissionJpaMapper;
 import io.slotum.backend.infrastructure.jpa.mappers.UserJpaMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
@@ -44,6 +47,22 @@ public class UserRepositoryJpaAdapter implements UserRepository {
         }
 
         return roles;
+    }
+
+    @Override
+    public Set<Permission> findPermissionsById(Long id) {
+        Optional<UserJpa> jpa = userJpaRepository.findById(id);
+        if (jpa.isEmpty()) {
+            return Collections.emptySet();
+        }
+
+        Set<Permission> permissions = new HashSet<>();
+        for (RoleJpa role : jpa.get().getRoles()) {
+            for (PermissionJpa permissionJpa : role.getPermissions()) {
+                permissions.add(PermissionJpaMapper.toDomain(permissionJpa));
+            }
+        }
+        return permissions;
     }
 
     @Override
