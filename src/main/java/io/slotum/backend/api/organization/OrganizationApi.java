@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +45,7 @@ public interface OrganizationApi {
      * @param request данные создаваемой организации
      * @return ответ с созданной организацией
      */
+    @PreAuthorize("hasAuthority('CREATE_ANY_ORGANIZATION')")
     @PostMapping
     ResponseEntity<OrganizationDto> create(
             @Valid
@@ -73,6 +75,7 @@ public interface OrganizationApi {
      * @param specialistUserId идентификатор пользователя специалиста
      * @return ответ с созданным членством в организации
      */
+    @PreAuthorize("hasAuthority('ADD_SPECIALIST_TO_ORG')")
     @PostMapping("/{organizationId}/specialists/{specialistUserId}")
     ResponseEntity<OrganizationMemberDto> createOrganizationMember(
             @NotNull(message = "OrganizationId is null")
@@ -103,6 +106,7 @@ public interface OrganizationApi {
      * @param id идентификатор организации
      * @return ответ с найденной организацией
      */
+    @PreAuthorize("hasAuthority('VIEW_ANY_ORGANIZATION')")
     @GetMapping("/{id}")
     ResponseEntity<OrganizationDto> getOrganization(
             @NotNull(message = "Id is null")
@@ -123,6 +127,7 @@ public interface OrganizationApi {
      *
      * @return ответ со списком организаций, который может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_ORGANIZATIONS_FOR_BOOKING')")
     @GetMapping
     ResponseEntity<List<OrganizationDto>> getAllOrganizations();
 
@@ -143,6 +148,7 @@ public interface OrganizationApi {
      * @param organizationId идентификатор организации
      * @return ответ со списком специалистов организации, который может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_ORG_SPECIALISTS')")
     @GetMapping("/{organizationId}/specialists")
     ResponseEntity<List<SpecialistDto>> getOrganizationSpecialists(
             @NotNull(message = "OrganizationId is null")
@@ -168,6 +174,7 @@ public interface OrganizationApi {
      * @param id идентификатор организации
      * @return ответ с удалённой организацией
      */
+    @PreAuthorize("hasAuthority('MANAGE_ANY_ORGANIZATION')")
     @DeleteMapping("/{id}")
     ResponseEntity<OrganizationDto> deleteOrganization(
             @NotNull(message = "Id is null")
@@ -198,6 +205,7 @@ public interface OrganizationApi {
      * @param specialistUserId идентификатор пользователя специалиста
      * @return ответ с удалённым членством в организации
      */
+    @PreAuthorize("hasAuthority('MANAGE_ANY_ORGANIZATION')")
     @DeleteMapping("/{organizationId}/specialists/{specialistUserId}")
     ResponseEntity<OrganizationMemberDto> deleteSpecialistFromOrganization(
             @NotNull(message = "OrganizationId is null")
@@ -223,6 +231,7 @@ public interface OrganizationApi {
      *
      * @return ответ без тела
      */
+    @PreAuthorize("hasAuthority('DELETE_ALL_ORGANIZATIONS')")
     @DeleteMapping
     ResponseEntity<Void> deleteAllOrganizations();
 }
