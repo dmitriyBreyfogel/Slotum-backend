@@ -25,7 +25,7 @@ public class JwtService {
         this.accessTtl = accessTtl;
     }
 
-    public String issueAccessToken(long userId, String email, Set<String> roles) {
+    public String issueAccessToken(long userId, String email, Set<String> roles, Set<String> permissions) {
         Instant now = Instant.now();
         Instant expiresAt = now.plus(accessTtl);
 
@@ -33,6 +33,7 @@ public class JwtService {
                 .subject(Long.toString(userId))
                 .claim("email", email)
                 .claim("roles", roles)
+                .claim("permissions", permissions)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiresAt))
                 .signWith(secretKey, Jwts.SIG.HS256)
