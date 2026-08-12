@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +36,7 @@ public interface RefreshTokenApi {
      * @param id идентификатор refresh-токена
      * @return ответ с найденным refresh-токеном
      */
+    @PreAuthorize("hasAuthority('VIEW_REFRESH_TOKENS')")
     @GetMapping("/{id}")
     ResponseEntity<RefreshTokenDto> getById(
             @NotNull(message = "Id is null")
@@ -59,6 +61,7 @@ public interface RefreshTokenApi {
      * @param hash хэш токена
      * @return ответ с найденным refresh-токеном
      */
+    @PreAuthorize("hasAuthority('VIEW_REFRESH_TOKENS')")
     @GetMapping("/by-hash/{hash}")
     ResponseEntity<RefreshTokenDto> getRefreshTokenByHash(
             @NotBlank(message = "Hash is blank")
@@ -79,6 +82,7 @@ public interface RefreshTokenApi {
      * </p>
      * @return ответ со списком всех refresh-токенов, список может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_REFRESH_TOKENS')")
     @GetMapping
     ResponseEntity<List<RefreshTokenDto>> getAllRefreshTokens();
 
@@ -98,6 +102,7 @@ public interface RefreshTokenApi {
      * @return ответ со списком всех refresh-токенов определённого пользователя,
      * список может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_REFRESH_TOKENS')")
     @GetMapping("/by-user")
     ResponseEntity<List<RefreshTokenDto>> getAllRefreshTokensByUser(
             @NotNull(message = "UserId is null")
@@ -118,6 +123,7 @@ public interface RefreshTokenApi {
      * </p>
      * @return ответ с количеством всех имеющихся refresh-токенов, список может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_REFRESH_TOKENS')")
     @GetMapping("/count")
     ResponseEntity<Long> countRefreshTokens();
 
@@ -134,6 +140,7 @@ public interface RefreshTokenApi {
      * @param revoked флаг аннуляции. {@code true} - аннулированные, {@code false} - иначе
      * @return ответ с количеством всех имеющихся refresh-токенов, список может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_REFRESH_TOKENS')")
     @GetMapping("/count/{revoked}")
     ResponseEntity<Long> countByRevokedRefreshTokens(
             @PathVariable
@@ -156,6 +163,7 @@ public interface RefreshTokenApi {
      * @param hash хэш токена
      * @return статус выполнения запроса
      */
+    @PreAuthorize("hasAuthority('REVOKE_REFRESH_TOKENS')")
     @PostMapping("/revoke/{hash}")
     ResponseEntity<Void> revokeRefreshTokenByHash(
             @NotBlank(message = "Hash is blank")
@@ -180,6 +188,7 @@ public interface RefreshTokenApi {
      * @param userId идентификатор пользователя, токены которого аннулируем
      * @return статус выполнения запроса
      */
+    @PreAuthorize("hasAuthority('REVOKE_REFRESH_TOKENS')")
     @PostMapping("/users/{userId}/revoke")
     ResponseEntity<Void> revokeRefreshTokensByUserId(
             @NotNull(message = "UserId is null")
@@ -205,6 +214,7 @@ public interface RefreshTokenApi {
      * @param cutoff момент времени, до которого (строго раньше) удаляются токены
      * @return статус выполнения запроса
      */
+    @PreAuthorize("hasAuthority('REVOKE_REFRESH_TOKENS')")
     @DeleteMapping("/cleanup")
     ResponseEntity<Void> deleteExpiredOrRevokedBefore(
             @NotNull(message = "Cutoff is null")
