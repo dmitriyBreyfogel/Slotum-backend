@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +41,7 @@ public interface ResourceApi {
      * @param request данные создаваемого ресурса
      * @return ответ с созданным ресурсом
      */
+    @PreAuthorize("hasAuthority('MANAGE_RESOURCES')")
     @PostMapping
     ResponseEntity<ResourceDto> create(
             @Valid
@@ -64,6 +66,7 @@ public interface ResourceApi {
      * @param id идентификатор ресурса
      * @return ответ с найденным ресурсом
      */
+    @PreAuthorize("hasAuthority('VIEW_RESOURCES')")
     @GetMapping("/{id}")
     ResponseEntity<ResourceDto> getResource(
             @NotNull(message = "Id is null")
@@ -84,6 +87,7 @@ public interface ResourceApi {
      *
      * @return ответ со списком ресурсов, который может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_RESOURCES')")
     @GetMapping
     ResponseEntity<List<ResourceDto>> getAllResources();
 
@@ -104,6 +108,7 @@ public interface ResourceApi {
      * @param id идентификатор ресурса
      * @return ответ с удалённым ресурсом
      */
+    @PreAuthorize("hasAuthority('MANAGE_RESOURCES')")
     @DeleteMapping("/{id}")
     ResponseEntity<ResourceDto> deleteResource(
             @NotNull(message = "Id is null")
@@ -124,6 +129,7 @@ public interface ResourceApi {
      *
      * @return ответ без тела
      */
+    @PreAuthorize("hasAuthority('MANAGE_RESOURCES')")
     @DeleteMapping
     ResponseEntity<Void> deleteAllResources();
 }
