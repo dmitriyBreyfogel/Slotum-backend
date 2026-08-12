@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,6 +44,7 @@ public interface PermissionApi {
      * @param request данные создаваемого разрешения
      * @return ответ с созданным разрешением
      */
+    @PreAuthorize("hasAuthority('MANAGE_PERMISSIONS')")
     @PostMapping
     ResponseEntity<PermissionDto> create(
             @Valid
@@ -67,6 +69,7 @@ public interface PermissionApi {
      * @param id идентификатор разрешения
      * @return ответ с найденным разрешением
      */
+    @PreAuthorize("hasAuthority('VIEW_PERMISSIONS')")
     @GetMapping("/{id}")
     ResponseEntity<PermissionDto> getPermission(
             @NotNull(message = "Id is null")
@@ -92,6 +95,7 @@ public interface PermissionApi {
      * @param code код разрешения
      * @return ответ с найденным разрешением
      */
+    @PreAuthorize("hasAuthority('VIEW_PERMISSIONS')")
     @GetMapping("/by-code")
     ResponseEntity<PermissionDto> getByCode(
             @NotBlank(message = "Code is blank")
@@ -112,6 +116,7 @@ public interface PermissionApi {
      *
      * @return ответ со списком разрешений, который может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_PERMISSIONS')")
     @GetMapping
     ResponseEntity<List<PermissionDto>> getAllPermissions();
 
@@ -132,6 +137,7 @@ public interface PermissionApi {
      * @param id идентификатор разрешения
      * @return ответ с удалённым разрешением
      */
+    @PreAuthorize("hasAuthority('MANAGE_PERMISSIONS')")
     @DeleteMapping("/{id}")
     ResponseEntity<PermissionDto> deletePermission(
             @NotNull(message = "Id is null")
@@ -152,6 +158,7 @@ public interface PermissionApi {
      *
      * @return ответ без тела
      */
+    @PreAuthorize("hasAuthority('MANAGE_PERMISSIONS')")
     @DeleteMapping
     ResponseEntity<Void> deleteAllPermissions();
 }
