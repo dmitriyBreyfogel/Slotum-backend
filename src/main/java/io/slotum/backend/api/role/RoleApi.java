@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +43,7 @@ public interface RoleApi {
      * @param request данные создаваемой роли
      * @return ответ с созданной ролью
      */
+    @PreAuthorize("hasAuthority('MANAGE_ROLES')")
     @PostMapping
     ResponseEntity<RoleDto> create(
             @Valid
@@ -66,6 +68,7 @@ public interface RoleApi {
      * @param id идентификатор роли
      * @return ответ с найденной ролью
      */
+    @PreAuthorize("hasAuthority('VIEW_ROLES')")
     @GetMapping("/{id}")
     ResponseEntity<RoleDto> getRole(
             @NotNull(message = "Id is null")
@@ -91,6 +94,7 @@ public interface RoleApi {
      * @param name название роли
      * @return ответ с найденной ролью
      */
+    @PreAuthorize("hasAuthority('VIEW_ROLES')")
     @GetMapping("/by-name")
     ResponseEntity<RoleDto> getByName(
             @NotNull(message = "Name is null")
@@ -110,6 +114,7 @@ public interface RoleApi {
      *
      * @return ответ со списком ролей, который может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_ROLES')")
     @GetMapping
     ResponseEntity<List<RoleDto>> getAllRoles();
 
@@ -130,6 +135,7 @@ public interface RoleApi {
      * @param id идентификатор роли
      * @return ответ с удалённой ролью
      */
+    @PreAuthorize("hasAuthority('MANAGE_ROLES')")
     @DeleteMapping("/{id}")
     ResponseEntity<RoleDto> deleteRole(
             @NotNull(message = "Id is null")
@@ -150,6 +156,7 @@ public interface RoleApi {
      *
      * @return ответ без тела
      */
+    @PreAuthorize("hasAuthority('MANAGE_ROLES')")
     @DeleteMapping
     ResponseEntity<Void> deleteAllRoles();
 }
