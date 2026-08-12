@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,6 +52,7 @@ public interface SlotApi {
      * @param request данные создаваемого слота
      * @return ответ с созданным слотом
      */
+    @PreAuthorize("hasAuthority('CREATE_SLOT')")
     @PostMapping
     ResponseEntity<SlotDto> create(
             @Valid
@@ -75,6 +77,7 @@ public interface SlotApi {
      * @param id идентификатор слота
      * @return ответ с найденным слотом
      */
+    @PreAuthorize("hasAuthority('VIEW_SLOT')")
     @GetMapping("/{id}")
     ResponseEntity<SlotDto> getSlot(
             @NotNull(message = "Id is null")
@@ -95,6 +98,7 @@ public interface SlotApi {
      *
      * @return ответ со списком слотов, который может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_ANY_SLOTS')")
     @GetMapping
     ResponseEntity<List<SlotDto>> getAllSlots();
 
@@ -115,6 +119,7 @@ public interface SlotApi {
      * @param id идентификатор слота
      * @return ответ с удалённым слотом
      */
+    @PreAuthorize("hasAuthority('MANAGE_ANY_SLOTS')")
     @DeleteMapping("/{id}")
     ResponseEntity<SlotDto> deleteSlot(
             @NotNull(message = "Id is null")
@@ -135,6 +140,7 @@ public interface SlotApi {
      *
      * @return ответ без тела
      */
+    @PreAuthorize("hasAuthority('DELETE_ALL_SLOTS')")
     @DeleteMapping
     ResponseEntity<Void> deleteAllSlots();
 }
