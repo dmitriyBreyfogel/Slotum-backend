@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -49,6 +50,7 @@ public interface MeApi {
      * @param request данные создаваемого специалиста
      * @return ответ с созданным специалистом
      */
+    @PreAuthorize("hasAuthority('CREATE_OWN_SPECIALIST')")
     @PostMapping("/specialist")
     ResponseEntity<SpecialistDto> createSpecialistFromMe(
             @AuthenticationPrincipal
@@ -81,6 +83,7 @@ public interface MeApi {
      * @param request данные создаваемой организации
      * @return ответ с созданной организацией
      */
+    @PreAuthorize("hasAuthority('CREATE_OWN_ORGANIZATION')")
     @PostMapping("/organizations")
     ResponseEntity<OrganizationDto> createMyOrganization(
             @AuthenticationPrincipal
@@ -106,6 +109,7 @@ public interface MeApi {
      * @param currentUser текущий аутентифицированный пользователь
      * @return ответ со списком организаций специалиста, который может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_OWN_ORGANIZATIONS')")
     @GetMapping("/organizations")
     ResponseEntity<List<OrganizationDto>> getMyOrganizations(
             @AuthenticationPrincipal
@@ -133,6 +137,7 @@ public interface MeApi {
      * @param organizationId идентификатор организации
      * @return ответ с удалённым членством в организации
      */
+    @PreAuthorize("hasAuthority('MANAGE_OWN_ORGANIZATION')")
     @DeleteMapping("/organizations/{organizationId}")
     ResponseEntity<OrganizationMemberDto> removeMeFromOrganization(
             @AuthenticationPrincipal
