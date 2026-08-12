@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +51,7 @@ public interface SlotBookingRequestApi {
      * @param request данные создаваемой заявки
      * @return ответ с созданной заявкой
      */
+    @PreAuthorize("hasAuthority('CREATE_BOOKING')")
     @PostMapping
     ResponseEntity<SlotBookingRequestDto> create(
             @AuthenticationPrincipal
@@ -77,6 +79,7 @@ public interface SlotBookingRequestApi {
      * @param id идентификатор заявки
      * @return ответ с найденной заявкой
      */
+    @PreAuthorize("hasAuthority('VIEW_ANY_BOOKINGS')")
     @GetMapping("/{id}")
     ResponseEntity<SlotBookingRequestDto> getById(
             @NotNull(message = "Id is null")
@@ -100,6 +103,7 @@ public interface SlotBookingRequestApi {
      * @param currentUser текущий аутентифицированный пользователь
      * @return ответ со списком заявок пользователя, который может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_OWN_BOOKINGS')")
     @GetMapping("/me")
     ResponseEntity<List<SlotBookingRequestDto>> getMy(
             @AuthenticationPrincipal
@@ -121,6 +125,7 @@ public interface SlotBookingRequestApi {
      * @param currentUser текущий аутентифицированный пользователь
      * @return ответ со списком входящих заявок, который может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_ANY_BOOKINGS')")
     @GetMapping("/incoming")
     ResponseEntity<List<SlotBookingRequestDto>> getIncoming(
             @AuthenticationPrincipal
@@ -147,6 +152,7 @@ public interface SlotBookingRequestApi {
      * @param slotId идентификатор слота
      * @return ответ со списком заявок на слот, который может быть пустым
      */
+    @PreAuthorize("hasAuthority('VIEW_ANY_BOOKINGS')")
     @GetMapping("/slots/{slotId}")
     ResponseEntity<List<SlotBookingRequestDto>> getBySlot(
             @AuthenticationPrincipal
@@ -188,6 +194,7 @@ public interface SlotBookingRequestApi {
      * @param id идентификатор заявки
      * @return ответ с принятой заявкой
      */
+    @PreAuthorize("hasAuthority('ACCEPT_BOOKING')")
     @PostMapping("/{id}/accept")
     ResponseEntity<SlotBookingRequestDto> accept(
             @AuthenticationPrincipal
@@ -227,6 +234,7 @@ public interface SlotBookingRequestApi {
      * @param id идентификатор заявки
      * @return ответ с отклонённой заявкой
      */
+    @PreAuthorize("hasAuthority('REJECT_BOOKING')")
     @PostMapping("/{id}/reject")
     ResponseEntity<SlotBookingRequestDto> reject(
             @AuthenticationPrincipal
@@ -264,6 +272,7 @@ public interface SlotBookingRequestApi {
      * @param id идентификатор заявки
      * @return ответ с отменённой заявкой
      */
+    @PreAuthorize("hasAuthority('CANCEL_OWN_BOOKING')")
     @PostMapping("/{id}/cancel")
     ResponseEntity<SlotBookingRequestDto> cancel(
             @AuthenticationPrincipal
