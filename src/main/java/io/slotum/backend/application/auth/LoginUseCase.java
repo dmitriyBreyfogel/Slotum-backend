@@ -1,5 +1,6 @@
 package io.slotum.backend.application.auth;
 
+import io.slotum.backend.domain.permission.Permission;
 import io.slotum.backend.domain.role.RoleNames;
 import io.slotum.backend.domain.user.User;
 import io.slotum.backend.domain.user.UserRepository;
@@ -50,7 +51,12 @@ public class LoginUseCase {
                 .map(RoleNames::name)
                 .collect(Collectors.toSet());
 
-        String accessToken = jwtService.issueAccessToken(user.getId(), user.getEmail().value(), roles);
+        Set<String> permissions = userRepository.findPermissionsById(user.getId())
+                .stream()
+                .map(Permission::getCode)
+                .collect(Collectors.toSet());
+
+        String accessToken = jwtService.issueAccessToken(user.getId(), user.getEmail().value(), roles, permissions);
         return new Result(accessToken, "Bearer");
     }
 
