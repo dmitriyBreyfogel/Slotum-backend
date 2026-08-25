@@ -32,7 +32,9 @@ public final class Phone {
             throw AppException.build(
                     ErrorCode.INVALID_USER_PHONE,
                     "Invalid phone format",
-                    Map.of("phone", phone)
+                    phone == null
+                            ? Map.of()
+                            : Map.of("phone", phone)
             );
         }
 
