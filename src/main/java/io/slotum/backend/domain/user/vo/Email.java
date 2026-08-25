@@ -48,7 +48,7 @@ public final class Email {
     }
 
     public static boolean isValid(String email) {
-        return EMAIL_PATTERN.matcher(email).matches();
+        return email != null && EMAIL_PATTERN.matcher(email).matches();
     }
 
     public String value() {
