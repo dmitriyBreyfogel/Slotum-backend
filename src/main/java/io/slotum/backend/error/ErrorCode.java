@@ -2,39 +2,41 @@ package io.slotum.backend.error;
 
 import org.springframework.http.HttpStatus;
 
+/**
+ * Коды серверных ошибок
+ */
 public enum ErrorCode {
-    // Codes
 
-    // Auth
+    /* Auth */
     AUTH_INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED),
 
-    // User
+    /* User */
     INVALID_USER_EMAIL(HttpStatus.BAD_REQUEST),
     USER_EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT),
     INVALID_USER_PASSWORD(HttpStatus.BAD_REQUEST),
     INVALID_USER_PHONE(HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND),
 
-    // Organization
+    /* Organization */
     INVALID_ORGANIZATION_GRADE(HttpStatus.BAD_REQUEST),
     ORGANIZATION_ALREADY_EXISTS(HttpStatus.CONFLICT),
     ORGANIZATION_NOT_FOUND(HttpStatus.NOT_FOUND),
     ORGANIZATION_MEMBERSHIP_ALREADY_EXISTS(HttpStatus.CONFLICT),
     ORGANIZATION_MEMBERSHIP_NOT_FOUND(HttpStatus.NOT_FOUND),
 
-    // Specialist
+    /* Specialist */
     INVALID_SPECIALIST_GRADE(HttpStatus.BAD_REQUEST),
     SPECIALIST_ALREADY_EXISTS(HttpStatus.CONFLICT),
     SPECIALIST_NOT_FOUND(HttpStatus.NOT_FOUND),
 
-    // Slot
+    /* Slot */
     INVALID_SLOT_TIME_RANGE(HttpStatus.BAD_REQUEST),
     INVALID_SLOT_CUSTOMER_ID(HttpStatus.BAD_REQUEST),
     SLOT_ALREADY_EXISTS(HttpStatus.CONFLICT),
     SLOT_NOT_FOUND(HttpStatus.NOT_FOUND),
     SLOT_OVERLAPPING(HttpStatus.CONFLICT),
 
-    // Slot booking request
+    /* Slot booking request */
     INVALID_SLOT_BOOKING_REQUEST_DECIDED_AT(HttpStatus.BAD_REQUEST),
     INVALID_SLOT_BOOKING_REQUEST_TIME_RANGE(HttpStatus.BAD_REQUEST),
     SLOT_BOOKING_REQUEST_ALREADY_EXISTS(HttpStatus.CONFLICT),
@@ -43,16 +45,16 @@ public enum ErrorCode {
     SLOT_BOOKING_REQUEST_SLOT_NOT_FREE(HttpStatus.CONFLICT),
     SLOT_BOOKING_REQUEST_FORBIDDEN(HttpStatus.FORBIDDEN),
 
-    // Role
+    /* Role */
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND),
 
-    // Permission
+    /* Permission */
     PERMISSION_NOT_FOUND(HttpStatus.NOT_FOUND),
 
-    // Resource
+    /* Resource */
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND),
 
-    // Refresh tokens
+    /* Refresh tokens */
     INVALID_REFRESH_TOKEN_ID(HttpStatus.BAD_REQUEST),
     INVALID_REFRESH_TOKEN_USER_ID(HttpStatus.BAD_REQUEST),
     INVALID_REFRESH_TOKEN_HASH(HttpStatus.BAD_REQUEST),
@@ -68,6 +70,10 @@ public enum ErrorCode {
         this.httpStatus = httpStatus;
     }
 
+    /**
+     * Получение http статуса ошибки
+     * @return статус ошибки
+     */
     public HttpStatus httpStatus() {
         return httpStatus;
     }
