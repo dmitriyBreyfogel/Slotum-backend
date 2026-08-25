@@ -52,11 +52,13 @@ public final class RefreshTokenTest {
     }
 
     @Test
-    @DisplayName("Создание токена с пустым хэшем")
-    void creationWithBlankHash() {
-        RefreshToken token = RefreshToken.create(1L, "   ", NOW.plusSeconds(3600));
+    @DisplayName("Создание токена с пустым хэшем бросает ошибку")
+    void creationWithBlankHashThrows() {
+        AppException ex = assertThrows(AppException.class, () ->
+                RefreshToken.create(1L, "   ", NOW.plusSeconds(3600))
+        );
 
-        assertNull(token.getTokenHash());
+        assertEquals(ErrorCode.INVALID_REFRESH_TOKEN_HASH, ex.getCode());
     }
 
     /* Ревокация */
@@ -91,7 +93,8 @@ public final class RefreshTokenTest {
     @Test
     @DisplayName("Токен невалиден, если истёк")
     void isInvalidWhenExpired() {
-        RefreshToken token = RefreshToken.create(1L, "hash", NOW.minusSeconds(60));
+        Instant issuedAt = NOW.minusSeconds(7200);
+        RefreshToken token = RefreshToken.restore(1L, 1L, "hash", issuedAt, NOW.minusSeconds(3600), false);
 
         assertFalse(token.isValid());
     }
