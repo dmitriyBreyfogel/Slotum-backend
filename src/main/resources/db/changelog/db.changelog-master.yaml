@@ -39,3 +39,5 @@ databaseChangeLog:
       file: db/changelog/changes/019-assign-permissions-to-roles.sql
   - include:
       file: db/changelog/changes/020-insert-permission-resources.sql
+  - include:
+      file: db/changelog/changes/021-create-notifications.sql
