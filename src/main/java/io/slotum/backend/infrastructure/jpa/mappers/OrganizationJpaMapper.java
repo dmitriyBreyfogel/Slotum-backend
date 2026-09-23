@@ -22,7 +22,7 @@ public final class OrganizationJpaMapper {
 
     public static OrganizationJpa toJpa(Organization source) {
         if (source == null) {
-            throw new IllegalArgumentException("OrganizationJpa source is null");
+            throw new IllegalArgumentException("Organization source is null");
         }
 
         return new OrganizationJpa(
