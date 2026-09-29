@@ -2,12 +2,12 @@ package io.slotum.backend.api.permission;
 
 import io.slotum.backend.api.permission.dto.CreatePermissionRequest;
 import io.slotum.backend.api.permission.dto.PermissionDto;
-import io.slotum.backend.application.permission.CreatePermissionUseCase;
-import io.slotum.backend.application.permission.DeleteAllPermissionsUseCase;
-import io.slotum.backend.application.permission.DeleteByIdPermissionUseCase;
-import io.slotum.backend.application.permission.GetAllPermissionsUseCase;
-import io.slotum.backend.application.permission.GetByCodePermissionUseCase;
-import io.slotum.backend.application.permission.GetPermissionUseCase;
+import io.slotum.backend.application.usecase.permission.CreatePermissionUseCase;
+import io.slotum.backend.application.usecase.permission.DeleteAllPermissionsUseCase;
+import io.slotum.backend.application.usecase.permission.DeleteByIdPermissionUseCase;
+import io.slotum.backend.application.usecase.permission.GetAllPermissionsUseCase;
+import io.slotum.backend.application.usecase.permission.GetByCodePermissionUseCase;
+import io.slotum.backend.application.usecase.permission.GetPermissionUseCase;
 import io.slotum.backend.domain.permission.Permission;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

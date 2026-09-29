@@ -2,11 +2,11 @@ package io.slotum.backend.api.slot;
 
 import io.slotum.backend.api.slot.dto.CreateSlotRequest;
 import io.slotum.backend.api.slot.dto.SlotDto;
-import io.slotum.backend.application.slot.CreateSlotUseCase;
-import io.slotum.backend.application.slot.DeleteAllSlotUseCase;
-import io.slotum.backend.application.slot.DeleteByIdSlotUseCase;
-import io.slotum.backend.application.slot.GetAllSlotsUseCase;
-import io.slotum.backend.application.slot.GetSlotUseCase;
+import io.slotum.backend.application.usecase.slot.CreateSlotUseCase;
+import io.slotum.backend.application.usecase.slot.DeleteAllSlotUseCase;
+import io.slotum.backend.application.usecase.slot.DeleteByIdSlotUseCase;
+import io.slotum.backend.application.usecase.slot.GetAllSlotsUseCase;
+import io.slotum.backend.application.usecase.slot.GetSlotUseCase;
 import io.slotum.backend.domain.slot.Slot;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

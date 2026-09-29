@@ -1,7 +1,7 @@
 package io.slotum.backend.api.refreshToken;
 
 import io.slotum.backend.api.refreshToken.dto.RefreshTokenDto;
-import io.slotum.backend.application.refreshToken.*;
+import io.slotum.backend.application.usecase.refreshToken.*;
 import io.slotum.backend.domain.refreshToken.RefreshToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

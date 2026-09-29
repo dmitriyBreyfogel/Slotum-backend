@@ -2,11 +2,11 @@ package io.slotum.backend.api.resource;
 
 import io.slotum.backend.api.resource.dto.CreateResourceRequest;
 import io.slotum.backend.api.resource.dto.ResourceDto;
-import io.slotum.backend.application.resource.CreateResourceUseCase;
-import io.slotum.backend.application.resource.DeleteAllResourcesUseCase;
-import io.slotum.backend.application.resource.DeleteByIdResourceUseCase;
-import io.slotum.backend.application.resource.GetAllResourcesUseCase;
-import io.slotum.backend.application.resource.GetResourceUseCase;
+import io.slotum.backend.application.usecase.resource.CreateResourceUseCase;
+import io.slotum.backend.application.usecase.resource.DeleteAllResourcesUseCase;
+import io.slotum.backend.application.usecase.resource.DeleteByIdResourceUseCase;
+import io.slotum.backend.application.usecase.resource.GetAllResourcesUseCase;
+import io.slotum.backend.application.usecase.resource.GetResourceUseCase;
 import io.slotum.backend.domain.resource.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

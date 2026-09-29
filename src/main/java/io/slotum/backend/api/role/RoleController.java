@@ -2,12 +2,12 @@ package io.slotum.backend.api.role;
 
 import io.slotum.backend.api.role.dto.CreateRoleRequest;
 import io.slotum.backend.api.role.dto.RoleDto;
-import io.slotum.backend.application.role.CreateRoleUseCase;
-import io.slotum.backend.application.role.DeleteAllRolesUseCase;
-import io.slotum.backend.application.role.DeleteByIdRoleUseCase;
-import io.slotum.backend.application.role.GetAllRolesUseCase;
-import io.slotum.backend.application.role.GetByNameRoleUseCase;
-import io.slotum.backend.application.role.GetRoleUseCase;
+import io.slotum.backend.application.usecase.role.CreateRoleUseCase;
+import io.slotum.backend.application.usecase.role.DeleteAllRolesUseCase;
+import io.slotum.backend.application.usecase.role.DeleteByIdRoleUseCase;
+import io.slotum.backend.application.usecase.role.GetAllRolesUseCase;
+import io.slotum.backend.application.usecase.role.GetByNameRoleUseCase;
+import io.slotum.backend.application.usecase.role.GetRoleUseCase;
 import io.slotum.backend.domain.role.Role;
 import io.slotum.backend.domain.role.RoleNames;
 import org.springframework.http.HttpStatus;

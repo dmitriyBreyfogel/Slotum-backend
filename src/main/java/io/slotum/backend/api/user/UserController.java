@@ -2,7 +2,7 @@ package io.slotum.backend.api.user;
 
 import io.slotum.backend.api.user.dto.CreateUserRequest;
 import io.slotum.backend.api.user.dto.UserDto;
-import io.slotum.backend.application.user.*;
+import io.slotum.backend.application.usecase.user.*;
 import io.slotum.backend.domain.user.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
