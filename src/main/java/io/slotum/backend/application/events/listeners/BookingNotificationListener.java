@@ -1,5 +1,6 @@
 package io.slotum.backend.application.events.listeners;
 
+import io.slotum.backend.application.events.booking.BookingAcceptedEvent;
 import io.slotum.backend.application.events.booking.BookingRequestCreatedEvent;
 import io.slotum.backend.domain.notification.Notification;
 import io.slotum.backend.domain.notification.NotificationRepository;
@@ -20,7 +21,7 @@ public class BookingNotificationListener {
 
     private static final DateTimeFormatter SLOT_TIME_FORMAT =
             DateTimeFormatter.ofPattern(
-                    "d MMMM yyyy 'в' HH:mm",
+                    "d MMMM 'в' HH:mm",
                     Locale.forLanguageTag("ru")
             );
 
@@ -52,4 +53,24 @@ public class BookingNotificationListener {
         notificationRepository.save(notification);
     }
 
+    /**
+     * Формирование и сохранение уведомления пользователю об одобрении его заявки на запись
+     * @param event событие успешного одобрения заявки на запись
+     */
+    @EventListener
+    public void on(BookingAcceptedEvent event) {
+        String message = "Ваша заявка на %s принята"
+                .formatted(
+                        event.slotStartsAt().format(SLOT_TIME_FORMAT)
+                );
+
+        Notification notification = Notification.create(
+                event.customerId(),
+                NotificationType.BOOKING_ACCEPTED,
+                "Ваша заявка на запись одобрена",
+                message
+        );
+
+        notificationRepository.save(notification);
+    }
 }
