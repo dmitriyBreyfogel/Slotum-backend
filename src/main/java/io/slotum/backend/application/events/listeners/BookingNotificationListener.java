@@ -109,7 +109,7 @@ public class BookingNotificationListener {
                 );
 
         Notification notification = Notification.create(
-                event.specialistId(),
+                event.specialistUserId(),
                 NotificationType.BOOKING_CANCELLED,
                 "Ваша заявка на запись отменена клиентом",
                 message

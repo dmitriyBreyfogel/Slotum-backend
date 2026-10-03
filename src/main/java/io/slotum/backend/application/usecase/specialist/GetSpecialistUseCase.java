@@ -24,7 +24,7 @@ public class GetSpecialistUseCase {
             throw AppException.build(
                     ErrorCode.SPECIALIST_NOT_FOUND,
                     "Specialist not found",
-                    Map.of("specialistId", specialistId)
+                    Map.of("specialistUserId", specialistId)
             );
         }
 
