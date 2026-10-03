@@ -69,7 +69,7 @@ public class BookingNotificationListener {
         Notification notification = Notification.create(
                 event.customerId(),
                 NotificationType.BOOKING_ACCEPTED,
-                "Ваша заявка на запись одобрена",
+                "Заявка принята",
                 message
         );
 
@@ -90,7 +90,7 @@ public class BookingNotificationListener {
         Notification notification = Notification.create(
                 event.customerId(),
                 NotificationType.BOOKING_REJECTED,
-                "Ваша заявка на запись отклонена",
+                "Заявка отклонена",
                 message
         );
 
@@ -103,7 +103,7 @@ public class BookingNotificationListener {
      */
     @EventListener
     public void on(BookingCancelledEvent event) {
-        String message = "Ваша заявка на %s отменена клиентом"
+        String message = "Клиент отменил заявку на запись %s"
                 .formatted(
                         event.slotStartsAt().format(SLOT_TIME_FORMAT)
                 );
@@ -111,7 +111,7 @@ public class BookingNotificationListener {
         Notification notification = Notification.create(
                 event.specialistUserId(),
                 NotificationType.BOOKING_CANCELLED,
-                "Ваша заявка на запись отменена клиентом",
+                "Заявка отменена",
                 message
         );
 
