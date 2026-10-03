@@ -1,9 +1,13 @@
 package io.slotum.backend.application.usecase.slotBookingRequest;
 
+import io.slotum.backend.application.events.booking.BookingCancelledEvent;
+import io.slotum.backend.domain.slot.Slot;
+import io.slotum.backend.domain.slot.SlotRepository;
 import io.slotum.backend.domain.slotBookingRequest.SlotBookingRequest;
 import io.slotum.backend.domain.slotBookingRequest.SlotBookingRequestRepository;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,10 +17,19 @@ import java.util.Optional;
 
 @Service
 public class CancelSlotBookingRequestUseCase {
-    private final SlotBookingRequestRepository slotBookingRequestRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public CancelSlotBookingRequestUseCase(SlotBookingRequestRepository slotBookingRequestRepository) {
+    private final SlotBookingRequestRepository slotBookingRequestRepository;
+    private final SlotRepository slotRepository;
+
+    public CancelSlotBookingRequestUseCase(
+            ApplicationEventPublisher eventPublisher,
+            SlotBookingRequestRepository slotBookingRequestRepository,
+            SlotRepository slotRepository
+    ) {
+        this.eventPublisher = eventPublisher;
         this.slotBookingRequestRepository = slotBookingRequestRepository;
+        this.slotRepository = slotRepository;
     }
 
     @Transactional
@@ -43,6 +56,7 @@ public class CancelSlotBookingRequestUseCase {
 
         LocalDateTime decidedAt = LocalDateTime.now();
         SlotBookingRequest cancelledSlotBookingRequest = slotBookingRequest.get().cancel(decidedAt);
+        Slot slot = getSlot(cancelledSlotBookingRequest.getSlotId());
         boolean cancelled = slotBookingRequestRepository.cancelIfPending(
                 slotBookingRequest.get().getId(),
                 decidedAt
@@ -56,6 +70,28 @@ public class CancelSlotBookingRequestUseCase {
             );
         }
 
+        eventPublisher.publishEvent(
+                new BookingCancelledEvent(
+                        cancelledSlotBookingRequest.getId(),
+                        slot.getSpecialistUserId(),
+                        slot.getStartsAt()
+                )
+        );
+
         return cancelledSlotBookingRequest;
+    }
+
+    private Slot getSlot(Long slotBookingRequestId) {
+        Optional<Slot> result = slotRepository.findById(slotBookingRequestId);
+
+        if (result.isEmpty()) {
+            throw AppException.build(
+                    ErrorCode.SLOT_NOT_FOUND,
+                    "Slot not found by slotBookingRequestId",
+                    Map.of("slotBookingRequestId", slotBookingRequestId)
+            );
+        }
+
+        return result.get();
     }
 }
