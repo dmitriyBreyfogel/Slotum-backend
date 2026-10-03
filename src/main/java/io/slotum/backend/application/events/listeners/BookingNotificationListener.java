@@ -1,6 +1,7 @@
 package io.slotum.backend.application.events.listeners;
 
 import io.slotum.backend.application.events.booking.BookingAcceptedEvent;
+import io.slotum.backend.application.events.booking.BookingCancelledEvent;
 import io.slotum.backend.application.events.booking.BookingRejectedEvent;
 import io.slotum.backend.application.events.booking.BookingRequestCreatedEvent;
 import io.slotum.backend.domain.notification.Notification;
@@ -90,6 +91,27 @@ public class BookingNotificationListener {
                 event.customerId(),
                 NotificationType.BOOKING_REJECTED,
                 "Ваша заявка на запись отклонена",
+                message
+        );
+
+        notificationRepository.save(notification);
+    }
+
+    /**
+     * Формирование и сохранение уведомления специалисту об отмене заявки на запись клиентом
+     * @param event событие успешной отмены заявки на запись
+     */
+    @EventListener
+    public void on(BookingCancelledEvent event) {
+        String message = "Ваша заявка на %s отменена клиентом"
+                .formatted(
+                        event.slotStartsAt().format(SLOT_TIME_FORMAT)
+                );
+
+        Notification notification = Notification.create(
+                event.specialistId(),
+                NotificationType.BOOKING_CANCELLED,
+                "Ваша заявка на запись отменена клиентом",
                 message
         );
 
