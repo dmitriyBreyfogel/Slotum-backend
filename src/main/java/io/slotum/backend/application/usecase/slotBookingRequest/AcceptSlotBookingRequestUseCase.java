@@ -1,11 +1,13 @@
 package io.slotum.backend.application.usecase.slotBookingRequest;
 
+import io.slotum.backend.application.events.booking.BookingAcceptedEvent;
 import io.slotum.backend.domain.slot.Slot;
 import io.slotum.backend.domain.slot.SlotRepository;
 import io.slotum.backend.domain.slotBookingRequest.SlotBookingRequest;
 import io.slotum.backend.domain.slotBookingRequest.SlotBookingRequestRepository;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +18,17 @@ import java.util.Optional;
 
 @Service
 public class AcceptSlotBookingRequestUseCase {
+    private final ApplicationEventPublisher eventPublisher;
+
     private final SlotBookingRequestRepository slotBookingRequestRepository;
     private final SlotRepository slotRepository;
 
     public AcceptSlotBookingRequestUseCase(
+            ApplicationEventPublisher eventPublisher,
             SlotBookingRequestRepository slotBookingRequestRepository,
             SlotRepository slotRepository
     ) {
+        this.eventPublisher = eventPublisher;
         this.slotBookingRequestRepository = slotBookingRequestRepository;
         this.slotRepository = slotRepository;
     }
@@ -66,6 +72,14 @@ public class AcceptSlotBookingRequestUseCase {
                     Map.of("id", slotBookingRequest.getId())
             );
         }
+
+        eventPublisher.publishEvent(
+            new BookingAcceptedEvent(
+                    slotBookingRequest.getId(),
+                    slotBookingRequest.getCustomerId(),
+                    slot.getStartsAt()
+            )
+        );
 
         slotBookingRequestRepository.findPendingBySlotId(slot.getId()).stream()
                 .filter(otherRequest -> !Objects.equals(otherRequest.getId(), slotBookingRequest.getId()))
