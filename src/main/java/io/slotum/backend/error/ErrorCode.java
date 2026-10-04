@@ -62,6 +62,9 @@ public enum ErrorCode {
     INVALID_REFRESH_TOKEN_EXPIRES_AT(HttpStatus.BAD_REQUEST),
     INVALID_REFRESH_TOKEN_TIME_RANGE(HttpStatus.BAD_REQUEST),
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND),
+
+    /* Notifications */
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND),
     ;
 
     private final HttpStatus httpStatus;
