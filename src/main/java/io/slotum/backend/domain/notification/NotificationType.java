@@ -23,20 +23,5 @@ public enum NotificationType {
     /**
      * Заявка на запись отменена
      */
-    BOOKING_CANCELLED,
-
-    /**
-     * Слот удалён
-     */
-    SLOT_REMOVED,
-
-    /**
-     * Данные слота изменены
-     */
-    SLOT_UPDATED,
-
-    /**
-     * Получено новое сообщение
-     */
-    NEW_MESSAGE
+    BOOKING_CANCELLED
 }
