@@ -1,14 +1,12 @@
 package io.slotum.backend.api.me;
 
-import io.slotum.backend.api.me.dto.CreateOrganizationRequest;
-import io.slotum.backend.api.me.dto.CreateSpecialistRequest;
-import io.slotum.backend.api.me.dto.OrganizationDto;
-import io.slotum.backend.api.me.dto.OrganizationMemberDto;
-import io.slotum.backend.api.me.dto.SpecialistDto;
+import io.slotum.backend.api.me.dto.*;
+import io.slotum.backend.application.usecase.notification.*;
 import io.slotum.backend.application.usecase.organization.CreateMyOrganizationUseCase;
 import io.slotum.backend.application.usecase.organizationMember.GetSpecialistOrganizationsUseCase;
 import io.slotum.backend.application.usecase.organizationMember.RemoveSpecialistFromOrganizationUseCase;
 import io.slotum.backend.application.usecase.specialist.CreateSpecialistUseCase;
+import io.slotum.backend.domain.notification.Notification;
 import io.slotum.backend.domain.organization.Organization;
 import io.slotum.backend.domain.organizationMember.OrganizationMember;
 import io.slotum.backend.domain.specialist.Specialist;
@@ -27,17 +25,32 @@ public class MeController implements MeApi {
     private final CreateMyOrganizationUseCase createMyOrganizationUseCase;
     private final GetSpecialistOrganizationsUseCase getSpecialistOrganizationsUseCase;
     private final RemoveSpecialistFromOrganizationUseCase removeSpecialistFromOrganizationUseCase;
+    private final GetAllUserNotificationsUseCase getAllUserNotificationsUseCase;
+    private final GetUnreadUserNotificationsUseCase getUnreadUserNotificationsUseCase;
+    private final CountUnreadUserNotificationsUseCase countUnreadUserNotificationsUseCase;
+    private final ReadNotificationUseCase readNotificationUseCase;
+    private final ReadAllUnreadUserNotificationUseCase readAllUnreadUserNotificationUseCase;
 
     public MeController(
             CreateSpecialistUseCase createSpecialistUseCase,
             CreateMyOrganizationUseCase createMyOrganizationUseCase,
             GetSpecialistOrganizationsUseCase getSpecialistOrganizationsUseCase,
-            RemoveSpecialistFromOrganizationUseCase removeSpecialistFromOrganizationUseCase
+            RemoveSpecialistFromOrganizationUseCase removeSpecialistFromOrganizationUseCase,
+            GetAllUserNotificationsUseCase getAllUserNotificationsUseCase,
+            GetUnreadUserNotificationsUseCase getUnreadUserNotificationsUseCase,
+            CountUnreadUserNotificationsUseCase countUnreadUserNotificationsUseCase,
+            ReadNotificationUseCase readNotificationUseCase,
+            ReadAllUnreadUserNotificationUseCase readAllUnreadUserNotificationUseCase
     ) {
         this.createSpecialistUseCase = createSpecialistUseCase;
         this.createMyOrganizationUseCase = createMyOrganizationUseCase;
         this.getSpecialistOrganizationsUseCase = getSpecialistOrganizationsUseCase;
         this.removeSpecialistFromOrganizationUseCase = removeSpecialistFromOrganizationUseCase;
+        this.getAllUserNotificationsUseCase = getAllUserNotificationsUseCase;
+        this.getUnreadUserNotificationsUseCase = getUnreadUserNotificationsUseCase;
+        this.countUnreadUserNotificationsUseCase = countUnreadUserNotificationsUseCase;
+        this.readNotificationUseCase = readNotificationUseCase;
+        this.readAllUnreadUserNotificationUseCase = readAllUnreadUserNotificationUseCase;
     }
 
     @Override
@@ -113,4 +126,57 @@ public class MeController implements MeApi {
         );
     }
 
+    @Override
+    public ResponseEntity<List<NotificationDto>> getMyNotifications(AuthenticatedUser currentUser) {
+        List<NotificationDto> notifications = getAllUserNotificationsUseCase.execute(currentUser.userId())
+                .stream()
+                .map(MeController::toNotificationDto)
+                .toList();
+
+        return ResponseEntity.ok(notifications);
+    }
+
+    @Override
+    public ResponseEntity<List<NotificationDto>> getMyUnreadNotifications(AuthenticatedUser currentUser) {
+        List<NotificationDto> notifications = getUnreadUserNotificationsUseCase.execute(currentUser.userId())
+                .stream()
+                .map(MeController::toNotificationDto)
+                .toList();
+
+        return ResponseEntity.ok(notifications);
+    }
+
+    @Override
+    public ResponseEntity<Long> countMyUnreadNotifications(AuthenticatedUser currentUser) {
+        Long count = countUnreadUserNotificationsUseCase.execute(currentUser.userId());
+        return ResponseEntity.ok(count);
+    }
+
+    @Override
+    public ResponseEntity<Void> readMyNotification(
+            AuthenticatedUser currentUser,
+            Long notificationId
+    ) {
+        readNotificationUseCase.execute(notificationId, currentUser.userId());
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @Override
+    public ResponseEntity<Long> readAllMyNotifications(AuthenticatedUser currentUser) {
+        Long count = readAllUnreadUserNotificationUseCase.execute(currentUser.userId());
+        return ResponseEntity.ok(count);
+    }
+
+
+    private static NotificationDto toNotificationDto(Notification notification) {
+        return new NotificationDto(
+                notification.getId(),
+                notification.getUserId(),
+                notification.getType(),
+                notification.getTitle(),
+                notification.getMessage(),
+                notification.isRead(),
+                notification.getCreatedAt()
+        );
+    }
 }
