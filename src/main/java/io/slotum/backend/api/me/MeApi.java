@@ -1,10 +1,6 @@
 package io.slotum.backend.api.me;
 
-import io.slotum.backend.api.me.dto.CreateOrganizationRequest;
-import io.slotum.backend.api.me.dto.CreateSpecialistRequest;
-import io.slotum.backend.api.me.dto.OrganizationDto;
-import io.slotum.backend.api.me.dto.OrganizationMemberDto;
-import io.slotum.backend.api.me.dto.SpecialistDto;
+import io.slotum.backend.api.me.dto.*;
 import io.slotum.backend.infrastructure.security.AuthenticatedUser;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +25,7 @@ import java.util.List;
 @RequestMapping("/api/v1/me")
 public interface MeApi {
 
+    //------------------------SPECIALIST------------------------
     /**
      * Создаёт специалиста для текущего пользователя.
      *
@@ -61,6 +58,7 @@ public interface MeApi {
             CreateSpecialistRequest request
     );
 
+    //------------------------ORGANIZATIONS------------------------
     /**
      * Создаёт организацию и добавляет в неё текущего специалиста.
      *
@@ -147,5 +145,41 @@ public interface MeApi {
             @Positive(message = "OrganizationId is not positive")
             @PathVariable("organizationId")
             Long organizationId
+    );
+
+    //------------------------NOTIFICATIONS------------------------
+    @GetMapping("/notifications")
+    ResponseEntity<List<NotificationDto>> getMyNotifications(
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser
+    );
+
+    @GetMapping("/notifications/unread")
+    ResponseEntity<List<NotificationDto>> getMyUnreadNotifications(
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser
+    );
+
+    @GetMapping("/notifications/unread/count")
+    ResponseEntity<Long> countMyUnreadNotifications(
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser
+    );
+
+    @PostMapping("/notifications/{notificationId}/read")
+    ResponseEntity<Void> readMyNotification(
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser,
+
+            @NotNull(message = "NotificationId is null")
+            @Positive(message = "NotificationId is not positive")
+            @PathVariable("notificationId")
+            Long notificationId
+    );
+
+    @PostMapping("/notifications/read-all")
+    ResponseEntity<Long> readAllMyNotifications(
+            @AuthenticationPrincipal
+            AuthenticatedUser currentUser
     );
 }
