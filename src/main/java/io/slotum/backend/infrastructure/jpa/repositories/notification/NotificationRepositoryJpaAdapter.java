@@ -56,7 +56,7 @@ public class NotificationRepositoryJpaAdapter implements NotificationRepository 
     }
 
     @Override
-    public int allRead(Long userId) {
+    public long readAll(Long userId) {
         return notificationJpaRepository.readAll(userId);
     }
 

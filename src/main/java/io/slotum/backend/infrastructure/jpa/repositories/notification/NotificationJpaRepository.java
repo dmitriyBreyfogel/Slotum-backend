@@ -34,7 +34,7 @@ public interface NotificationJpaRepository extends JpaRepository<NotificationJpa
        update NotificationJpa notification
        set notification.isRead = true
        where notification.userId = :userId
-            and notification.isRead = false 
+            and notification.isRead = false
     """)
-    int readAll(@Param("userId") Long userId);
+    long readAll(@Param("userId") Long userId);
 }

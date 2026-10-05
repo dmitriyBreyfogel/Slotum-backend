@@ -55,7 +55,7 @@ public interface NotificationRepository {
      * @param userId идентификатор пользователя
      * @return количество уведомлений, которые были прочитаны
      */
-    int allRead(Long userId);
+    long readAll(Long userId);
 
     /**
      * Удаление уведомления

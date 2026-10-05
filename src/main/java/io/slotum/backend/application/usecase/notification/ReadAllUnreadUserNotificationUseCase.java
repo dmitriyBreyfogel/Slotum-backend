@@ -25,10 +25,10 @@ public class ReadAllUnreadUserNotificationUseCase {
     }
 
     @Transactional
-    public int execute(Long userId) {
+    public long execute(Long userId) {
         validateUserId(userId);
 
-        return notificationRepository.allRead(userId);
+        return notificationRepository.readAll(userId);
     }
 
     private void validateUserId(Long userId) {
