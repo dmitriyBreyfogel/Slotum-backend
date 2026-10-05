@@ -148,24 +148,86 @@ public interface MeApi {
     );
 
     //------------------------NOTIFICATIONS------------------------
+
+    /**
+     * Возвращает все системные уведомления текущего пользователя
+     *
+     * <p>Возможные результаты выполнения запроса:
+     * <ul>
+     *     <li>{@code 200 OK} - успешно получены все системные уведомления пользователя</li>
+     *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
+     *     аутентификация не выполнена</li>
+     *     <li>{@code 404 Not Found} с кодом {@code USER_NOT_FOUND} -
+     *     текущий пользователь не найден</li>
+     * </ul>
+     * @param currentUser текущий аутентифицированный пользователь
+     * @return список системных уведомлений текущего пользователя
+     */
     @GetMapping("/notifications")
     ResponseEntity<List<NotificationDto>> getMyNotifications(
             @AuthenticationPrincipal
             AuthenticatedUser currentUser
     );
 
+    /**
+     * Возвращает все непрочитанные системные уведомления текущего пользователя
+     *
+     * <p>Возможные результаты выполнения запроса:
+     * <ul>
+     *     <li>{@code 200 OK} - успешно получены все непрочитанные системные уведомления пользователя</li>
+     *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
+     *     аутентификация не выполнена</li>
+     *     <li>{@code 404 Not Found} с кодом {@code USER_NOT_FOUND} -
+     *     текущий пользователь не найден</li>
+     * </ul>
+     * @param currentUser текущий аутентифицированный пользователь
+     * @return список непрочитанных уведомлений текущего пользователя
+     */
     @GetMapping("/notifications/unread")
     ResponseEntity<List<NotificationDto>> getMyUnreadNotifications(
             @AuthenticationPrincipal
             AuthenticatedUser currentUser
     );
 
+    /**
+     * Возвращает количество непрочитанных уведомлений текущего пользователя
+     *
+     * <p>Возможные результаты выполнения запроса:
+     * <ul>
+     *     <li>{@code 200 OK} - успешно получено количество непрочитанных уведомлений</li>
+     *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
+     *     аутентификация не выполнена</li>
+     *     <li>{@code 404 Not Found} с кодом {@code USER_NOT_FOUND} -
+     *     текущий пользователь не найден</li>
+     * </ul>
+     * @param currentUser текущий аутентифицированный пользователь
+     * @return количество непрочитанных уведомлений текущего пользователя
+     */
     @GetMapping("/notifications/unread/count")
     ResponseEntity<Long> countMyUnreadNotifications(
             @AuthenticationPrincipal
             AuthenticatedUser currentUser
     );
 
+    /**
+     * Делает конкретное уведомление текущего пользователя прочитанным
+     *
+     * <p>Возможные результаты выполнения запроса:
+     * <ul>
+     *     <li>{@code 200 OK} - уведомление уже прочитано или сделано прочитанным</li>
+     *     <li>{@code 400 Bad Request} с кодом {@code VALIDATION_ERROR} - данные запроса не прошли валидацию</li>
+     *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
+     *     аутентификация не выполнена</li>
+     *     <li>{@code 404 Not Found} с кодом {@code NOTIFICATION_NOT_FOUND} -
+     *     уведомление не найдено</li>
+     *     <li>{@code 404 Not Found} с кодом {@code USER_NOT_FOUND} -
+     *     текущий пользователь не найден</li>
+     * </ul>
+     *
+     * @param currentUser текущий аутентифицированный пользователь
+     * @param notificationId идентификатор уведомления
+     * @return пустой ответ при успешном чтении уведомления
+     */
     @PostMapping("/notifications/{notificationId}/read")
     ResponseEntity<Void> readMyNotification(
             @AuthenticationPrincipal
@@ -177,6 +239,21 @@ public interface MeApi {
             Long notificationId
     );
 
+    /**
+     * Делает все уведомления текущего пользователя прочитанными
+     *
+     * <p>Возможные результаты выполнения запроса:
+     * <ul>
+     *     <li>{@code 200 OK} - все уведомления пользователя стали прочитанными</li>
+     *     <li>{@code 401 Unauthorized} с кодом {@code UNAUTHORIZED} -
+     *     аутентификация не выполнена</li>
+     *     <li>{@code 404 Not Found} с кодом {@code USER_NOT_FOUND} -
+     *     текущий пользователь не найден</li>
+     * </ul>
+     *
+     * @param currentUser текущий аутентифицированный пользователь
+     * @return количество уведомлений, которые сделали прочитанными
+     */
     @PostMapping("/notifications/read-all")
     ResponseEntity<Long> readAllMyNotifications(
             @AuthenticationPrincipal
