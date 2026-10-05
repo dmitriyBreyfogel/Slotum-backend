@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'io.slotum'
-version = '0.0.1-SNAPSHOT'
+version = '0.1.0'
 description = 'backend'
 
 java {
