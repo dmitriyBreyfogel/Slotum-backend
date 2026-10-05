@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-add-pending-slot-booking-request-unique-index
+      author: dmitriyBreyfogel
+      changes:
+        - sql:
+            dbms: postgresql
+            sql: |
+              CREATE UNIQUE INDEX uq_slot_booking_requests_pending_slot_customer
+              ON slot_booking_requests (slot_id, customer_id)
+              WHERE status = 'PENDING';

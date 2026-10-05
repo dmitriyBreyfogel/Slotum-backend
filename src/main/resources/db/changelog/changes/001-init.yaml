@@ -1,0 +1,224 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-organizations
+      author: dmitriyBreyfogel
+      changes:
+        - createTable:
+            tableName: organizations
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_organizations
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: grade
+                  type: numeric(2,1)
+        - addUniqueConstraint:
+            tableName: organizations
+            columnNames: name
+            constraintName: uq_organizations_name
+
+  - changeSet:
+      id: 002-create-users
+      author: dmitriyBreyfogel
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_users
+                    nullable: false
+              - column:
+                  name: surname
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: second_name
+                  type: varchar(255)
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: varchar(255)
+        - addUniqueConstraint:
+            tableName: users
+            columnNames: email
+            constraintName: uq_users_email
+
+  - changeSet:
+      id: 003-create-specialists
+      author: dmitriyBreyfogel
+      changes:
+        - createTable:
+            tableName: specialists
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_specialists
+                    nullable: false
+              - column:
+                  name: grade
+                  type: numeric(2,1)
+              - column:
+                  name: description
+                  type: text
+        - addForeignKeyConstraint:
+            baseTableName: specialists
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_specialists_user
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 004-create-organization_members
+      author: dmitriyBreyfogel
+      changes:
+        - createTable:
+            tableName: organization_members
+            columns:
+              - column:
+                  name: organization_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: specialist_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: organization_members
+            columnNames: organization_id, specialist_id
+            constraintName: pk_organization_members
+        - addForeignKeyConstraint:
+            baseTableName: organization_members
+            baseColumnNames: organization_id
+            referencedTableName: organizations
+            referencedColumnNames: id
+            constraintName: fk_organization_members_organization
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: organization_members
+            baseColumnNames: specialist_id
+            referencedTableName: specialists
+            referencedColumnNames: user_id
+            constraintName: fk_organization_members_specialist
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 005-create-slots
+      author: dmitriyBreyfogel
+      changes:
+        - createTable:
+            tableName: slots
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_slots
+                    nullable: false
+              - column:
+                  name: starts_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ends_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: specialist_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: customer_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: organization_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: slots
+            baseColumnNames: specialist_id
+            referencedTableName: specialists
+            referencedColumnNames: user_id
+            constraintName: fk_slots_specialist
+            onDelete: RESTRICT
+        - addForeignKeyConstraint:
+            baseTableName: slots
+            baseColumnNames: organization_id
+            referencedTableName: organizations
+            referencedColumnNames: id
+            constraintName: fk_slots_organization
+            onDelete: RESTRICT
+        - addForeignKeyConstraint:
+            baseTableName: slots
+            baseColumnNames: customer_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_slots_customer
+            onDelete: RESTRICT
+        - createIndex:
+            tableName: slots
+            indexName: idx_slots_specialist_starts_at
+            columns:
+              - column:
+                  name: specialist_id
+              - column:
+                  name: starts_at
+        - createIndex:
+            tableName: slots
+            indexName: idx_slots_customer_starts_at
+            columns:
+              - column:
+                  name: customer_id
+              - column:
+                  name: starts_at

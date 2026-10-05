@@ -1,0 +1,15 @@
+.git
+.gitignore
+.gitattributes
+.idea
+.vscode
+.gradle
+.gradle-user-home
+.gradle-user-home-codex
+build
+bin
+docs
+ci
+.env
+*.iml
+out
