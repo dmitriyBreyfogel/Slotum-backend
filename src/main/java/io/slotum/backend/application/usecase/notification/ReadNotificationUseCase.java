@@ -26,14 +26,22 @@ public class ReadNotificationUseCase {
     }
 
     @Transactional
-    public boolean execute(Long notificationId, Long userId) {
-        validateNotificationId(notificationId);
+    public void execute(Long notificationId, Long userId) {
+        Notification notification = findNotification(notificationId);
         validateUserId(userId);
 
-        return notificationRepository.read(notificationId, userId);
+        if (!notification.getUserId().equals(userId)) {
+            throw AppException.build(
+                    ErrorCode.NOTIFICATION_NOT_FOUND,
+                    "Notification not found",
+                    Map.of("id", notificationId)
+            );
+        }
+
+        notificationRepository.read(notificationId, userId);
     }
 
-    private void validateNotificationId(Long notificationId) {
+    private Notification findNotification(Long notificationId) {
         Optional<Notification> notification = notificationRepository.findById(notificationId);
 
         if (notification.isEmpty()) {
@@ -43,6 +51,8 @@ public class ReadNotificationUseCase {
                     Map.of("id", notificationId)
             );
         }
+
+        return notification.get();
     }
 
     private void validateUserId(Long userId) {
