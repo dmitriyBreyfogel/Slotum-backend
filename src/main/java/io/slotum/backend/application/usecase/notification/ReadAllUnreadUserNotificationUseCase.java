@@ -5,6 +5,7 @@ import io.slotum.backend.domain.user.User;
 import io.slotum.backend.domain.user.UserRepository;
 import io.slotum.backend.error.AppException;
 import io.slotum.backend.error.ErrorCode;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -23,6 +24,7 @@ public class ReadAllUnreadUserNotificationUseCase {
         this.notificationRepository = notificationRepository;
     }
 
+    @Transactional
     public int execute(Long userId) {
         validateUserId(userId);
 
