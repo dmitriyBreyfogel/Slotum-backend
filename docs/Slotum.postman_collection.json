@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "1a0e5212-d4df-4d5b-80f4-edfc2fd48c50",
     "name": "Slotum",
-    "description": "Postman collection for the current Slotum backend API.",
+    "description": "Requests for the current Slotum backend API. Log in with an existing user first; the Login request saves the JWT as the collection variable accessToken. JWT permissions are captured at login, so log in again after role or permission changes.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -28,13 +28,15 @@
     },
     {
       "key": "email",
-      "value": "admin@example.com",
-      "type": "string"
+      "value": "user@slotum.com",
+      "type": "string",
+      "description": "Email of an existing user; change it for your local database."
     },
     {
       "key": "password",
-      "value": "password123",
-      "type": "string"
+      "value": "set-your-password",
+      "type": "string",
+      "description": "Password of that user; replace this placeholder before login."
     },
     {
       "key": "userId",
@@ -85,6 +87,36 @@
       "key": "resourceId",
       "value": "1",
       "type": "string"
+    },
+    {
+      "key": "notificationId",
+      "value": "1",
+      "type": "string",
+      "description": "ID of a notification belonging to the logged-in user."
+    },
+    {
+      "key": "refreshTokenId",
+      "value": "1",
+      "type": "string",
+      "description": "ID of a stored refresh token."
+    },
+    {
+      "key": "refreshTokenHash",
+      "value": "replace-with-token-hash",
+      "type": "string",
+      "description": "Hash of a stored refresh token."
+    },
+    {
+      "key": "revoked",
+      "value": "false",
+      "type": "string",
+      "description": "Whether to count revoked refresh tokens."
+    },
+    {
+      "key": "cleanupCutoff",
+      "value": "2026-01-01T00:00:00Z",
+      "type": "string",
+      "description": "UTC cutoff for refresh-token cleanup; change before sending."
     }
   ],
   "item": [
@@ -138,7 +170,8 @@
                 "auth",
                 "login"
               ]
-            }
+            },
+            "description": "Public endpoint."
           },
           "response": []
         }
@@ -179,7 +212,8 @@
                 "v1",
                 "users"
               ]
-            }
+            },
+            "description": "Public endpoint."
           },
           "response": []
         },
@@ -199,7 +233,8 @@
                 "users",
                 "{{userId}}"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_USERS."
           },
           "response": []
         },
@@ -218,7 +253,8 @@
                 "v1",
                 "users"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_USERS."
           },
           "response": []
         },
@@ -244,7 +280,8 @@
                   "value": "{{email}}"
                 }
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_USERS."
           },
           "response": []
         },
@@ -264,7 +301,8 @@
                 "users",
                 "{{userId}}"
               ]
-            }
+            },
+            "description": "Requires authority: MANAGE_USERS."
           },
           "response": []
         },
@@ -283,7 +321,8 @@
                 "v1",
                 "users"
               ]
-            }
+            },
+            "description": "Requires authority: MANAGE_USERS."
           },
           "response": []
         }
@@ -304,7 +343,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"description\": \"Senior fitness specialist\",\n  \"grade\": 0\n}",
+              "raw": "{\n  \"description\": \"Senior fitness specialist\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -322,7 +361,8 @@
                 "me",
                 "specialist"
               ]
-            }
+            },
+            "description": "Requires authority: CREATE_OWN_SPECIALIST."
           },
           "response": []
         },
@@ -356,7 +396,8 @@
                 "me",
                 "organizations"
               ]
-            }
+            },
+            "description": "Requires authority: CREATE_OWN_ORGANIZATION."
           },
           "response": []
         },
@@ -376,7 +417,8 @@
                 "me",
                 "organizations"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_OWN_ORGANIZATIONS."
           },
           "response": []
         },
@@ -397,7 +439,119 @@
                 "organizations",
                 "{{organizationId}}"
               ]
-            }
+            },
+            "description": "Requires authority: MANAGE_OWN_ORGANIZATION."
+          },
+          "response": []
+        },
+        {
+          "name": "Get my notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me/notifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me",
+                "notifications"
+              ]
+            },
+            "description": "Requires authority: VIEW_OWN_NOTIFICATIONS."
+          },
+          "response": []
+        },
+        {
+          "name": "Get my unread notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me/notifications/unread",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me",
+                "notifications",
+                "unread"
+              ]
+            },
+            "description": "Requires authority: VIEW_OWN_NOTIFICATIONS."
+          },
+          "response": []
+        },
+        {
+          "name": "Count my unread notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me/notifications/unread/count",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me",
+                "notifications",
+                "unread",
+                "count"
+              ]
+            },
+            "description": "Requires authority: VIEW_OWN_NOTIFICATIONS."
+          },
+          "response": []
+        },
+        {
+          "name": "Mark my notification as read",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me/notifications/{{notificationId}}/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me",
+                "notifications",
+                "{{notificationId}}",
+                "read"
+              ]
+            },
+            "description": "Requires authority: MARK_OWN_NOTIFICATIONS_READ. Only a notification owned by the current user can be marked as read."
+          },
+          "response": []
+        },
+        {
+          "name": "Mark all my notifications as read",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me/notifications/read-all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me",
+                "notifications",
+                "read-all"
+              ]
+            },
+            "description": "Requires authority: MARK_OWN_NOTIFICATIONS_READ. Returns the number of notifications marked as read."
           },
           "response": []
         }
@@ -418,7 +572,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"userId\": {{userId}},\n  \"description\": \"Senior fitness specialist\",\n  \"grade\": 0\n}",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"description\": \"Senior fitness specialist\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -435,7 +589,8 @@
                 "v1",
                 "specialists"
               ]
-            }
+            },
+            "description": "Requires authority: CREATE_ANY_SPECIALIST."
           },
           "response": []
         },
@@ -455,7 +610,8 @@
                 "specialists",
                 "{{specialistUserId}}"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_ANY_SPECIALIST."
           },
           "response": []
         },
@@ -474,7 +630,8 @@
                 "v1",
                 "specialists"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_ANY_SPECIALIST."
           },
           "response": []
         },
@@ -495,7 +652,8 @@
                 "{{specialistUserId}}",
                 "organizations"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_SPECIALIST_ORGANIZATIONS."
           },
           "response": []
         },
@@ -515,7 +673,8 @@
                 "specialists",
                 "{{specialistUserId}}"
               ]
-            }
+            },
+            "description": "Requires authority: DELETE_ANY_SPECIALIST."
           },
           "response": []
         },
@@ -534,7 +693,8 @@
                 "v1",
                 "specialists"
               ]
-            }
+            },
+            "description": "Requires authority: DELETE_ALL_SPECIALISTS."
           },
           "response": []
         }
@@ -572,7 +732,8 @@
                 "v1",
                 "organizations"
               ]
-            }
+            },
+            "description": "Requires authority: CREATE_ANY_ORGANIZATION."
           },
           "response": []
         },
@@ -594,7 +755,8 @@
                 "specialists",
                 "{{specialistUserId}}"
               ]
-            }
+            },
+            "description": "Requires authority: ADD_SPECIALIST_TO_ORG."
           },
           "response": []
         },
@@ -614,7 +776,8 @@
                 "organizations",
                 "{{organizationId}}"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_ANY_ORGANIZATION."
           },
           "response": []
         },
@@ -633,7 +796,8 @@
                 "v1",
                 "organizations"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_ORGANIZATIONS_FOR_BOOKING."
           },
           "response": []
         },
@@ -654,7 +818,8 @@
                 "{{organizationId}}",
                 "specialists"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_ORG_SPECIALISTS."
           },
           "response": []
         },
@@ -676,7 +841,8 @@
                 "specialists",
                 "{{specialistUserId}}"
               ]
-            }
+            },
+            "description": "Requires authority: MANAGE_ANY_ORGANIZATION."
           },
           "response": []
         },
@@ -696,7 +862,8 @@
                 "organizations",
                 "{{organizationId}}"
               ]
-            }
+            },
+            "description": "Requires authority: MANAGE_ANY_ORGANIZATION."
           },
           "response": []
         },
@@ -715,7 +882,8 @@
                 "v1",
                 "organizations"
               ]
-            }
+            },
+            "description": "Requires authority: DELETE_ALL_ORGANIZATIONS."
           },
           "response": []
         }
@@ -736,7 +904,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"startsAt\": \"2026-06-01T10:00:00\",\n  \"endsAt\": \"2026-06-01T11:00:00\",\n  \"status\": \"FREE\",\n  \"specialistUserId\": {{specialistUserId}},\n  \"customerId\": null,\n  \"organizationId\": {{organizationId}}\n}",
+              "raw": "{\n  \"startsAt\": \"2030-06-01T10:00:00\",\n  \"endsAt\": \"2030-06-01T11:00:00\",\n  \"status\": \"FREE\",\n  \"specialistUserId\": {{specialistUserId}},\n  \"customerId\": null,\n  \"organizationId\": {{organizationId}}\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -753,7 +921,8 @@
                 "v1",
                 "slots"
               ]
-            }
+            },
+            "description": "Requires authority: CREATE_SLOT."
           },
           "response": []
         },
@@ -769,7 +938,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"startsAt\": \"2026-06-01T12:00:00\",\n  \"endsAt\": \"2026-06-01T13:00:00\",\n  \"status\": \"BOOKED\",\n  \"specialistUserId\": {{specialistUserId}},\n  \"customerId\": {{userId}},\n  \"organizationId\": {{organizationId}}\n}",
+              "raw": "{\n  \"startsAt\": \"2030-06-01T12:00:00\",\n  \"endsAt\": \"2030-06-01T13:00:00\",\n  \"status\": \"BOOKED\",\n  \"specialistUserId\": {{specialistUserId}},\n  \"customerId\": {{userId}},\n  \"organizationId\": {{organizationId}}\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -786,7 +955,8 @@
                 "v1",
                 "slots"
               ]
-            }
+            },
+            "description": "Requires authority: CREATE_SLOT."
           },
           "response": []
         },
@@ -806,7 +976,8 @@
                 "slots",
                 "{{slotId}}"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_SLOT."
           },
           "response": []
         },
@@ -825,7 +996,8 @@
                 "v1",
                 "slots"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_ANY_SLOTS."
           },
           "response": []
         },
@@ -845,7 +1017,8 @@
                 "slots",
                 "{{slotId}}"
               ]
-            }
+            },
+            "description": "Requires authority: MANAGE_ANY_SLOTS."
           },
           "response": []
         },
@@ -864,7 +1037,8 @@
                 "v1",
                 "slots"
               ]
-            }
+            },
+            "description": "Requires authority: DELETE_ALL_SLOTS."
           },
           "response": []
         }
@@ -902,7 +1076,8 @@
                 "v1",
                 "slot-booking-requests"
               ]
-            }
+            },
+            "description": "Requires authority: CREATE_BOOKING."
           },
           "response": []
         },
@@ -922,7 +1097,8 @@
                 "slot-booking-requests",
                 "{{slotBookingRequestId}}"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_ANY_BOOKINGS."
           },
           "response": []
         },
@@ -942,7 +1118,8 @@
                 "slot-booking-requests",
                 "me"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_OWN_BOOKINGS."
           },
           "response": []
         },
@@ -962,7 +1139,8 @@
                 "slot-booking-requests",
                 "incoming"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_ANY_BOOKINGS."
           },
           "response": []
         },
@@ -983,7 +1161,8 @@
                 "slots",
                 "{{slotId}}"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_ANY_BOOKINGS."
           },
           "response": []
         },
@@ -1004,7 +1183,8 @@
                 "{{slotBookingRequestId}}",
                 "accept"
               ]
-            }
+            },
+            "description": "Requires authority: ACCEPT_BOOKING."
           },
           "response": []
         },
@@ -1025,7 +1205,8 @@
                 "{{slotBookingRequestId}}",
                 "reject"
               ]
-            }
+            },
+            "description": "Requires authority: REJECT_BOOKING."
           },
           "response": []
         },
@@ -1046,7 +1227,8 @@
                 "{{slotBookingRequestId}}",
                 "cancel"
               ]
-            }
+            },
+            "description": "Requires authority: CANCEL_OWN_BOOKING."
           },
           "response": []
         }
@@ -1098,7 +1280,8 @@
                 "v1",
                 "roles"
               ]
-            }
+            },
+            "description": "Requires authority: MANAGE_ROLES. Role names are limited to the RoleNames enum; seeded roles may already exist."
           },
           "response": []
         },
@@ -1118,7 +1301,8 @@
                 "roles",
                 "{{roleId}}"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_ROLES."
           },
           "response": []
         },
@@ -1144,7 +1328,8 @@
                   "value": "{{roleName}}"
                 }
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_ROLES."
           },
           "response": []
         },
@@ -1163,7 +1348,8 @@
                 "v1",
                 "roles"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_ROLES."
           },
           "response": []
         },
@@ -1183,7 +1369,8 @@
                 "roles",
                 "{{roleId}}"
               ]
-            }
+            },
+            "description": "Requires authority: MANAGE_ROLES."
           },
           "response": []
         },
@@ -1202,7 +1389,8 @@
                 "v1",
                 "roles"
               ]
-            }
+            },
+            "description": "Requires authority: MANAGE_ROLES."
           },
           "response": []
         }
@@ -1254,7 +1442,8 @@
                 "v1",
                 "permissions"
               ]
-            }
+            },
+            "description": "Requires authority: MANAGE_PERMISSIONS."
           },
           "response": []
         },
@@ -1274,7 +1463,8 @@
                 "permissions",
                 "{{permissionId}}"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_PERMISSIONS."
           },
           "response": []
         },
@@ -1300,7 +1490,8 @@
                   "value": "{{permissionCode}}"
                 }
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_PERMISSIONS."
           },
           "response": []
         },
@@ -1319,7 +1510,8 @@
                 "v1",
                 "permissions"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_PERMISSIONS."
           },
           "response": []
         },
@@ -1339,7 +1531,8 @@
                 "permissions",
                 "{{permissionId}}"
               ]
-            }
+            },
+            "description": "Requires authority: MANAGE_PERMISSIONS."
           },
           "response": []
         },
@@ -1358,7 +1551,8 @@
                 "v1",
                 "permissions"
               ]
-            }
+            },
+            "description": "Requires authority: MANAGE_PERMISSIONS."
           },
           "response": []
         }
@@ -1410,7 +1604,8 @@
                 "v1",
                 "resources"
               ]
-            }
+            },
+            "description": "Requires authority: MANAGE_RESOURCES."
           },
           "response": []
         },
@@ -1430,7 +1625,8 @@
                 "resources",
                 "{{resourceId}}"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_RESOURCES."
           },
           "response": []
         },
@@ -1449,7 +1645,8 @@
                 "v1",
                 "resources"
               ]
-            }
+            },
+            "description": "Requires authority: VIEW_RESOURCES."
           },
           "response": []
         },
@@ -1469,7 +1666,8 @@
                 "resources",
                 "{{resourceId}}"
               ]
-            }
+            },
+            "description": "Requires authority: MANAGE_RESOURCES."
           },
           "response": []
         },
@@ -1488,7 +1686,218 @@
                 "v1",
                 "resources"
               ]
-            }
+            },
+            "description": "Requires authority: MANAGE_RESOURCES."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Refresh Tokens",
+      "item": [
+        {
+          "name": "Get refresh token by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/refreshTokens/{{refreshTokenId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "refreshTokens",
+                "{{refreshTokenId}}"
+              ]
+            },
+            "description": "Requires authority: VIEW_REFRESH_TOKENS."
+          },
+          "response": []
+        },
+        {
+          "name": "Get refresh token by hash",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/refreshTokens/by-hash/{{refreshTokenHash}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "refreshTokens",
+                "by-hash",
+                "{{refreshTokenHash}}"
+              ]
+            },
+            "description": "Requires authority: VIEW_REFRESH_TOKENS."
+          },
+          "response": []
+        },
+        {
+          "name": "Get all refresh tokens",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/refreshTokens",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "refreshTokens"
+              ]
+            },
+            "description": "Requires authority: VIEW_REFRESH_TOKENS."
+          },
+          "response": []
+        },
+        {
+          "name": "Get refresh tokens by user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/refreshTokens/by-user?userId={{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "refreshTokens",
+                "by-user"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            },
+            "description": "Requires authority: VIEW_REFRESH_TOKENS."
+          },
+          "response": []
+        },
+        {
+          "name": "Count refresh tokens",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/refreshTokens/count",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "refreshTokens",
+                "count"
+              ]
+            },
+            "description": "Requires authority: VIEW_REFRESH_TOKENS."
+          },
+          "response": []
+        },
+        {
+          "name": "Count refresh tokens by revoked status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/refreshTokens/count/{{revoked}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "refreshTokens",
+                "count",
+                "{{revoked}}"
+              ]
+            },
+            "description": "Requires authority: VIEW_REFRESH_TOKENS."
+          },
+          "response": []
+        },
+        {
+          "name": "Revoke refresh token by hash",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/refreshTokens/revoke/{{refreshTokenHash}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "refreshTokens",
+                "revoke",
+                "{{refreshTokenHash}}"
+              ]
+            },
+            "description": "Requires authority: REVOKE_REFRESH_TOKENS."
+          },
+          "response": []
+        },
+        {
+          "name": "Revoke all refresh tokens for user",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/refreshTokens/users/{{userId}}/revoke",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "refreshTokens",
+                "users",
+                "{{userId}}",
+                "revoke"
+              ]
+            },
+            "description": "Requires authority: REVOKE_REFRESH_TOKENS."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete expired or revoked refresh tokens before cutoff",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/refreshTokens/cleanup?cutoff={{cleanupCutoff}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "refreshTokens",
+                "cleanup"
+              ],
+              "query": [
+                {
+                  "key": "cutoff",
+                  "value": "{{cleanupCutoff}}"
+                }
+              ]
+            },
+            "description": "Requires authority: REVOKE_REFRESH_TOKENS."
           },
           "response": []
         }

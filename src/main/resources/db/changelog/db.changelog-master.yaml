@@ -41,3 +41,5 @@ databaseChangeLog:
       file: db/changelog/changes/020-insert-permission-resources.sql
   - include:
       file: db/changelog/changes/021-create-notifications.sql
+  - include:
+      file: db/changelog/changes/022-add-notifications-acl.sql
