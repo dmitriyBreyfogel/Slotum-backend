@@ -163,6 +163,7 @@ public interface MeApi {
      * @param currentUser текущий аутентифицированный пользователь
      * @return список системных уведомлений текущего пользователя
      */
+    @PreAuthorize("hasAuthority('VIEW_OWN_NOTIFICATIONS')")
     @GetMapping("/notifications")
     ResponseEntity<List<NotificationDto>> getMyNotifications(
             @AuthenticationPrincipal
@@ -183,6 +184,7 @@ public interface MeApi {
      * @param currentUser текущий аутентифицированный пользователь
      * @return список непрочитанных уведомлений текущего пользователя
      */
+    @PreAuthorize("hasAuthority('VIEW_OWN_NOTIFICATIONS')")
     @GetMapping("/notifications/unread")
     ResponseEntity<List<NotificationDto>> getMyUnreadNotifications(
             @AuthenticationPrincipal
@@ -203,6 +205,7 @@ public interface MeApi {
      * @param currentUser текущий аутентифицированный пользователь
      * @return количество непрочитанных уведомлений текущего пользователя
      */
+    @PreAuthorize("hasAuthority('VIEW_OWN_NOTIFICATIONS')")
     @GetMapping("/notifications/unread/count")
     ResponseEntity<Long> countMyUnreadNotifications(
             @AuthenticationPrincipal
@@ -228,6 +231,7 @@ public interface MeApi {
      * @param notificationId идентификатор уведомления
      * @return пустой ответ при успешном чтении уведомления
      */
+    @PreAuthorize("hasAuthority('MARK_OWN_NOTIFICATIONS_READ')")
     @PostMapping("/notifications/{notificationId}/read")
     ResponseEntity<Void> readMyNotification(
             @AuthenticationPrincipal
@@ -254,6 +258,7 @@ public interface MeApi {
      * @param currentUser текущий аутентифицированный пользователь
      * @return количество уведомлений, которые сделали прочитанными
      */
+    @PreAuthorize("hasAuthority('MARK_OWN_NOTIFICATIONS_READ')")
     @PostMapping("/notifications/read-all")
     ResponseEntity<Long> readAllMyNotifications(
             @AuthenticationPrincipal
